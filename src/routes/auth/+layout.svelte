@@ -1,0 +1,28 @@
+<script lang="ts">
+	import { siteConfig } from '$lib/config/site.config';
+	import ToastContainer from '$lib/components/ui/ToastContainer.svelte';
+
+	interface Props {
+		children: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
+</script>
+
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 px-4 py-12">
+	<div class="w-full max-w-md">
+		<!-- Logo -->
+		<div class="mb-8 text-center">
+			<a href="/" class="inline-flex items-center gap-2 font-display text-2xl font-bold text-gray-900">
+				<span class="text-3xl">🐾</span>
+				<span class="text-primary-600">{siteConfig.name}</span>
+			</a>
+		</div>
+
+		<div class="rounded-2xl bg-white p-8 shadow-xl">
+			{@render children()}
+		</div>
+	</div>
+</div>
+
+<ToastContainer />

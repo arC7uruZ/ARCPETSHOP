@@ -1,0 +1,12 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Build outputs
+.svelte-kit/
+build/
+dist/
+
+# Generated files
+src/lib/types/database.types.ts
