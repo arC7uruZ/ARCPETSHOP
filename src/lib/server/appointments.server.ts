@@ -50,6 +50,8 @@ export async function createAppointment(
 
 	if (err || !data) throw error(500, err?.message ?? 'Erro ao criar agendamento');
 
+	const created = data as Appointment;
+
 	// Send WhatsApp notification if user has a phone and opted in
 	if (userPhone) {
 		const sid = await sendBookingConfirmation({
@@ -64,11 +66,11 @@ export async function createAppointment(
 			await supabase
 				.from('appointments')
 				.update({ whatsapp_notified: true, notification_sid: sid })
-				.eq('id', data.id);
+				.eq('id', created.id);
 		}
 	}
 
-	return data;
+	return created;
 }
 
 export async function cancelAppointment(
@@ -80,7 +82,7 @@ export async function cancelAppointment(
 	const { error: err } = await supabase
 		.from('appointments')
 		.update({
-			status: 'cancelled',
+			status: 'cancelled' as const,
 			cancelled_at: new Date().toISOString(),
 			cancellation_reason: reason ?? null
 		})

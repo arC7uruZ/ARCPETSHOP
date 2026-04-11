@@ -1,3 +1,4 @@
+import { untrack } from 'svelte';
 import type { Toast, ToastType } from '$lib/types';
 
 let toasts = $state<Toast[]>([]);
@@ -13,7 +14,11 @@ export const uiStore = {
 
 	addToast(type: ToastType, message: string, duration = 4000) {
 		const id = crypto.randomUUID();
-		toasts = [...toasts, { id, type, message, duration }];
+		// untrack evita que a leitura de `toasts` crie dependência reativa
+		// em $effects que chamem addToast, prevenindo loops infinitos
+		untrack(() => {
+			toasts = [...toasts, { id, type, message, duration }];
+		});
 		if (duration > 0) {
 			setTimeout(() => uiStore.removeToast(id), duration);
 		}

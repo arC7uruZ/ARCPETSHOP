@@ -33,8 +33,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	// Update appointment notification status
 	const admin = createClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 	if (messageStatus === 'delivered') {
-		await admin
-			.from('appointments')
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		await (admin.from('appointments') as any)
 			.update({ whatsapp_notified: true })
 			.eq('notification_sid', messageSid);
 	}

@@ -18,16 +18,20 @@ export async function fetchPets(
 		.order('name');
 
 	if (err) throw error(500, err.message);
-	return data ?? [];
+	return (data ?? []) as Pet[];
 }
 
 export async function createPet(
 	supabase: SupabaseClient<Database>,
 	pet: PetInsert
 ): Promise<Pet> {
+    console.log("vai criar a porra do pet")
 	const { data, error: err } = await supabase.from('pets').insert(pet).select().single();
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao criar pet');
-	return data;
+	if (err || !data) {
+        console.log(err?.message);
+        throw error(500, err?.message ?? 'Erro ao criar pet');
+    }
+	return data as Pet;
 }
 
 export async function updatePet(
@@ -43,7 +47,7 @@ export async function updatePet(
 		.single();
 
 	if (err || !data) throw error(500, err?.message ?? 'Erro ao atualizar pet');
-	return data;
+	return data as Pet;
 }
 
 export async function deletePet(

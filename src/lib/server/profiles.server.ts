@@ -17,7 +17,7 @@ export async function fetchProfile(
 		.single();
 
 	if (err) return null;
-	return data;
+	return data as Profile;
 }
 
 export async function updateProfile(
@@ -27,12 +27,13 @@ export async function updateProfile(
 ): Promise<Profile> {
 	const { data, error: err } = await supabase
 		.from('profiles')
-		.upsert({ id: userId, ...updates }, { onConflict: 'id' })
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		.upsert({ id: userId, ...updates } as any, { onConflict: 'id' })
 		.select()
 		.single();
 
 	if (err || !data) throw error(500, err?.message ?? 'Erro ao atualizar perfil');
-	return data;
+	return data as Profile;
 }
 
 export async function uploadAvatar(

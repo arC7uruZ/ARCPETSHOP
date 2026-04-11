@@ -11,7 +11,7 @@ export async function fetchServices(supabase: SupabaseClient<Database>): Promise
 		.order('display_order');
 
 	if (err) throw error(500, err.message);
-	return data ?? [];
+	return (data ?? []) as Service[];
 }
 
 export async function fetchServiceBySlug(
@@ -26,5 +26,5 @@ export async function fetchServiceBySlug(
 		.single();
 
 	if (err || !data) throw error(404, 'Serviço não encontrado');
-	return data;
+	return data as Service;
 }
