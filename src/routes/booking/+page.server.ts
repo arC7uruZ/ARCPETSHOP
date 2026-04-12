@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
-import { fetchServices } from '$lib/server/services.server';
+import { fetchServiceById, fetchServices } from '$lib/server/services.server';
 import { fetchPets } from '$lib/server/pets.server';
 import { createAppointment } from '$lib/server/appointments.server';
 import { fetchServiceBySlug } from '$lib/server/services.server';
@@ -29,6 +29,8 @@ export const actions: Actions = {
 		const serviceId = String(formData.get('serviceId') ?? '');
 		const petId = String(formData.get('petId') ?? '');
 
+        console.log("A porra do serviceId é: ", serviceId);
+
 		const dt = new Date(scheduledAtRaw);
 		if (isNaN(dt.getTime())) {
 			return fail(400, { error: 'Data/hora inválida.' });
@@ -45,7 +47,7 @@ export const actions: Actions = {
 			return fail(400, { errors, error: 'Por favor, corrija os campos inválidos.' });
 		}
 
-		const service = await fetchServiceBySlug(locals.supabase, serviceId).catch(() => null);
+		const service = await fetchServiceById(locals.supabase, serviceId).catch(() => null);
 		if (!service) return fail(400, { error: 'Serviço não encontrado.' });
 
 		const profile = await fetchProfile(locals.supabase, user.id);

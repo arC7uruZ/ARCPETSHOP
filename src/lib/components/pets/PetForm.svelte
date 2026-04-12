@@ -92,6 +92,8 @@
 			type="number"
 			label="Peso (kg)"
 			placeholder="Ex: 5.5"
+			step={0.1}
+			min={0}
 			bind:value={weightKg}
 		/>
 	</div>

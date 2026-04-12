@@ -25,6 +25,23 @@ export async function fetchServiceBySlug(
 		.eq('is_active', true)
 		.single();
 
+    console.log(`data: ${data}, erro: ${error}`)
+	if (err || !data) throw error(404, 'Serviço não encontrado');
+	return data as Service;
+}
+
+export async function fetchServiceById(
+	supabase: SupabaseClient<Database>,
+	serviceId: string
+): Promise<Service> {
+	const { data, error: err } = await supabase
+		.from('services')
+		.select('*')
+		.eq('id', serviceId)
+		.eq('is_active', true)
+		.single();
+
+    console.log(`data: ${data}, erro: ${error}`)
 	if (err || !data) throw error(404, 'Serviço não encontrado');
 	return data as Service;
 }

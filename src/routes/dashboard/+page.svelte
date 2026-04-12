@@ -19,6 +19,7 @@
 	let cancelModal = $state(false);
 	let appointmentToCancel = $state<AppointmentFull | null>(null);
 	let activeTab = $state<'upcoming' | 'history'>('upcoming');
+	let cancelLoading = $state(false);
 
 	const upcoming = $derived(
 		data.appointments.filter((a) =>
@@ -38,7 +39,10 @@
 		if (form?.success) {
 			uiStore.success('Agendamento cancelado com sucesso.');
 			cancelModal = false;
-		}
+		} else if (form?.error) {
+			uiStore.error('Erro ao cancelar agendamento');
+			cancelModal = false;
+        }
 	});
 </script>
 
@@ -176,9 +180,21 @@
 
 	{#snippet footer()}
 		<Button variant="ghost" size="md" onclick={() => (cancelModal = false)}>Manter</Button>
-		<form method="POST" action="?/cancelAppointment" use:enhance>
+		<form
+			method="POST"
+			action="?/cancelAppointment"
+			use:enhance={() => {
+				cancelLoading = true;
+				return ({ update }) => {
+					cancelLoading = false;
+					update();
+				};
+			}}
+		>
 			<input type="hidden" name="appointmentId" value={appointmentToCancel?.id ?? ''} />
-			<Button type="submit" variant="danger" size="md">Cancelar agendamento</Button>
+			<Button type="submit" variant="danger" size="md" loading={cancelLoading}>
+				Cancelar agendamento
+			</Button>
 		</form>
 	{/snippet}
 </Modal>

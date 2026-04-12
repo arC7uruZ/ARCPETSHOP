@@ -21,5 +21,10 @@ export default defineConfig({
 				'src/lib/types/database.types.ts'
 			]
 		}
-	}
+	},
+    server: {
+        watch: {
+            usePolling: true,
+        }
+    }
 });

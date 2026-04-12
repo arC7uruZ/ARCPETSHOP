@@ -26,9 +26,16 @@ export const actions: Actions = {
 		const appointmentId = String(formData.get('appointmentId') ?? '');
 		const reason = String(formData.get('reason') ?? '');
 
+        // console.log(`apointmentid: ${appointmentId}`)
+        // console.log(`userid: ${user.id}`)
+
 		if (!appointmentId) return fail(400, { error: 'ID do agendamento inválido.' });
 
-		await cancelAppointment(locals.supabase, appointmentId, user.id, reason);
+        try {
+		    await cancelAppointment(locals.supabase, appointmentId, user.id, reason);
+        } catch {
+            return fail(500, { error: 'Não foi possível cancelar o agendamento.'});
+        }
 		return { success: true };
 	}
 };
