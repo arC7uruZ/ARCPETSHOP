@@ -185,9 +185,9 @@
 			action="?/cancelAppointment"
 			use:enhance={() => {
 				cancelLoading = true;
-				return ({ update }) => {
+				return async ({ update }) => {
+					await update();
 					cancelLoading = false;
-					update();
 				};
 			}}
 		>
