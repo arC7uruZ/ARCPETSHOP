@@ -27,11 +27,14 @@ export async function sendBookingConfirmation(
 
 	try {
 		const client = getClient();
+        console.log(`tentando enviar mensage para ${phoneE164}`)
 		const message = await client.messages.create({
 			from: TWILIO_WHATSAPP_FROM,
 			to: `whatsapp:${phoneE164}`,
 			body: buildBookingWhatsAppMessage(params)
 		});
+        console.log(`mensagem id ${message.sid}`)
+        console.log(`mensagem status ${message.status}`)
 		return message.sid;
 	} catch (err) {
 		console.error('[Twilio] Failed to send WhatsApp message:', err);

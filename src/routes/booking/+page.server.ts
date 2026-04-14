@@ -3,7 +3,6 @@ import { redirect, fail } from '@sveltejs/kit';
 import { fetchServiceById, fetchServices } from '$lib/server/services.server';
 import { fetchPets } from '$lib/server/pets.server';
 import { createAppointment } from '$lib/server/appointments.server';
-import { fetchServiceBySlug } from '$lib/server/services.server';
 import { fetchProfile } from '$lib/server/profiles.server';
 import { bookingSchema } from '$lib/utils/validation.utils';
 
@@ -28,8 +27,6 @@ export const actions: Actions = {
 		const scheduledAtRaw = String(formData.get('scheduledAt') ?? '');
 		const serviceId = String(formData.get('serviceId') ?? '');
 		const petId = String(formData.get('petId') ?? '');
-
-		console.log('A porra do serviceId é: ', serviceId);
 
 		const dt = new Date(scheduledAtRaw);
 		if (isNaN(dt.getTime())) {
