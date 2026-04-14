@@ -1,6 +1,9 @@
 <script lang="ts">
 	import '../app.css';
 	import { invalidate } from '$app/navigation';
+    import { navigating } from '$app/state';
+    import NProgress from 'nprogress';
+    import 'nprogress/nprogress.css';
 	import { onMount } from 'svelte';
 	import { authStore } from '$lib/stores/auth.store.svelte';
 	import Navbar from '$lib/components/layout/Navbar.svelte';
@@ -22,6 +25,16 @@
 	$effect(() => {
 		authStore.setSession(data.session);
 	});
+
+    NProgress.configure({ showSpinner: false })
+
+    $effect(() => {
+        if (navigating.to) {
+            NProgress.start();
+        } else {
+            NProgress.done();
+        }
+    })
 
 	onMount(() => {
 		const {
@@ -55,3 +68,10 @@
 </div>
 
 <ToastContainer />
+
+<style>
+    #nprogress .bar {
+      background: #f5c842;
+      height: 2px;
+    }
+</style>
