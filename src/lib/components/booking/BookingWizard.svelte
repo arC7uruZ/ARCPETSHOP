@@ -41,7 +41,7 @@
 		<!-- Step indicator -->
 		<div class="mb-8">
 			<div class="flex items-center justify-between">
-				{#each steps as step, i}
+				{#each steps as _, i}
 					<div class="flex flex-1 items-center">
 						<div
 							class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors {bookingStore.step >
@@ -88,9 +88,9 @@
 					action="?/create"
 					use:enhance={() => {
 						loading = true;
-						return ({ update }: { update: () => Promise<void> }) => {
+						return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+							await update({ reset: false });
 							loading = false;
-							update();
 						};
 					}}
 				>

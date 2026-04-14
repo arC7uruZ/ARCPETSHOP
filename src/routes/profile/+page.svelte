@@ -22,6 +22,7 @@
 	let deleteModal = $state(false);
 	let petToDelete = $state<Pet | null>(null);
 	let profileLoading = $state(false);
+    let deletePetLoading = $state(false);
 
 	$effect(() => {
 		if (form?.success && form.action === 'profile') uiStore.success('Perfil atualizado!');
@@ -73,9 +74,9 @@
 				action="?/updateProfile"
 				use:enhance={() => {
 					profileLoading = true;
-					return ({ update }: { update: () => Promise<void> }) => {
+					return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+						await update({ reset: false });
 						profileLoading = false;
-						update();
 					};
 				}}
 				class="space-y-4"
@@ -182,9 +183,17 @@
 
 	{#snippet footer()}
 		<Button variant="ghost" size="md" onclick={() => (deleteModal = false)}>Cancelar</Button>
-		<form method="POST" action="?/deletePet" use:enhance>
+		<form method="POST" action="?/deletePet"
+				use:enhance={() => {
+					deletePetLoading = true;
+					return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+						await update();
+						deletePetLoading = false;
+					};
+				}}
+        >
 			<input type="hidden" name="petId" value={petToDelete?.id ?? ''} />
-			<Button type="submit" variant="danger" size="md">Remover pet</Button>
+			<Button type="submit" variant="danger" size="md" loading={deletePetLoading}>Remover pet</Button>
 		</form>
 	{/snippet}
 </Modal>

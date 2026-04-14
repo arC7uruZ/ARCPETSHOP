@@ -22,7 +22,6 @@ export async function fetchPets(
 }
 
 export async function createPet(supabase: SupabaseClient<Database>, pet: PetInsert): Promise<Pet> {
-	console.log('vai criar a porra do pet');
 	const { data, error: err } = await supabase.from('pets').insert(pet).select().single();
 	if (err || !data) {
 		console.log(err?.message);
