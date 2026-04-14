@@ -20,9 +20,9 @@
 	action="?/login"
 	use:enhance={() => {
 		loading = true;
-		return ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+		return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+			await update();
 			loading = false;
-			update();
 		};
 	}}
 	class="space-y-4"
