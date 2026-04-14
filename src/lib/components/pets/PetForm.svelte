@@ -15,13 +15,21 @@
 
 	let { pet = null, formAction = '?/createPet', oncancel, form }: Props = $props();
 
+    // svelte-ignore state_referenced_locally
 	let name = $state(pet?.name ?? '');
+    // svelte-ignore state_referenced_locally
 	let species = $state(pet?.species ?? 'dog');
+    // svelte-ignore state_referenced_locally
 	let breed = $state(pet?.breed ?? '');
+    // svelte-ignore state_referenced_locally
 	let size = $state(pet?.size ?? '');
+    // svelte-ignore state_referenced_locally
 	let birthDate = $state(pet?.birth_date ?? '');
+    // svelte-ignore state_referenced_locally
 	let weightKg = $state(pet?.weight_kg?.toString() ?? '');
+    // svelte-ignore state_referenced_locally
 	let color = $state(pet?.color ?? '');
+    // svelte-ignore state_referenced_locally
 	let notes = $state(pet?.notes ?? '');
 	let loading = $state(false);
 
@@ -46,9 +54,9 @@
 	action={formAction}
 	use:enhance={() => {
 		loading = true;
-		return ({ update }: { update: () => Promise<void> }) => {
+		return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+			await update({ reset: false });
 			loading = false;
-			update();
 		};
 	}}
 	class="space-y-4"
@@ -71,18 +79,18 @@
 			required
 		/>
 
-		<Select
-			name="species"
-			label="Espécie"
-			options={speciesOptions}
-			bind:value={species}
-			required
-		/>
+		<Select name="species" label="Espécie" options={speciesOptions} bind:value={species} required />
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-2">
 		<Input name="breed" label="Raça" placeholder="Ex: Golden Retriever" bind:value={breed} />
-		<Select name="size" label="Porte" options={sizeOptions} bind:value={size} placeholder="Selecione o porte" />
+		<Select
+			name="size"
+			label="Porte"
+			options={sizeOptions}
+			bind:value={size}
+			placeholder="Selecione o porte"
+		/>
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-2">

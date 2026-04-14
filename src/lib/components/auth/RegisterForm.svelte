@@ -30,7 +30,7 @@
 	class="space-y-4"
 >
 	{#if form?.error}
-		<div class="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+		<div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
 			{form.error}
 		</div>
 	{/if}
@@ -89,6 +89,6 @@
 
 	<p class="text-center text-sm text-gray-500">
 		Já tem uma conta?
-		<a href="/auth/login" class="font-semibold text-primary-600 hover:underline">Entrar</a>
+		<a href="/auth/login" class="text-primary-600 font-semibold hover:underline">Entrar</a>
 	</p>
 </form>

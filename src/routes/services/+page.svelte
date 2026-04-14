@@ -18,10 +18,10 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="bg-gradient-to-r from-primary-500 to-primary-600 pb-20 pt-32">
+<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-32 pb-20">
 	<div class="container-app text-center text-white">
 		<h1 class="font-display text-4xl font-bold sm:text-5xl">Nossos Serviços</h1>
-		<p class="mx-auto mt-4 max-w-2xl text-lg text-primary-100">
+		<p class="text-primary-100 mx-auto mt-4 max-w-2xl text-lg">
 			Cuidamos do seu pet com excelência. Conheça todos os serviços que oferecemos.
 		</p>
 	</div>
@@ -33,9 +33,11 @@
 			{@const config = SERVICES_CONFIG.find((c) => c.slug === service.slug)}
 			<Card shadow="lg" padding="none" class="overflow-hidden">
 				<!-- Header -->
-				<div class="flex h-48 flex-col items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
+				<div
+					class="from-primary-100 to-secondary-100 flex h-48 flex-col items-center justify-center bg-gradient-to-br"
+				>
 					<span class="text-7xl">{config?.emoji ?? '🐾'}</span>
-					<span class="mt-3 font-display text-xl font-bold text-gray-700">{service.name}</span>
+					<span class="font-display mt-3 text-xl font-bold text-gray-700">{service.name}</span>
 				</div>
 
 				<div class="p-6">
@@ -55,7 +57,7 @@
 					<div class="mb-5 flex items-center justify-between border-t border-gray-100 pt-4">
 						<div>
 							<div class="text-xs text-gray-500">A partir de</div>
-							<div class="text-lg font-bold text-primary-600">
+							<div class="text-primary-600 text-lg font-bold">
 								{formatCurrency(service.price_from)}
 							</div>
 						</div>

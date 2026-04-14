@@ -3,8 +3,8 @@
 </script>
 
 <div class="py-12 text-center">
-	<div class="mb-6 text-7xl animate-bounce-soft">🎉</div>
-	<h2 class="mb-3 font-display text-2xl font-bold text-gray-900">Agendamento confirmado!</h2>
+	<div class="animate-bounce-soft mb-6 text-7xl">🎉</div>
+	<h2 class="font-display mb-3 text-2xl font-bold text-gray-900">Agendamento confirmado!</h2>
 	<p class="mb-2 text-gray-600">
 		Seu agendamento foi realizado com sucesso. Você receberá uma confirmação no WhatsApp.
 	</p>

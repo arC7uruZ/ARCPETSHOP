@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { buildWhatsAppUrl, getDefaultWhatsAppUrl, buildBookingWhatsAppMessage } from '$lib/utils/whatsapp.utils';
+import {
+	buildWhatsAppUrl,
+	getDefaultWhatsAppUrl,
+	buildBookingWhatsAppMessage
+} from '$lib/utils/whatsapp.utils';
 
 describe('whatsapp.utils', () => {
 	describe('buildWhatsAppUrl', () => {

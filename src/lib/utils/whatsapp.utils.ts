@@ -15,10 +15,7 @@ export const buildWhatsAppUrl = (number: string, message?: string): string => {
  * Builds a default WhatsApp CTA URL using the site config.
  */
 export const getDefaultWhatsAppUrl = (customMessage?: string): string =>
-	buildWhatsAppUrl(
-		siteConfig.whatsappNumber,
-		customMessage ?? siteConfig.whatsappDefaultMessage
-	);
+	buildWhatsAppUrl(siteConfig.whatsappNumber, customMessage ?? siteConfig.whatsappDefaultMessage);
 
 /**
  * Builds a booking confirmation WhatsApp message.

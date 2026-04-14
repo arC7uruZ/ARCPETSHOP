@@ -10,7 +10,7 @@
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 			<!-- Brand -->
 			<div class="lg:col-span-2">
-				<div class="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+				<div class="font-display mb-4 flex items-center gap-2 text-xl font-bold text-white">
 					<span class="text-2xl">🐾</span>
 					<span>{siteConfig.name}</span>
 				</div>
@@ -20,7 +20,7 @@
 						href={siteConfig.socialLinks.instagram}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:bg-primary-500 hover:text-white"
+						class="hover:bg-primary-500 flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:text-white"
 						aria-label="Instagram"
 					>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
 						href={siteConfig.socialLinks.facebook}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:bg-primary-500 hover:text-white"
+						class="hover:bg-primary-500 flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:text-white"
 						aria-label="Facebook"
 					>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@
 
 			<!-- Services -->
 			<div>
-				<h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Serviços</h3>
+				<h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Serviços</h3>
 				<ul class="space-y-2 text-sm">
 					{#each ['Banho e Tosa', 'Consulta Veterinária', 'Vacinação', 'Hospedagem Pet', 'Adestramento', 'Pet Taxi'] as service}
 						<li>
@@ -74,7 +74,7 @@
 
 			<!-- Contact -->
 			<div>
-				<h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Contato</h3>
+				<h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Contato</h3>
 				<ul class="space-y-2 text-sm text-gray-400">
 					<li>📍 {siteConfig.address.street}, {siteConfig.address.neighborhood}</li>
 					<li>{siteConfig.address.city} - {siteConfig.address.state}</li>

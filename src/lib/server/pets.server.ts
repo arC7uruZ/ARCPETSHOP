@@ -21,16 +21,13 @@ export async function fetchPets(
 	return (data ?? []) as Pet[];
 }
 
-export async function createPet(
-	supabase: SupabaseClient<Database>,
-	pet: PetInsert
-): Promise<Pet> {
-    console.log("vai criar a porra do pet")
+export async function createPet(supabase: SupabaseClient<Database>, pet: PetInsert): Promise<Pet> {
+	console.log('vai criar a porra do pet');
 	const { data, error: err } = await supabase.from('pets').insert(pet).select().single();
 	if (err || !data) {
-        console.log(err?.message);
-        throw error(500, err?.message ?? 'Erro ao criar pet');
-    }
+		console.log(err?.message);
+		throw error(500, err?.message ?? 'Erro ao criar pet');
+	}
 	return data as Pet;
 }
 
@@ -50,23 +47,13 @@ export async function updatePet(
 	return data as Pet;
 }
 
-export async function deletePet(
-	supabase: SupabaseClient<Database>,
-	petId: string
-): Promise<void> {
-	const { error: err } = await supabase
-		.from('pets')
-		.update({ is_active: false })
-		.eq('id', petId);
+export async function deletePet(supabase: SupabaseClient<Database>, petId: string): Promise<void> {
+	const { error: err } = await supabase.from('pets').update({ is_active: false }).eq('id', petId);
 
 	if (err) throw error(500, err.message);
 }
 
-export async function uploadPetAvatar(
-	petId: string,
-	ownerId: string,
-	file: File
-): Promise<string> {
+export async function uploadPetAvatar(petId: string, ownerId: string, file: File): Promise<string> {
 	const admin = createAdminClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 	const path = `${ownerId}/${petId}/${Date.now()}.${file.name.split('.').pop()}`;
 	const { error: uploadErr } = await admin.storage.from('pet-avatars').upload(path, file, {

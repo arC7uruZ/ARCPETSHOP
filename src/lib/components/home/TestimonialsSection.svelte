@@ -45,7 +45,7 @@
 	];
 </script>
 
-<section class="section bg-gradient-to-br from-primary-50 to-secondary-50">
+<section class="section from-primary-50 to-secondary-50 bg-gradient-to-br">
 	<div class="container-app">
 		<div class="text-center">
 			<h2 class="section-title">O que dizem nossos clientes</h2>
@@ -68,7 +68,7 @@
 
 					<div class="flex items-center gap-3">
 						<div
-							class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-xl"
+							class="bg-primary-100 flex h-10 w-10 items-center justify-center rounded-full text-xl"
 						>
 							{t.avatar}
 						</div>

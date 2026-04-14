@@ -36,10 +36,9 @@ export const actions: Actions = {
 
 		if (error) {
 			return fail(400, {
-				error:
-					error.message.includes('already registered')
-						? 'Este e-mail já está cadastrado. Tente fazer login.'
-						: 'Erro ao criar conta. Tente novamente.'
+				error: error.message.includes('already registered')
+					? 'Este e-mail já está cadastrado. Tente fazer login.'
+					: 'Erro ao criar conta. Tente novamente.'
 			});
 		}
 

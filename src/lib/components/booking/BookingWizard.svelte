@@ -48,7 +48,7 @@
 							i + 1
 								? 'bg-primary-500 text-white'
 								: bookingStore.step === i + 1
-									? 'bg-primary-500 text-white ring-4 ring-primary-100'
+									? 'bg-primary-500 ring-primary-100 text-white ring-4'
 									: 'bg-gray-200 text-gray-500'}"
 						>
 							{#if bookingStore.step > i + 1}

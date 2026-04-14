@@ -17,7 +17,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	const url = request.url;
 
 	// Validate Twilio signature
-	const isValid = twilio.validateRequest(TWILIO_AUTH_TOKEN, signature, url, Object.fromEntries(new URLSearchParams(body)));
+	const isValid = twilio.validateRequest(
+		TWILIO_AUTH_TOKEN,
+		signature,
+		url,
+		Object.fromEntries(new URLSearchParams(body))
+	);
 	if (!isValid) {
 		return json({ error: 'Invalid signature' }, { status: 403 });
 	}

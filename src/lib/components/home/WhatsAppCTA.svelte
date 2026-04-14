@@ -9,9 +9,7 @@
 		<div class="flex flex-col items-center gap-8 text-center text-white lg:flex-row lg:text-left">
 			<div class="lg:flex-1">
 				<div class="mb-3 text-4xl">💬</div>
-				<h2 class="font-display text-3xl font-bold sm:text-4xl">
-					Fale conosco pelo WhatsApp!
-				</h2>
+				<h2 class="font-display text-3xl font-bold sm:text-4xl">Fale conosco pelo WhatsApp!</h2>
 				<p class="mt-4 text-lg text-green-100">
 					Tire dúvidas, solicite orçamentos ou agende direto pelo WhatsApp. Respondemos em minutos!
 				</p>
@@ -23,7 +21,7 @@
 					variant="whatsapp"
 					size="xl"
 					href={getDefaultWhatsAppUrl()}
-					class="!bg-white !text-green-600 hover:!bg-green-50 shadow-xl"
+					class="!bg-white !text-green-600 shadow-xl hover:!bg-green-50"
 				>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
 						<path

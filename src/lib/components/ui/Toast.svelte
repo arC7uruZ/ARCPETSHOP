@@ -24,7 +24,7 @@
 </script>
 
 <div
-	class="flex items-start gap-3 rounded-xl border p-4 shadow-lg animate-slide-up {colors[
+	class="animate-slide-up flex items-start gap-3 rounded-xl border p-4 shadow-lg {colors[
 		toast.type
 	]}"
 	role="alert"
@@ -33,7 +33,7 @@
 	<p class="flex-1 text-sm font-medium">{toast.message}</p>
 	<button
 		onclick={() => uiStore.removeToast(toast.id)}
-		class="shrink-0 rounded p-0.5 opacity-60 hover:opacity-100 transition-opacity"
+		class="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100"
 		aria-label="Fechar"
 	>
 		<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

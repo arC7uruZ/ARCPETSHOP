@@ -29,7 +29,7 @@ export const actions: Actions = {
 		const serviceId = String(formData.get('serviceId') ?? '');
 		const petId = String(formData.get('petId') ?? '');
 
-        console.log("A porra do serviceId é: ", serviceId);
+		console.log('A porra do serviceId é: ', serviceId);
 
 		const dt = new Date(scheduledAtRaw);
 		if (isNaN(dt.getTime())) {

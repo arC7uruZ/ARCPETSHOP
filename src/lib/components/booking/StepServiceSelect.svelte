@@ -24,12 +24,12 @@
 				class="group relative flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all {bookingStore
 					.selectedService?.id === service.id
 					? 'border-primary-500 bg-primary-50'
-					: 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'}"
+					: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'}"
 				onclick={() => bookingStore.setService(service)}
 			>
 				{#if bookingStore.selectedService?.id === service.id}
 					<div
-						class="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-xs text-white"
+						class="bg-primary-500 absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
 					>
 						✓
 					</div>
@@ -40,7 +40,7 @@
 					<div class="font-semibold text-gray-900">{service.name}</div>
 					<div class="mt-0.5 text-xs text-gray-500">{service.short_desc}</div>
 					<div class="mt-2 flex items-center gap-3 text-xs">
-						<span class="font-semibold text-primary-600">
+						<span class="text-primary-600 font-semibold">
 							{formatCurrency(service.price_from)}
 						</span>
 						<span class="text-gray-400">·</span>

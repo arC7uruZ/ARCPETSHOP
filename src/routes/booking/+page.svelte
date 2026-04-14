@@ -14,10 +14,10 @@
 	<title>Agendar serviço — ArcPetShop</title>
 </svelte:head>
 
-<div class="bg-gradient-to-r from-primary-500 to-primary-600 pb-20 pt-32">
+<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-32 pb-20">
 	<div class="container-app text-center text-white">
 		<h1 class="font-display text-4xl font-bold">Agendar Serviço</h1>
-		<p class="mt-3 text-primary-100">Siga os passos para agendar o serviço do seu pet.</p>
+		<p class="text-primary-100 mt-3">Siga os passos para agendar o serviço do seu pet.</p>
 	</div>
 </div>
 

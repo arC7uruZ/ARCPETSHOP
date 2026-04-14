@@ -12,8 +12,7 @@
 					'bg-secondary-500 text-white hover:bg-secondary-600 active:bg-secondary-700 focus-visible:ring-secondary-500 shadow-md hover:shadow-lg',
 				outline:
 					'border-2 border-primary-500 text-primary-600 hover:bg-primary-50 active:bg-primary-100 focus-visible:ring-primary-500',
-				ghost:
-					'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-gray-400',
+				ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-gray-400',
 				danger:
 					'bg-red-500 text-white hover:bg-red-600 active:bg-red-700 focus-visible:ring-red-500',
 				whatsapp:

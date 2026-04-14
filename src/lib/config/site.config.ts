@@ -6,8 +6,7 @@ export const siteConfig = {
 	url: env.PUBLIC_SITE_URL ?? 'http://localhost:5173',
 	whatsappNumber: env.PUBLIC_WHATSAPP_NUMBER ?? '5511999999999',
 	whatsappDefaultMessage:
-		env.PUBLIC_WHATSAPP_DEFAULT_MESSAGE ??
-		'Olá! Gostaria de agendar um serviço para meu pet.',
+		env.PUBLIC_WHATSAPP_DEFAULT_MESSAGE ?? 'Olá! Gostaria de agendar um serviço para meu pet.',
 	socialLinks: {
 		instagram: 'https://instagram.com/arcpetshop',
 		facebook: 'https://facebook.com/arcpetshop'

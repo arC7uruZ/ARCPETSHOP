@@ -51,8 +51,8 @@
 		bind:value
 		{onchange}
 		class="
-			block w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900 transition-colors
-			focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+			focus:ring-primary-500 block w-full rounded-xl border px-4 py-2.5 text-sm text-gray-900
+			transition-colors focus:border-transparent focus:ring-2 focus:outline-none
 			disabled:cursor-not-allowed disabled:bg-gray-50
 			{error ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white hover:border-gray-400'}
 		"

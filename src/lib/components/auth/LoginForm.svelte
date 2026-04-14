@@ -2,7 +2,6 @@
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import type { ActionResult } from '@sveltejs/kit';
 
 	interface Props {
 		form?: { error?: string } | null;
@@ -28,7 +27,7 @@
 	class="space-y-4"
 >
 	{#if form?.error}
-		<div class="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+		<div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
 			{form.error}
 		</div>
 	{/if}
@@ -52,7 +51,7 @@
 	/>
 
 	<div class="flex justify-end">
-		<a href="/auth/forgot-password" class="text-xs text-primary-600 hover:underline">
+		<a href="/auth/forgot-password" class="text-primary-600 text-xs hover:underline">
 			Esqueceu a senha?
 		</a>
 	</div>
@@ -63,7 +62,7 @@
 
 	<p class="text-center text-sm text-gray-500">
 		Não tem uma conta?
-		<a href="/auth/register" class="font-semibold text-primary-600 hover:underline">
+		<a href="/auth/register" class="text-primary-600 font-semibold hover:underline">
 			Cadastre-se
 		</a>
 	</p>

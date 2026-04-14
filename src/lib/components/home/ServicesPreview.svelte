@@ -31,12 +31,12 @@
 
 		<div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each enriched as service}
-				<Card hover padding="none" class="overflow-hidden group">
+				<Card hover padding="none" class="group overflow-hidden">
 					<!-- Service image/icon header -->
 					<div
-						class="flex h-40 items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100"
+						class="from-primary-100 to-secondary-100 flex h-40 items-center justify-center bg-gradient-to-br"
 					>
-						<span class="text-6xl group-hover:scale-110 transition-transform duration-300">
+						<span class="text-6xl transition-transform duration-300 group-hover:scale-110">
 							{service.config?.emoji ?? '🐾'}
 						</span>
 					</div>
@@ -46,7 +46,7 @@
 						<p class="mb-4 text-sm leading-relaxed text-gray-500">{service.short_desc}</p>
 
 						<div class="mb-4 flex items-center justify-between text-sm">
-							<span class="font-semibold text-primary-600">
+							<span class="text-primary-600 font-semibold">
 								A partir de {formatCurrency(service.price_from)}
 							</span>
 							<span class="text-gray-400">
@@ -54,9 +54,7 @@
 							</span>
 						</div>
 
-						<Button variant="outline" size="sm" fullWidth href="/booking">
-							Agendar
-						</Button>
+						<Button variant="outline" size="sm" fullWidth href="/booking">Agendar</Button>
 					</div>
 				</Card>
 			{/each}

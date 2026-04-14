@@ -36,10 +36,7 @@ export async function updateProfile(
 	return data as Profile;
 }
 
-export async function uploadAvatar(
-	userId: string,
-	file: File
-): Promise<string> {
+export async function uploadAvatar(userId: string, file: File): Promise<string> {
 	const admin = createAdminClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 	const path = `${userId}/${Date.now()}.${file.name.split('.').pop()}`;
 	const { error: uploadErr } = await admin.storage.from('avatars').upload(path, file, {

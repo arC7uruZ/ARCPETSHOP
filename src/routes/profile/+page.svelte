@@ -55,10 +55,10 @@
 	<title>Meu Perfil — ArcPetShop</title>
 </svelte:head>
 
-<div class="bg-gradient-to-r from-primary-500 to-primary-600 pb-20 pt-28">
+<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-28 pb-20">
 	<div class="container-app text-white">
 		<h1 class="font-display text-3xl font-bold">Meu Perfil</h1>
-		<p class="mt-1 text-primary-100">Gerencie suas informações e pets.</p>
+		<p class="text-primary-100 mt-1">Gerencie suas informações e pets.</p>
 	</div>
 </div>
 
@@ -160,7 +160,11 @@
 </div>
 
 <!-- Pet modal -->
-<Modal bind:open={petModal} title={editingPet ? 'Editar pet' : 'Novo pet'} onclose={() => (editingPet = null)}>
+<Modal
+	bind:open={petModal}
+	title={editingPet ? 'Editar pet' : 'Novo pet'}
+	onclose={() => (editingPet = null)}
+>
 	<PetForm
 		pet={editingPet}
 		formAction={editingPet ? '?/updatePet' : '?/createPet'}

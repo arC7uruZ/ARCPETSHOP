@@ -1,9 +1,5 @@
 import twilio from 'twilio';
-import {
-	TWILIO_ACCOUNT_SID,
-	TWILIO_AUTH_TOKEN,
-	TWILIO_WHATSAPP_FROM
-} from '$env/static/private';
+import { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM } from '$env/static/private';
 import { buildBookingWhatsAppMessage } from '$lib/utils/whatsapp.utils';
 
 const getClient = () => twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);

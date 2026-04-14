@@ -22,10 +22,10 @@
 
 <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
 	<div class="flex items-start gap-4">
-		<div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-100 text-3xl">
-			{pet.avatar_url
-				? ''
-				: speciesEmoji[pet.species] ?? '🐾'}
+		<div
+			class="bg-primary-100 flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-3xl"
+		>
+			{pet.avatar_url ? '' : (speciesEmoji[pet.species] ?? '🐾')}
 		</div>
 
 		<div class="flex-1">
@@ -35,7 +35,7 @@
 					{#if onedit}
 						<button
 							onclick={() => onedit(pet)}
-							class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+							class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
 							aria-label="Editar pet"
 						>
 							✏️
@@ -44,7 +44,7 @@
 					{#if ondelete}
 						<button
 							onclick={() => ondelete(pet)}
-							class="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+							class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
 							aria-label="Remover pet"
 						>
 							🗑️
@@ -55,7 +55,8 @@
 
 			<p class="text-sm text-gray-500">
 				{formatSpecies(pet.species)}
-				{#if pet.breed} · {pet.breed}{/if}
+				{#if pet.breed}
+					· {pet.breed}{/if}
 			</p>
 
 			<div class="mt-2 flex flex-wrap gap-3 text-xs text-gray-500">

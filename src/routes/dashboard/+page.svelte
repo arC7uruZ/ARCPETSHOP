@@ -22,9 +22,7 @@
 	let cancelLoading = $state(false);
 
 	const upcoming = $derived(
-		data.appointments.filter((a) =>
-			['pending', 'confirmed', 'in_progress'].includes(a.status)
-		)
+		data.appointments.filter((a) => ['pending', 'confirmed', 'in_progress'].includes(a.status))
 	);
 	const history = $derived(
 		data.appointments.filter((a) => ['completed', 'cancelled', 'no_show'].includes(a.status))
@@ -42,7 +40,7 @@
 		} else if (form?.error) {
 			uiStore.error('Erro ao cancelar agendamento');
 			cancelModal = false;
-        }
+		}
 	});
 </script>
 
@@ -51,7 +49,7 @@
 </svelte:head>
 
 <!-- Header -->
-<div class="bg-gradient-to-r from-primary-500 to-primary-600 pb-20 pt-28">
+<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-28 pb-20">
 	<div class="container-app">
 		<div class="flex items-center gap-4">
 			<div class="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 text-3xl">

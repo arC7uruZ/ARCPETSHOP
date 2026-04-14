@@ -7,7 +7,7 @@ import type { Database } from '$lib/types/database.types';
 
 export const createServerSupabaseClient = (cookies: Cookies): SupabaseClient<Database> =>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+	createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		cookies: {
 			getAll() {
 				return cookies.getAll();
@@ -24,4 +24,4 @@ export const createServerSupabaseClient = (cookies: Cookies): SupabaseClient<Dat
 				}
 			}
 		}
-	}) as unknown as SupabaseClient<Database>);
+	}) as unknown as SupabaseClient<Database>;

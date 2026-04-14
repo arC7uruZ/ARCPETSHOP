@@ -27,13 +27,13 @@
 </script>
 
 <header
-	class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 {!isHome || scrolled
-		? 'bg-white/95 backdrop-blur-md shadow-sm'
+	class="fixed top-0 right-0 left-0 z-40 transition-all duration-300 {!isHome || scrolled
+		? 'bg-white/95 shadow-sm backdrop-blur-md'
 		: 'bg-transparent'}"
 >
 	<nav class="container-app flex h-16 items-center justify-between">
 		<!-- Logo -->
-		<a href="/" class="flex items-center gap-2 font-display text-xl font-bold">
+		<a href="/" class="font-display flex items-center gap-2 text-xl font-bold">
 			<span class="text-2xl">🐾</span>
 			<span class="text-primary-600">{siteConfig.name}</span>
 		</a>
@@ -45,7 +45,7 @@
 					href={link.href}
 					class="text-sm font-medium transition-colors {page.url.pathname === link.href
 						? 'text-primary-600'
-						: 'text-gray-700 hover:text-primary-600'}"
+						: 'hover:text-primary-600 text-gray-700'}"
 				>
 					{link.label}
 				</a>
@@ -57,7 +57,7 @@
 			{#if authStore.isAuthenticated}
 				<a
 					href="/dashboard"
-					class="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors"
+					class="hover:text-primary-600 text-sm font-medium text-gray-700 transition-colors"
 				>
 					Minha Conta
 				</a>

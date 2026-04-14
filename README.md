@@ -32,15 +32,15 @@ Site completo para gerenciamento de uma pet shop, com agendamento de serviços, 
 
 ## Páginas
 
-| Rota | Descrição |
-|---|---|
-| `/` | Home |
-| `/services` | Listagem de serviços |
-| `/booking` | Agendamento (requer autenticação) |
-| `/auth/login` | Login |
-| `/auth/register` | Cadastro |
-| `/dashboard` | Painel do usuário |
-| `/profile` | Perfil do usuário |
+| Rota             | Descrição                         |
+| ---------------- | --------------------------------- |
+| `/`              | Home                              |
+| `/services`      | Listagem de serviços              |
+| `/booking`       | Agendamento (requer autenticação) |
+| `/auth/login`    | Login                             |
+| `/auth/register` | Cadastro                          |
+| `/dashboard`     | Painel do usuário                 |
+| `/profile`       | Perfil do usuário                 |
 
 ## Configuração
 
@@ -77,18 +77,18 @@ npm run dev
 
 ## Scripts disponíveis
 
-| Comando | Descrição |
-|---|---|
-| `npm run dev` | Servidor de desenvolvimento |
-| `npm run build` | Build de produção |
-| `npm run preview` | Preview do build |
-| `npm run check` | Verificação de tipos Svelte |
-| `npm run lint` | Lint + formatação |
-| `npm run format` | Formatar código |
-| `npm run test:unit` | Testes unitários (Vitest) |
-| `npm run test:e2e` | Testes E2E (Playwright) |
-| `npm run test` | Todos os testes |
-| `npm run db:types` | Gerar tipos TypeScript do Supabase |
+| Comando             | Descrição                          |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Servidor de desenvolvimento        |
+| `npm run build`     | Build de produção                  |
+| `npm run preview`   | Preview do build                   |
+| `npm run check`     | Verificação de tipos Svelte        |
+| `npm run lint`      | Lint + formatação                  |
+| `npm run format`    | Formatar código                    |
+| `npm run test:unit` | Testes unitários (Vitest)          |
+| `npm run test:e2e`  | Testes E2E (Playwright)            |
+| `npm run test`      | Todos os testes                    |
+| `npm run db:types`  | Gerar tipos TypeScript do Supabase |
 
 ## Estrutura do projeto
 

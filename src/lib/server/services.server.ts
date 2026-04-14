@@ -25,7 +25,7 @@ export async function fetchServiceBySlug(
 		.eq('is_active', true)
 		.single();
 
-    console.log(`data: ${data}, erro: ${error}`)
+	console.log(`data: ${data}, erro: ${error}`);
 	if (err || !data) throw error(404, 'Serviço não encontrado');
 	return data as Service;
 }
@@ -41,7 +41,7 @@ export async function fetchServiceById(
 		.eq('is_active', true)
 		.single();
 
-    console.log(`data: ${data}, erro: ${error}`)
+	console.log(`data: ${data}, erro: ${error}`);
 	if (err || !data) throw error(404, 'Serviço não encontrado');
 	return data as Service;
 }

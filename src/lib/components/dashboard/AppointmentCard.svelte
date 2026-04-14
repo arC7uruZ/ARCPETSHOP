@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { AppointmentFull } from '$lib/types';
-	import { formatDateTime, formatCurrency, formatAppointmentStatus, getStatusColor } from '$lib/utils';
+	import {
+		formatDateTime,
+		formatCurrency,
+		formatAppointmentStatus,
+		getStatusColor
+	} from '$lib/utils';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { SERVICES_CONFIG } from '$lib/config/services.config';
@@ -18,10 +23,14 @@
 	);
 </script>
 
-<div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+<div
+	class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+>
 	<div class="flex items-start justify-between gap-4">
 		<div class="flex items-start gap-3">
-			<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-2xl">
+			<div
+				class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+			>
 				{config?.emoji ?? '🐾'}
 			</div>
 			<div>

@@ -37,11 +37,11 @@
 					class="group flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all {bookingStore
 						.selectedPet?.id === pet.id
 						? 'border-primary-500 bg-primary-50'
-						: 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'}"
+						: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'}"
 					onclick={() => bookingStore.setPet(pet)}
 				>
 					<div
-						class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 text-2xl"
+						class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl"
 					>
 						{speciesEmoji[pet.species] ?? '🐾'}
 					</div>
@@ -53,7 +53,9 @@
 						</div>
 					</div>
 					{#if bookingStore.selectedPet?.id === pet.id}
-						<div class="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-xs text-white">
+						<div
+							class="bg-primary-500 ml-auto flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
+						>
 							✓
 						</div>
 					{/if}

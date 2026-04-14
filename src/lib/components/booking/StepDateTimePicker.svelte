@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
-	import { getAvailableTimeSlots, getMinBookingDate, getMaxBookingDate } from '$lib/utils/date.utils';
+	import {
+		getAvailableTimeSlots,
+		getMinBookingDate,
+		getMaxBookingDate
+	} from '$lib/utils/date.utils';
 	import Button from '$lib/components/ui/Button.svelte';
 
 	const minDate = getMinBookingDate();
@@ -26,7 +30,7 @@
 			max={maxDate}
 			value={bookingStore.selectedDate}
 			oninput={(e) => bookingStore.setDate((e.target as HTMLInputElement).value)}
-			class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
+			class="focus:ring-primary-500 block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:outline-none"
 		/>
 	</div>
 
@@ -46,7 +50,7 @@
 							class="rounded-lg border-2 py-2 text-center text-sm font-medium transition-all {bookingStore.selectedTime ===
 							slot
 								? 'border-primary-500 bg-primary-500 text-white'
-								: 'border-gray-200 text-gray-700 hover:border-primary-300'}"
+								: 'hover:border-primary-300 border-gray-200 text-gray-700'}"
 							onclick={() => bookingStore.setTime(slot)}
 						>
 							{slot}
