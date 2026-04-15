@@ -7,7 +7,8 @@ import type {
 	CaretakerSchedule,
 	CaretakerScheduleInsert,
 	CaretakerBlockedSlot,
-	CaretakerWithSchedules
+	CaretakerWithSchedules,
+	UserSearchResult
 } from '$lib/types';
 import { error } from '@sveltejs/kit';
 
@@ -94,6 +95,83 @@ export async function createCaretaker(
 
 	if (err || !created) throw error(500, err?.message ?? 'Erro ao criar cuidador');
 	return created as Caretaker;
+}
+
+export async function searchUsersForCaretaker(
+	supabase: SupabaseClient<Database>,
+	query: string
+): Promise<UserSearchResult[]> {
+	const { data, error: err } = await supabase
+		.from('profiles')
+		.select('id, full_name, phone, avatar_url')
+		.eq('role', 'customer')
+		.ilike('full_name', `%${query}%`)
+		.order('full_name')
+		.limit(8);
+
+	if (err) throw error(500, err.message);
+	return (data ?? []) as UserSearchResult[];
+}
+
+export async function promoteUserToCaretaker(
+	supabase: SupabaseClient<Database>,
+	userId: string,
+	caretakerData: { bio?: string | null; specialties?: string[] }
+): Promise<Caretaker> {
+	const { data: profile, error: profileErr } = await supabase
+		.from('profiles')
+		.select('full_name')
+		.eq('id', userId)
+		.single();
+
+	if (profileErr || !profile) throw error(404, 'Usuário não encontrado');
+
+	const { data: created, error: insertErr } = await supabase
+		.from('caretakers')
+		.insert({
+			user_id: userId,
+			name: profile.full_name,
+			bio: caretakerData.bio ?? null,
+			specialties: caretakerData.specialties ?? []
+		})
+		.select()
+		.single();
+
+	if (insertErr || !created) throw error(500, insertErr?.message ?? 'Erro ao criar cuidador');
+
+	const newCaretaker = created as Caretaker;
+
+	const { error: roleErr } = await supabase
+		.from('profiles')
+		.update({ role: 'caretaker' })
+		.eq('id', userId);
+
+	if (roleErr) {
+		await supabase.from('caretakers').delete().eq('id', newCaretaker.id);
+		throw error(500, roleErr.message);
+	}
+
+	return newCaretaker;
+}
+
+export async function demoteCaretaker(
+	supabase: SupabaseClient<Database>,
+	id: string
+): Promise<void> {
+	const { data: caretaker } = await supabase
+		.from('caretakers')
+		.select('user_id')
+		.eq('id', id)
+		.single();
+
+	await deleteCaretaker(supabase, id);
+
+	if (caretaker?.user_id) {
+		await supabase
+			.from('profiles')
+			.update({ role: 'customer' })
+			.eq('id', caretaker.user_id);
+	}
 }
 
 export async function updateCaretaker(

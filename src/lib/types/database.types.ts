@@ -20,7 +20,7 @@ export type Database = {
 					address_state: string | null;
 					address_zip: string | null;
 					whatsapp_opt_in: boolean;
-					role: 'customer' | 'admin' | 'root_admin';
+					role: 'customer' | 'caretaker' | 'admin' | 'root_admin';
 					created_at: string;
 					updated_at: string;
 				};
@@ -35,7 +35,7 @@ export type Database = {
 					address_state?: string | null;
 					address_zip?: string | null;
 					whatsapp_opt_in?: boolean;
-					role?: 'customer' | 'admin' | 'root_admin';
+					role?: 'customer' | 'caretaker' | 'admin' | 'root_admin';
 					created_at?: string;
 					updated_at?: string;
 				};
@@ -50,7 +50,7 @@ export type Database = {
 					address_state?: string | null;
 					address_zip?: string | null;
 					whatsapp_opt_in?: boolean;
-					role?: 'customer' | 'admin' | 'root_admin';
+					role?: 'customer' | 'caretaker' | 'admin' | 'root_admin';
 					updated_at?: string;
 				};
 				Relationships: [];
@@ -195,6 +195,7 @@ export type Database = {
 			caretakers: {
 				Row: {
 					id: string;
+					user_id: string | null;
 					name: string;
 					bio: string | null;
 					specialties: string[];
@@ -205,6 +206,7 @@ export type Database = {
 				};
 				Insert: {
 					id?: string;
+					user_id?: string | null;
 					name: string;
 					bio?: string | null;
 					specialties?: string[];
@@ -214,6 +216,7 @@ export type Database = {
 					updated_at?: string;
 				};
 				Update: {
+					user_id?: string | null;
 					name?: string;
 					bio?: string | null;
 					specialties?: string[];
@@ -323,7 +326,7 @@ export type Database = {
 				| 'completed'
 				| 'cancelled'
 				| 'no_show';
-			user_role: 'customer' | 'admin' | 'root_admin';
+			user_role: 'customer' | 'caretaker' | 'admin' | 'root_admin';
 		};
 		Functions: Record<string, never>;
 	};

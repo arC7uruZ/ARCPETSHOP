@@ -1,7 +1,7 @@
 export type { Database } from './database.types';
 
 // ─── Roles ───────────────────────────────────────────────────────────────────
-export type UserRole = 'customer' | 'admin' | 'root_admin';
+export type UserRole = 'customer' | 'caretaker' | 'admin' | 'root_admin';
 
 // ─── Profile ────────────────────────────────────────────────────────────────
 export interface Profile {
@@ -175,6 +175,7 @@ export interface BookingFormData {
 // ─── Caretaker (Cuidador) ─────────────────────────────────────────────────────
 export interface Caretaker {
 	id: string;
+	user_id: string | null;
 	name: string;
 	bio: string | null;
 	specialties: string[]; // array de service ids
@@ -185,10 +186,18 @@ export interface Caretaker {
 }
 
 export interface CaretakerInsert {
+	user_id?: string | null;
 	name: string;
 	bio?: string | null;
 	specialties?: string[];
 	avatar_url?: string | null;
+}
+
+export interface UserSearchResult {
+	id: string;
+	full_name: string;
+	phone: string | null;
+	avatar_url: string | null;
 }
 
 export interface CaretakerUpdate {
