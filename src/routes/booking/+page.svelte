@@ -22,5 +22,5 @@
 </div>
 
 <div class="container-app -mt-10 pb-20">
-	<BookingWizard services={data.services} pets={data.pets} {form} />
+	<BookingWizard services={data.services} pets={data.pets} caretakers={data.caretakers} {form} />
 </div>

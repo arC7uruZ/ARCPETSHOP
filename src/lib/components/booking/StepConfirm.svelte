@@ -37,6 +37,11 @@
 			emoji: '🐾'
 		},
 		{
+			label: 'Cuidador',
+			value: bookingStore.selectedCaretaker?.name ?? '',
+			emoji: '👤'
+		},
+		{
 			label: 'Data e hora',
 			value: scheduledAtISO ? formatDateTime(scheduledAtISO) : '',
 			emoji: '📅'

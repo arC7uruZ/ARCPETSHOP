@@ -1,5 +1,8 @@
 export type { Database } from './database.types';
 
+// ─── Roles ───────────────────────────────────────────────────────────────────
+export type UserRole = 'customer' | 'admin' | 'root_admin';
+
 // ─── Profile ────────────────────────────────────────────────────────────────
 export interface Profile {
 	id: string;
@@ -12,6 +15,7 @@ export interface Profile {
 	address_state: string | null;
 	address_zip: string | null;
 	whatsapp_opt_in: boolean;
+	role: UserRole;
 	created_at: string;
 	updated_at: string;
 }
@@ -105,6 +109,7 @@ export interface Appointment {
 	user_id: string;
 	pet_id: string;
 	service_id: string;
+	caretaker_id: string | null;
 	status: AppointmentStatus;
 	scheduled_at: string;
 	duration_min: number;
@@ -126,7 +131,12 @@ export interface AppointmentFull {
 	duration_min: number;
 	price_charged: number | null;
 	notes: string | null;
+	internal_notes: string | null;
 	whatsapp_notified: boolean;
+	cancelled_at: string | null;
+	cancellation_reason: string | null;
+	caretaker_id: string | null;
+	caretaker_name: string | null;
 	created_at: string;
 	updated_at: string;
 	user_id: string;
@@ -146,6 +156,7 @@ export interface AppointmentInsert {
 	user_id: string;
 	pet_id: string;
 	service_id: string;
+	caretaker_id?: string | null;
 	scheduled_at: string;
 	duration_min: number;
 	price_charged?: number | null;
@@ -156,8 +167,78 @@ export interface AppointmentInsert {
 export interface BookingFormData {
 	serviceId: string;
 	petId: string;
+	caretakerId?: string | null;
 	scheduledAt: string;
 	notes?: string;
+}
+
+// ─── Caretaker (Cuidador) ─────────────────────────────────────────────────────
+export interface Caretaker {
+	id: string;
+	name: string;
+	bio: string | null;
+	specialties: string[]; // array de service ids
+	is_active: boolean;
+	avatar_url: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface CaretakerInsert {
+	name: string;
+	bio?: string | null;
+	specialties?: string[];
+	avatar_url?: string | null;
+}
+
+export interface CaretakerUpdate {
+	name?: string;
+	bio?: string | null;
+	specialties?: string[];
+	is_active?: boolean;
+	avatar_url?: string | null;
+}
+
+export interface CaretakerSchedule {
+	id: string;
+	caretaker_id: string;
+	day_of_week: number; // 0=Domingo, 6=Sábado
+	start_time: string;  // HH:MM:SS
+	end_time: string;    // HH:MM:SS
+	is_active: boolean;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface CaretakerScheduleInsert {
+	caretaker_id: string;
+	day_of_week: number;
+	start_time: string;
+	end_time: string;
+}
+
+export interface CaretakerBlockedSlot {
+	id: string;
+	caretaker_id: string;
+	blocked_date: string;  // YYYY-MM-DD
+	start_time: string | null;
+	end_time: string | null;
+	reason: string | null;
+	created_at: string;
+}
+
+export interface CaretakerWithSchedules extends Caretaker {
+	schedules: CaretakerSchedule[];
+	blocked_slots: CaretakerBlockedSlot[];
+}
+
+// ─── Admin Stats ──────────────────────────────────────────────────────────────
+export interface AdminStats {
+	totalAppointmentsToday: number;
+	pendingAppointments: number;
+	confirmedAppointments: number;
+	totalUsers: number;
+	activeCaretakers: number;
 }
 
 // ─── UI ──────────────────────────────────────────────────────────────────────

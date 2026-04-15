@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { Service, Pet } from '$lib/types';
+	import type { Service, Pet, Caretaker } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 	import { combineDateAndTime } from '$lib/utils/date.utils';
 	import StepServiceSelect from './StepServiceSelect.svelte';
 	import StepPetSelect from './StepPetSelect.svelte';
+	import StepCaretakerSelect from './StepCaretakerSelect.svelte';
 	import StepDateTimePicker from './StepDateTimePicker.svelte';
 	import StepConfirm from './StepConfirm.svelte';
 	import BookingSuccess from './BookingSuccess.svelte';
@@ -13,15 +14,16 @@
 	interface Props {
 		services: Service[];
 		pets: Pet[];
+		caretakers: Caretaker[];
 		form?: { error?: string; appointmentId?: string } | null;
 	}
 
-	let { services, pets, form }: Props = $props();
+	let { services, pets, caretakers, form }: Props = $props();
 
 	let loading = $state(false);
 	let success = $state(false);
 
-	const steps = ['Serviço', 'Pet', 'Data e Hora', 'Confirmação'];
+	const steps = ['Serviço', 'Pet', 'Cuidador', 'Data e Hora', 'Confirmação'];
 
 	$effect(() => {
 		if (form?.appointmentId) {
@@ -81,8 +83,10 @@
 			{:else if bookingStore.step === 2}
 				<StepPetSelect {pets} />
 			{:else if bookingStore.step === 3}
-				<StepDateTimePicker />
+				<StepCaretakerSelect {caretakers} {services} />
 			{:else if bookingStore.step === 4}
+				<StepDateTimePicker />
+			{:else if bookingStore.step === 5}
 				<form
 					method="POST"
 					action="?/create"
@@ -96,6 +100,7 @@
 				>
 					<input type="hidden" name="serviceId" value={bookingStore.selectedService?.id ?? ''} />
 					<input type="hidden" name="petId" value={bookingStore.selectedPet?.id ?? ''} />
+					<input type="hidden" name="caretakerId" value={bookingStore.selectedCaretaker?.id ?? ''} />
 					<input
 						type="hidden"
 						name="scheduledAt"

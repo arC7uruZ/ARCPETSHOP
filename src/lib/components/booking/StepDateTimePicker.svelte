@@ -7,17 +7,37 @@
 	} from '$lib/utils/date.utils';
 	import Button from '$lib/components/ui/Button.svelte';
 
+	interface Props {
+		availableSlotsForDate?: Record<string, string[]>; // date -> slots (from server if caretaker selected)
+	}
+
+	let { availableSlotsForDate = {} }: Props = $props();
+
 	const minDate = getMinBookingDate();
 	const maxDate = getMaxBookingDate();
 
-	const availableSlots = $derived(
-		bookingStore.selectedDate ? getAvailableTimeSlots(new Date(bookingStore.selectedDate)) : []
-	);
+	const availableSlots = $derived(() => {
+		if (!bookingStore.selectedDate) return [];
+
+		// Se tiver cuidador selecionado e slots do servidor, usa eles
+		if (bookingStore.selectedCaretaker && availableSlotsForDate[bookingStore.selectedDate]) {
+			return availableSlotsForDate[bookingStore.selectedDate];
+		}
+
+		// Fallback para slots genéricos
+		return getAvailableTimeSlots(new Date(bookingStore.selectedDate));
+	});
 </script>
 
 <div>
 	<h2 class="mb-2 text-xl font-bold text-gray-900">Escolha data e horário</h2>
-	<p class="mb-6 text-sm text-gray-500">Selecione quando você quer trazer seu pet.</p>
+	<p class="mb-6 text-sm text-gray-500">
+		{#if bookingStore.selectedCaretaker}
+			Horários disponíveis para <strong>{bookingStore.selectedCaretaker.name}</strong>.
+		{:else}
+			Selecione quando você quer trazer seu pet.
+		{/if}
+	</p>
 
 	<div class="mb-6">
 		<label for="booking-date" class="mb-1.5 block text-sm font-medium text-gray-700">
@@ -38,13 +58,13 @@
 		<div>
 			<p class="mb-3 text-sm font-medium text-gray-700">Horários disponíveis</p>
 
-			{#if availableSlots.length === 0}
+			{#if availableSlots().length === 0}
 				<p class="rounded-xl bg-yellow-50 p-4 text-sm text-yellow-700">
 					Não há horários disponíveis para esta data. Por favor, escolha outro dia.
 				</p>
 			{:else}
 				<div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
-					{#each availableSlots as slot}
+					{#each availableSlots() as slot}
 						<button
 							type="button"
 							class="rounded-lg border-2 py-2 text-center text-sm font-medium transition-all {bookingStore.selectedTime ===
@@ -71,7 +91,7 @@
 		<Button
 			variant="primary"
 			size="lg"
-			disabled={!bookingStore.canProceedFromStep3}
+			disabled={!bookingStore.canProceedFromStep4}
 			onclick={() => bookingStore.nextStep()}
 		>
 			Continuar

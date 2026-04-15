@@ -4,18 +4,20 @@ import { fetchServiceById, fetchServices } from '$lib/server/services.server';
 import { fetchPets } from '$lib/server/pets.server';
 import { createAppointment } from '$lib/server/appointments.server';
 import { fetchProfile } from '$lib/server/profiles.server';
+import { fetchActiveCaretakers } from '$lib/server/caretakers.server';
 import { bookingSchema } from '$lib/utils/validation.utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
 	if (!user) redirect(303, '/auth/login?redirectTo=/booking');
 
-	const [services, pets] = await Promise.all([
+	const [services, pets, caretakers] = await Promise.all([
 		fetchServices(locals.supabase),
-		fetchPets(locals.supabase, user.id)
+		fetchPets(locals.supabase, user.id),
+		fetchActiveCaretakers(locals.supabase)
 	]);
 
-	return { services, pets };
+	return { services, pets, caretakers };
 };
 
 export const actions: Actions = {
@@ -27,6 +29,7 @@ export const actions: Actions = {
 		const scheduledAtRaw = String(formData.get('scheduledAt') ?? '');
 		const serviceId = String(formData.get('serviceId') ?? '');
 		const petId = String(formData.get('petId') ?? '');
+		const caretakerId = String(formData.get('caretakerId') ?? '') || null;
 
 		const dt = new Date(scheduledAtRaw);
 		if (isNaN(dt.getTime())) {
@@ -55,6 +58,7 @@ export const actions: Actions = {
 				user_id: user.id,
 				pet_id: petId,
 				service_id: service.id,
+				caretaker_id: caretakerId,
 				scheduled_at: scheduledAtRaw,
 				duration_min: service.duration_min,
 				notes: String(formData.get('notes') ?? '') || null
