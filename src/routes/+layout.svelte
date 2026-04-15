@@ -6,8 +6,6 @@
 	import 'nprogress/nprogress.css';
 	import { onMount } from 'svelte';
 	import { authStore } from '$lib/stores/auth.store.svelte';
-	import Navbar from '$lib/components/layout/Navbar.svelte';
-	import Footer from '$lib/components/layout/Footer.svelte';
 	import ToastContainer from '$lib/components/ui/ToastContainer.svelte';
 
 	interface Props {
@@ -59,13 +57,7 @@
 	/>
 </svelte:head>
 
-<div class="flex min-h-screen flex-col">
-	<Navbar />
-	<main class="flex-1">
-		{@render children()}
-	</main>
-	<Footer />
-</div>
+{@render children()}
 
 <ToastContainer />
 

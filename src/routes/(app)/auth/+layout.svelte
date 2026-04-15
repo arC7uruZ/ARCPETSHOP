@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { siteConfig } from '$lib/config/site.config';
-	import ToastContainer from '$lib/components/ui/ToastContainer.svelte';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -29,5 +28,3 @@
 		</div>
 	</div>
 </div>
-
-<ToastContainer />
