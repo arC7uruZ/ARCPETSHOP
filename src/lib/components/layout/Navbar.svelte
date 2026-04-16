@@ -5,10 +5,12 @@
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 	import { siteConfig } from '$lib/config/site.config';
 	import Button from '$lib/components/ui/Button.svelte';
+	import { X, Menu } from 'lucide-svelte';
 
 	const navLinks = [
 		{ href: '/', label: 'Início' },
 		{ href: '/services', label: 'Serviços' },
+		{ href: '/about', label: 'Quem Somos' },
 		{ href: '/booking', label: 'Agendar' }
 	];
 
@@ -31,7 +33,7 @@
 	class={clsx(
 		'fixed top-0 right-0 left-0 z-40',
 		'transition-all duration-300',
-		!isHome || scrolled ? 'bg-white/95 shadow-sm backdrop-blur-md' : 'bg-transparent',
+		!isHome || scrolled ? 'bg-white/95 shadow-sm backdrop-blur-md' : 'bg-transparent'
 	)}
 >
 	<nav class="container-app flex h-16 items-center justify-between">
@@ -50,7 +52,7 @@
 						'text-sm font-medium transition-colors',
 						page.url.pathname === link.href
 							? 'text-primary-600'
-							: 'text-gray-700 hover:text-primary-600',
+							: 'hover:text-primary-600 text-gray-700'
 					)}
 				>
 					{link.label}
@@ -69,8 +71,8 @@
 				</a>
 				<Button variant="outline" size="sm" href="/booking">Agendar</Button>
 			{:else}
-				<Button variant="ghost" size="sm" href="/auth/login">Entrar</Button>
-				<Button variant="primary" size="sm" href="/auth/register">Cadastrar</Button>
+				<Button variant="ghost" size="sm" href="/login">Entrar</Button>
+				<Button variant="primary" size="sm" href="/register">Cadastrar</Button>
 			{/if}
 		</div>
 
@@ -80,13 +82,11 @@
 			onclick={() => uiStore.toggleMobileMenu()}
 			aria-label="Menu"
 		>
-			<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				{#if uiStore.mobileMenuOpen}
-					<path d="M18 6L6 18M6 6l12 12" />
-				{:else}
-					<path d="M4 6h16M4 12h16M4 18h16" />
-				{/if}
-			</svg>
+			{#if uiStore.mobileMenuOpen}
+				<X class="h-5 w-5" />
+			{:else}
+				<Menu class="h-5 w-5" />
+			{/if}
 		</button>
 	</nav>
 
@@ -101,7 +101,7 @@
 							'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
 							page.url.pathname === link.href
 								? 'bg-primary-50 text-primary-600'
-								: 'text-gray-700 hover:bg-gray-50',
+								: 'text-gray-700 hover:bg-gray-50'
 						)}
 						onclick={() => uiStore.closeMobileMenu()}
 					>
@@ -115,11 +115,11 @@
 							class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
 							onclick={() => uiStore.closeMobileMenu()}
 						>
-							Minha Conta
+							Perfil
 						</a>
 					{:else}
-						<Button variant="outline" size="sm" fullWidth href="/auth/login">Entrar</Button>
-						<Button variant="primary" size="sm" fullWidth href="/auth/register">Cadastrar</Button>
+						<Button variant="outline" size="sm" fullWidth href="/login">Entrar</Button>
+						<Button variant="primary" size="sm" fullWidth href="/register">Cadastrar</Button>
 					{/if}
 				</div>
 			</div>

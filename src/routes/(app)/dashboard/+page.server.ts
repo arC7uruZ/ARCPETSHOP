@@ -6,7 +6,7 @@ import { fetchPets } from '$lib/server/pets.server';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
-	if (!user) redirect(303, '/auth/login');
+	if (!user) redirect(303, '/login');
 
 	const [appointments, profile, pets] = await Promise.all([
 		fetchUserAppointments(locals.supabase, user.id),
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	cancelAppointment: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const appointmentId = String(formData.get('appointmentId') ?? '');

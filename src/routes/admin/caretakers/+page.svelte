@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 	import type { Caretaker, UserSearchResult } from '$lib/types';
+	import { Plus, Users, Trash2, Search, Loader2, ChevronRight, X } from 'lucide-svelte';
 
 	interface Props {
 		data: PageData;
@@ -116,9 +117,7 @@
 				'hover:bg-primary-600 transition-colors'
 			)}
 		>
-			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-			</svg>
+			<Plus class="h-4 w-4" />
 			Adicionar cuidador
 		</button>
 	</div>
@@ -127,26 +126,7 @@
 		<div
 			class="rounded-2xl border border-gray-100 bg-white py-16 text-center text-gray-400 shadow-sm"
 		>
-			<svg
-				class="mx-auto mb-4 h-12 w-12"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				stroke-width="1.5"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d={[
-						'M17 20h5v-2a3 3 0 00-5.356-1.857',
-						'M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857',
-						'M7 20H2v-2a3 3 0 015.356-1.857',
-						'M7 20v-2c0-.656.126-1.283.356-1.857',
-						'm0 0a5.002 5.002 0 019.288 0',
-						'M15 7a3 3 0 11-6 0 3 3 0 016 0z'
-					].join(' ')}
-				/>
-			</svg>
+			<Users class="mx-auto mb-4 h-12 w-12" />
 			<p class="font-medium">Nenhum cuidador cadastrado</p>
 			<p class="mt-1 text-sm">Clique em "Adicionar cuidador" para vincular um usuário.</p>
 		</div>
@@ -241,25 +221,7 @@
 							onclick={() => (deleteTarget = caretaker)}
 							class="rounded-lg border border-gray-200 p-1.5 text-red-500 transition-colors hover:bg-red-50"
 						>
-							<svg
-								class="h-4 w-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d={[
-										'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7',
-										'm5 4v6',
-										'm4-6v6',
-										'm1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3',
-										'M4 7h16'
-									].join(' ')}
-								/>
-							</svg>
+							<Trash2 class="h-4 w-4" />
 						</button>
 					</div>
 				</div>
@@ -290,15 +252,7 @@
 					aria-label="close-modal"
 					class="cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
 				>
-					<svg
-						class="h-5 w-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+					<X class="h-5 w-5" />
 				</button>
 			</div>
 
@@ -342,31 +296,9 @@
 							)}
 						>
 							{#if searching}
-								<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-									<circle
-										class="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										stroke-width="4"
-									></circle>
-									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-								</svg>
+								<Loader2 class="h-4 w-4 animate-spin" />
 							{:else}
-								<svg
-									class="h-4 w-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"
-									/>
-								</svg>
+								<Search class="h-4 w-4" />
 							{/if}
 							Buscar
 						</button>
@@ -404,15 +336,7 @@
 											<p class="text-xs text-gray-400">{user.phone}</p>
 										{/if}
 									</div>
-									<svg
-										class="ml-auto h-4 w-4 shrink-0 text-gray-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-									</svg>
+									<ChevronRight class="ml-auto h-4 w-4 shrink-0 text-gray-400" />
 								</button>
 							{/each}
 						</div>
@@ -420,23 +344,7 @@
 						<div
 							class="rounded-xl border border-dashed border-gray-200 py-8 text-center text-sm text-gray-400"
 						>
-							<svg
-								class="mx-auto mb-2 h-8 w-8"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d={[
-										'M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0',
-										'10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21',
-										'12a9 9 0 11-18 0 9 9 0 0118 0z'
-									].join(' ')}
-								/>
-							</svg>
+							<Search class="mx-auto mb-2 h-8 w-8" />
 							Nenhum usuário encontrado para "<strong>{searchQuery}</strong>"
 						</div>
 					{/if}
@@ -482,15 +390,7 @@
 							onclick={clearSelection}
 							class="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-gray-600"
 						>
-							<svg
-								class="h-3.5 w-3.5"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-							</svg>
+							<X class="h-3.5 w-3.5" />
 							Trocar
 						</button>
 					</div>

@@ -6,7 +6,7 @@ import { profileSchema, petSchema } from '$lib/utils/validation.utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
-	if (!user) redirect(303, '/auth/login');
+	if (!user) redirect(303, '/login');
 
 	const [profile, pets] = await Promise.all([
 		fetchProfile(locals.supabase, user.id),
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	updateProfile: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const data = {
@@ -50,7 +50,7 @@ export const actions: Actions = {
 
 	createPet: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const data = {
@@ -83,7 +83,7 @@ export const actions: Actions = {
 
 	updatePet: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const petId = String(formData.get('petId') ?? '');
@@ -111,7 +111,7 @@ export const actions: Actions = {
 
 	deletePet: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const petId = String(formData.get('petId') ?? '');

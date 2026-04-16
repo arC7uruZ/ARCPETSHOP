@@ -4,6 +4,7 @@
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import { formatSpecies } from '$lib/utils';
 	import Button from '$lib/components/ui/Button.svelte';
+	import { ArrowLeft, ArrowRight } from 'lucide-svelte';
 
 	interface Props {
 		pets: Pet[];
@@ -74,9 +75,7 @@
 
 	<div class="mt-6 flex justify-between">
 		<Button variant="ghost" size="lg" onclick={() => bookingStore.prevStep()}>
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M19 12H5M12 19l-7-7 7-7" />
-			</svg>
+			<ArrowLeft class="h-4 w-4" />
 			Voltar
 		</Button>
 		<Button
@@ -86,9 +85,7 @@
 			onclick={() => bookingStore.nextStep()}
 		>
 			Continuar
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M5 12h14M12 5l7 7-7 7" />
-			</svg>
+			<ArrowRight class="h-4 w-4" />
 		</Button>
 	</div>
 </div>

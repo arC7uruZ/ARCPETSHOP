@@ -5,6 +5,7 @@
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 	import { formatDate } from '$lib/utils/date.utils';
 	import type { UserRole } from '$lib/types';
+	import { Search } from 'lucide-svelte';
 
 	interface Props {
 		data: PageData;
@@ -60,15 +61,7 @@
 	<!-- Search -->
 	<div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
 		<div class="relative">
-			<svg
-				class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				stroke-width="2"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-			</svg>
+			<Search class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
 			<input
 				type="text"
 				bind:value={search}

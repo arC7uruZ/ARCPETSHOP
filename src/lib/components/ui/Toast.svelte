@@ -2,6 +2,7 @@
 	import { clsx } from 'clsx';
 	import type { Toast } from '$lib/types';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
+	import { X } from 'lucide-svelte';
 
 	interface Props {
 		toast: Toast;
@@ -39,8 +40,6 @@
 		class="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100"
 		aria-label="Fechar"
 	>
-		<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-			<path d="M18 6L6 18M6 6l12 12" />
-		</svg>
+		<X class="h-4 w-4" />
 	</button>
 </div>

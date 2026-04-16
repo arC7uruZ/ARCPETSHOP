@@ -3,6 +3,7 @@
 	import type { Caretaker, Service } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
+	import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-svelte';
 
 	interface Props {
 		caretakers: Caretaker[];
@@ -72,21 +73,7 @@
 							{/if}
 						</div>
 						{#if bookingStore.selectedCaretaker?.id === caretaker.id}
-							<svg
-								class="text-primary-500 h-5 w-5 shrink-0"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-							>
-								<path
-									fill-rule="evenodd"
-									d={[
-										'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1',
-										'1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0',
-										'00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-									].join(' ')}
-									clip-rule="evenodd"
-								/>
-							</svg>
+							<CheckCircle2 class="text-primary-500 h-5 w-5 shrink-0" />
 						{/if}
 					</div>
 				</button>
@@ -96,9 +83,7 @@
 
 	<div class="mt-6 flex justify-between">
 		<Button variant="ghost" size="lg" onclick={() => bookingStore.prevStep()}>
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M19 12H5M12 19l-7-7 7-7" />
-			</svg>
+			<ArrowLeft class="h-4 w-4" />
 			Voltar
 		</Button>
 		<Button
@@ -108,9 +93,7 @@
 			onclick={() => bookingStore.nextStep()}
 		>
 			Continuar
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M5 12h14M12 5l7 7-7 7" />
-			</svg>
+			<ArrowRight class="h-4 w-4" />
 		</Button>
 	</div>
 </div>

@@ -9,7 +9,7 @@ import { bookingSchema } from '$lib/utils/validation.utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
-	if (!user) redirect(303, '/auth/login?redirectTo=/booking');
+	if (!user) redirect(303, '/login?redirectTo=/booking');
 
 	const [services, pets, caretakers] = await Promise.all([
 		fetchServices(locals.supabase),
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	create: async ({ request, locals }) => {
 		const { user } = locals;
-		if (!user) redirect(303, '/auth/login');
+		if (!user) redirect(303, '/login');
 
 		const formData = await request.formData();
 		const scheduledAtRaw = String(formData.get('scheduledAt') ?? '');

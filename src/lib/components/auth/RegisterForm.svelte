@@ -89,6 +89,6 @@
 
 	<p class="text-center text-sm text-gray-500">
 		Já tem uma conta?
-		<a href="/auth/login" class="text-primary-600 font-semibold hover:underline">Entrar</a>
+		<a href="/login" class="text-primary-600 font-semibold hover:underline">Entrar</a>
 	</p>
 </form>

@@ -4,6 +4,7 @@
 	import { SERVICES_CONFIG } from '$lib/config/services.config';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
+	import { ArrowLeft } from 'lucide-svelte';
 
 	interface Props {
 		loading?: boolean;
@@ -92,9 +93,7 @@
 
 	<div class="mt-6 flex justify-between">
 		<Button variant="ghost" size="lg" onclick={() => bookingStore.prevStep()}>
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M19 12H5M12 19l-7-7 7-7" />
-			</svg>
+			<ArrowLeft class="h-4 w-4" />
 			Voltar
 		</Button>
 		<Button type="submit" variant="primary" size="lg" {loading}>

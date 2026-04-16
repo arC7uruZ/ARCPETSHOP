@@ -3,7 +3,7 @@ import { redirect } from '@sveltejs/kit';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user } = locals;
-	if (!user) redirect(303, '/auth/login?redirectTo=/admin');
+	if (!user) redirect(303, '/login?redirectTo=/admin');
 
 	const { data: profile } = await locals.supabase
 		.from('profiles')

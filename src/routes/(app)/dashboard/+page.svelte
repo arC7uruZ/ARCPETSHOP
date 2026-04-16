@@ -101,7 +101,7 @@
 				<div class="space-y-2">
 					<Button variant="primary" size="md" fullWidth href="/booking">📅 Novo agendamento</Button>
 					<Button variant="outline" size="md" fullWidth href="/profile">👤 Editar perfil</Button>
-					<form method="POST" action="/auth/logout">
+					<form method="POST" action="/logout">
 						<Button type="submit" variant="ghost" size="md" fullWidth>🚪 Sair</Button>
 					</form>
 				</div>

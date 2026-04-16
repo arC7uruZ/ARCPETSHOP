@@ -26,7 +26,7 @@ export const actions: Actions = {
 			email: data.email,
 			password: data.password,
 			options: {
-				emailRedirectTo: `${PUBLIC_SITE_URL}/auth/callback`,
+				emailRedirectTo: `${PUBLIC_SITE_URL}/callback`,
 				data: {
 					full_name: data.full_name,
 					phone: data.phone || undefined
@@ -42,6 +42,6 @@ export const actions: Actions = {
 			});
 		}
 
-		redirect(303, '/auth/register?success=1');
+		redirect(303, '/register?success=1');
 	}
 };

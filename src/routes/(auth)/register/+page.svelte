@@ -26,7 +26,7 @@
 		</p>
 		<p class="mt-4 text-xs text-gray-400">Não recebeu? Verifique a pasta de spam.</p>
 		<a
-			href="/auth/login"
+			href="/login"
 			class="text-primary-600 mt-6 inline-block text-sm font-semibold hover:underline"
 		>
 			Já confirmei → Entrar

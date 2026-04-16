@@ -3,8 +3,9 @@
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
-	import { DAY_NAMES } from '$lib/server/caretakers.server';
+	import { DAY_NAMES } from '$lib/utils/date.utils';
 	import type { CaretakerSchedule, CaretakerBlockedSlot } from '$lib/types';
+	import { Plus, Trash2, Ban, X } from 'lucide-svelte';
 
 	interface Props {
 		data: PageData;
@@ -205,9 +206,7 @@
 					'hover:bg-primary-100 transition-colors'
 				)}
 			>
-				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-				</svg>
+				<Plus class="h-4 w-4" />
 				Adicionar
 			</button>
 		</div>
@@ -246,23 +245,7 @@
 								onclick={() => (removeScheduleTarget = schedule)}
 								class="text-red-400 transition-colors hover:text-red-600"
 							>
-								<svg
-									class="h-4 w-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d={[
-											'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2',
-											'2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1',
-											'0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-										].join(' ')}
-									/>
-								</svg>
+								<Trash2 class="h-4 w-4" />
 							</button>
 						</div>
 					</div>
@@ -287,16 +270,7 @@
 					'transition-colors hover:bg-orange-100'
 				)}
 			>
-				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d={[
-							'M18.364 18.364A9 9 0 005.636 5.636m12.728',
-							'12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636'
-						].join(' ')}
-					/>
-				</svg>
+				<Ban class="h-4 w-4" />
 				Bloquear data
 			</button>
 		</div>
@@ -327,23 +301,7 @@
 							onclick={() => (removeBlockTarget = block)}
 							class="text-red-400 transition-colors hover:text-red-600"
 						>
-							<svg
-								class="h-4 w-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d={[
-										'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2',
-										'2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1',
-										'0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-									].join(' ')}
-								/>
-							</svg>
+							<Trash2 class="h-4 w-4" />
 						</button>
 					</div>
 				{/each}
@@ -363,15 +321,7 @@
 					onclick={() => (addScheduleOpen = false)}
 					class="text-gray-400 hover:text-gray-600"
 				>
-					<svg
-						class="h-5 w-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+					<X class="h-5 w-5" />
 				</button>
 			</div>
 			<form method="POST" action="?/addSchedule" use:enhance class="space-y-4">
@@ -428,15 +378,7 @@
 					onclick={() => (blockSlotOpen = false)}
 					class="text-gray-400 hover:text-gray-600"
 				>
-					<svg
-						class="h-5 w-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+					<X class="h-5 w-5" />
 				</button>
 			</div>
 			<form method="POST" action="?/blockSlot" use:enhance class="space-y-4">

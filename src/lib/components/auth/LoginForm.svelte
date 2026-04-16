@@ -62,7 +62,7 @@
 
 	<p class="text-center text-sm text-gray-500">
 		Não tem uma conta?
-		<a href="/auth/register" class="text-primary-600 font-semibold hover:underline">
+		<a href="/register" class="text-primary-600 font-semibold hover:underline">
 			Cadastre-se
 		</a>
 	</p>

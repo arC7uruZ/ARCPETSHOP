@@ -361,13 +361,3 @@ function minutesToTime(minutes: number): string {
 	const m = minutes % 60;
 	return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
-
-export const DAY_NAMES = [
-	'Domingo',
-	'Segunda-feira',
-	'Terça-feira',
-	'Quarta-feira',
-	'Quinta-feira',
-	'Sexta-feira',
-	'Sábado'
-];

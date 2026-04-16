@@ -5,6 +5,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { SERVICES_CONFIG } from '$lib/config/services.config';
+	import { ArrowRight } from 'lucide-svelte';
 
 	interface Props {
 		services: Service[];
@@ -67,9 +68,7 @@
 		<div class="mt-10 text-center">
 			<Button variant="primary" size="lg" href="/services">
 				Ver todos os serviços
-				<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<path d="M5 12h14M12 5l7 7-7 7" />
-				</svg>
+				<ArrowRight class="h-4 w-4" />
 			</Button>
 		</div>
 	</div>
