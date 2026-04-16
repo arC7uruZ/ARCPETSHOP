@@ -10,8 +10,8 @@
 	const navLinks = [
 		{ href: '/', label: 'Início' },
 		{ href: '/services', label: 'Serviços' },
-		{ href: '/about', label: 'Quem Somos' },
-		{ href: '/booking', label: 'Agendar' }
+		{ href: '/store', label: 'Loja' },
+		{ href: '/about', label: 'Quem Somos' }
 	];
 
 	let scrolled = $state(false);
