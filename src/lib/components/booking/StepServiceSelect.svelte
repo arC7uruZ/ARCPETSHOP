@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Service } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import { formatCurrency, formatDuration } from '$lib/utils';
@@ -21,15 +22,22 @@
 			{@const config = SERVICES_CONFIG.find((c) => c.slug === service.slug)}
 			<button
 				type="button"
-				class="group relative flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all {bookingStore
-					.selectedService?.id === service.id
-					? 'border-primary-500 bg-primary-50'
-					: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'}"
+				class={clsx(
+					'group relative flex items-start gap-4',
+					'rounded-xl border-2 p-4 text-left',
+					'transition-all',
+					bookingStore.selectedService?.id === service.id
+						? 'border-primary-500 bg-primary-50'
+						: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'
+				)}
 				onclick={() => bookingStore.setService(service)}
 			>
 				{#if bookingStore.selectedService?.id === service.id}
 					<div
-						class="bg-primary-500 absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
+						class={clsx(
+							'bg-primary-500 absolute top-3 right-3 flex h-5 w-5',
+							'items-center justify-center rounded-full text-xs text-white'
+						)}
 					>
 						✓
 					</div>

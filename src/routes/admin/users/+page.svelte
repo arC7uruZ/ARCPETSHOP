@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
@@ -50,29 +51,39 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-gray-900">Usuários</h1>
-			<p class="text-sm text-gray-500 mt-1">
+			<p class="mt-1 text-sm text-gray-500">
 				Gerencie roles e permissões. Total: {data.users.length}
 			</p>
 		</div>
 	</div>
 
 	<!-- Search -->
-	<div class="rounded-2xl bg-white border border-gray-100 p-4 shadow-sm">
+	<div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
 		<div class="relative">
-			<svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<svg
+				class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="2"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 			</svg>
 			<input
 				type="text"
 				bind:value={search}
 				placeholder="Buscar por nome ou telefone..."
-				class="w-full rounded-xl border border-gray-200 pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+				class={clsx(
+					'w-full rounded-xl border border-gray-200',
+					'py-2.5 pr-4 pl-9 text-sm',
+					'focus:outline-none focus:ring-2 focus:ring-primary-500',
+				)}
 			/>
 		</div>
 	</div>
 
 	<!-- Table -->
-	<div class="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+	<div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 		{#if filteredUsers.length === 0}
 			<div class="py-16 text-center text-gray-400">
 				<p>Nenhum usuário encontrado</p>
@@ -80,34 +91,38 @@
 		{:else}
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
-					<thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+					<thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
 						<tr>
 							<th class="px-6 py-3 text-left">Usuário</th>
-							<th class="px-6 py-3 text-left hidden sm:table-cell">Telefone</th>
-							<th class="px-6 py-3 text-left hidden md:table-cell">Cadastro</th>
+							<th class="hidden px-6 py-3 text-left sm:table-cell">Telefone</th>
+							<th class="hidden px-6 py-3 text-left md:table-cell">Cadastro</th>
 							<th class="px-6 py-3 text-left">Role atual</th>
 							<th class="px-6 py-3 text-left">Alterar role</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-50">
 						{#each filteredUsers as user}
-							<tr class="hover:bg-gray-50/50 transition-colors">
+							<tr class="transition-colors hover:bg-gray-50/50">
 								<td class="px-6 py-4">
 									<div class="flex items-center gap-3">
-										<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-xs font-bold flex-shrink-0">
+										<div class={clsx(
+											'flex h-8 w-8 flex-shrink-0 items-center justify-center',
+											'rounded-full bg-primary-100',
+											'text-xs font-bold text-primary-700',
+										)}>
 											{user.full_name.charAt(0).toUpperCase()}
 										</div>
-										<span class="font-medium text-gray-900 truncate max-w-32">{user.full_name}</span>
+										<span class="max-w-32 truncate font-medium text-gray-900">{user.full_name}</span>
 									</div>
 								</td>
-								<td class="px-6 py-4 text-gray-500 hidden sm:table-cell">
+								<td class="hidden px-6 py-4 text-gray-500 sm:table-cell">
 									{user.phone ?? '—'}
 								</td>
-								<td class="px-6 py-4 text-gray-500 hidden md:table-cell">
+								<td class="hidden px-6 py-4 text-gray-500 md:table-cell">
 									{formatDate(user.created_at)}
 								</td>
 								<td class="px-6 py-4">
-									<span class="rounded-full px-2.5 py-0.5 text-xs font-medium {roleColors[user.role as UserRole]}">
+									<span class={clsx('rounded-full px-2.5 py-0.5 text-xs font-medium', roleColors[user.role as UserRole])}>
 										{roleLabels[user.role as UserRole]}
 									</span>
 								</td>
@@ -117,7 +132,11 @@
 										<select
 											name="role"
 											value={user.role}
-											class="rounded-lg border border-gray-200 px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+											class={clsx(
+												'rounded-lg border border-gray-200',
+												'px-2 py-1.5 text-xs',
+												'focus:outline-none focus:ring-2 focus:ring-primary-500',
+											)}
 										>
 											<option value="customer">Cliente</option>
 											<option value="admin">Administrador</option>
@@ -125,7 +144,11 @@
 										</select>
 										<button
 											type="submit"
-											class="rounded-lg bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 transition-colors"
+											class={clsx(
+												'rounded-lg bg-primary-500 px-3 py-1.5',
+												'text-xs font-medium text-white',
+												'hover:bg-primary-600 transition-colors',
+											)}
 										>
 											Salvar
 										</button>

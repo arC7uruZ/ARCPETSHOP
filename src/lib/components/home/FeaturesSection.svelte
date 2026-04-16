@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
+
 	const features = [
 		{
 			emoji: '👨‍⚕️',
@@ -48,7 +50,10 @@
 			{#each features as feature}
 				<div class="flex gap-4">
 					<div
-						class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
+						class={clsx(
+						'flex h-12 w-12 shrink-0 items-center justify-center',
+						'rounded-2xl bg-primary-100 text-2xl',
+					)}
 					>
 						{feature.emoji}
 					</div>

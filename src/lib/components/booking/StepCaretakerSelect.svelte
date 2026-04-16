@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Caretaker, Service } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -17,9 +18,7 @@
 	// Filtra apenas os cuidadores que atendem o serviço selecionado
 	const availableCaretakers = $derived(
 		bookingStore.selectedService
-			? caretakers.filter((c) =>
-					c.specialties.includes(bookingStore.selectedService!.id)
-				)
+			? caretakers.filter((c) => c.specialties.includes(bookingStore.selectedService!.id))
 			: caretakers
 	);
 </script>
@@ -38,18 +37,29 @@
 				<button
 					type="button"
 					onclick={() => bookingStore.setCaretaker(caretaker)}
-					class="w-full rounded-xl border-2 p-4 text-left transition-all {bookingStore.selectedCaretaker?.id === caretaker.id
-						? 'border-primary-500 bg-primary-50'
-						: 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'}"
+					class={clsx(
+						'w-full rounded-xl border-2 p-4 text-left',
+						'transition-all',
+						bookingStore.selectedCaretaker?.id === caretaker.id
+							? 'border-primary-500 bg-primary-50'
+							: 'hover:border-primary-200 border-gray-200 hover:bg-gray-50'
+					)}
 				>
 					<div class="flex items-start gap-3">
-						<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-sm">
+						<div
+							class={clsx(
+								'flex h-10 w-10 shrink-0 items-center justify-center',
+								'rounded-full',
+								'bg-primary-100 text-primary-700',
+								'text-sm font-bold'
+							)}
+						>
 							{caretaker.name.charAt(0).toUpperCase()}
 						</div>
 						<div class="min-w-0 flex-1">
 							<p class="font-semibold text-gray-900">{caretaker.name}</p>
 							{#if caretaker.bio}
-								<p class="text-sm text-gray-500 mt-0.5 line-clamp-2">{caretaker.bio}</p>
+								<p class="mt-0.5 line-clamp-2 text-sm text-gray-500">{caretaker.bio}</p>
 							{/if}
 							{#if caretaker.specialties.length > 0}
 								<div class="mt-2 flex flex-wrap gap-1">
@@ -62,8 +72,20 @@
 							{/if}
 						</div>
 						{#if bookingStore.selectedCaretaker?.id === caretaker.id}
-							<svg class="h-5 w-5 flex-shrink-0 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+							<svg
+								class="text-primary-500 h-5 w-5 shrink-0"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d={[
+										'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1',
+										'1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0',
+										'00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+									].join(' ')}
+									clip-rule="evenodd"
+								/>
 							</svg>
 						{/if}
 					</div>

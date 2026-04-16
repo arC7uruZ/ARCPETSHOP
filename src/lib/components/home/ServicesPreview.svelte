@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Service } from '$lib/types';
 	import { formatCurrency, formatDuration } from '$lib/utils';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -34,7 +35,10 @@
 				<Card hover padding="none" class="group overflow-hidden">
 					<!-- Service image/icon header -->
 					<div
-						class="from-primary-100 to-secondary-100 flex h-40 items-center justify-center bg-gradient-to-br"
+						class={clsx(
+						'flex h-40 items-center justify-center',
+						'bg-linear-to-br from-primary-100 to-secondary-100',
+					)}
 					>
 						<span class="text-6xl transition-transform duration-300 group-hover:scale-110">
 							{service.config?.emoji ?? '🐾'}

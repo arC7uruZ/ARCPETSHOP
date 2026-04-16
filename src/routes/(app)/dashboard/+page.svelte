@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import type { AppointmentFull } from '$lib/types';
@@ -49,7 +50,7 @@
 </svelte:head>
 
 <!-- Header -->
-<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-28 pb-20">
+<div class="from-primary-500 to-primary-600 bg-linear-to-r pt-28 pb-20">
 	<div class="container-app">
 		<div class="flex items-center gap-4">
 			<div class="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 text-3xl">
@@ -113,19 +114,23 @@
 				<!-- Tabs -->
 				<div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1">
 					<button
-						class="flex-1 rounded-lg py-2 text-sm font-medium transition-colors {activeTab ===
-						'upcoming'
-							? 'bg-white text-gray-900 shadow-sm'
-							: 'text-gray-500 hover:text-gray-700'}"
+						class={clsx(
+							'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
+							activeTab === 'upcoming'
+								? 'bg-white text-gray-900 shadow-sm'
+								: 'text-gray-500 hover:text-gray-700'
+						)}
 						onclick={() => (activeTab = 'upcoming')}
 					>
 						Próximos ({upcoming.length})
 					</button>
 					<button
-						class="flex-1 rounded-lg py-2 text-sm font-medium transition-colors {activeTab ===
-						'history'
-							? 'bg-white text-gray-900 shadow-sm'
-							: 'text-gray-500 hover:text-gray-700'}"
+						class={clsx(
+							'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
+							activeTab === 'history'
+								? 'bg-white text-gray-900 shadow-sm'
+								: 'text-gray-500 hover:text-gray-700'
+						)}
 						onclick={() => (activeTab = 'history')}
 					>
 						Histórico ({history.length})

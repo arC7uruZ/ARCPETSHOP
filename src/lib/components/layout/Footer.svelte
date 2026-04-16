@@ -1,8 +1,24 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import { siteConfig } from '$lib/config/site.config';
 	import { getDefaultWhatsAppUrl } from '$lib/utils/whatsapp.utils';
 
 	const year = new Date().getFullYear();
+
+	const socialLinkBase = clsx(
+		'flex h-9 w-9 items-center justify-center',
+		'rounded-lg bg-gray-800',
+		'text-gray-400 transition-colors'
+	);
+
+	const services = [
+		'Banho e Tosa',
+		'Consulta Veterinária',
+		'Vacinação',
+		'Hospedagem Pet',
+		'Adestramento',
+		'Pet Taxi'
+	];
 </script>
 
 <footer class="bg-gray-900 text-gray-300">
@@ -20,7 +36,7 @@
 						href={siteConfig.socialLinks.instagram}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="hover:bg-primary-500 flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:text-white"
+						class={clsx(socialLinkBase, 'hover:bg-primary-500 hover:text-white')}
 						aria-label="Instagram"
 					>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -33,7 +49,7 @@
 						href={siteConfig.socialLinks.facebook}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="hover:bg-primary-500 flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:text-white"
+						class={clsx(socialLinkBase, 'hover:bg-primary-500 hover:text-white')}
 						aria-label="Facebook"
 					>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -46,7 +62,7 @@
 						href={getDefaultWhatsAppUrl()}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 text-gray-400 transition-colors hover:bg-green-500 hover:text-white"
+						class={clsx(socialLinkBase, 'hover:bg-green-500 hover:text-white')}
 						aria-label="WhatsApp"
 					>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -62,7 +78,7 @@
 			<div>
 				<h3 class="mb-4 text-sm font-semibold tracking-wider text-white uppercase">Serviços</h3>
 				<ul class="space-y-2 text-sm">
-					{#each ['Banho e Tosa', 'Consulta Veterinária', 'Vacinação', 'Hospedagem Pet', 'Adestramento', 'Pet Taxi'] as service}
+					{#each services as service}
 						<li>
 							<a href="/services" class="text-gray-400 transition-colors hover:text-white"
 								>{service}</a

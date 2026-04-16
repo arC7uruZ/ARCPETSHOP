@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import { siteConfig } from '$lib/config/site.config';
 
 	interface Props {
@@ -9,7 +10,11 @@
 </script>
 
 <div
-	class="from-primary-50 to-secondary-50 flex min-h-screen items-center justify-center bg-gradient-to-br px-4 py-12"
+	class={clsx(
+		'flex min-h-screen items-center justify-center',
+		'bg-linear-to-br from-primary-50 to-secondary-50',
+		'px-4 py-12',
+	)}
 >
 	<div class="w-full max-w-md">
 		<!-- Logo -->

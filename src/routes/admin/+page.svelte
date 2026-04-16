@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData } from './$types';
 	import { formatDateTime } from '$lib/utils/date.utils';
 
@@ -35,35 +36,35 @@
 	<!-- Header -->
 	<div>
 		<h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-		<p class="text-sm text-gray-500 mt-1">Visão geral do sistema</p>
+		<p class="mt-1 text-sm text-gray-500">Visão geral do sistema</p>
 	</div>
 
 	<!-- Stats cards -->
 	<div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
-		<div class="col-span-1 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+		<div class="col-span-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<p class="text-sm text-gray-500">Hoje</p>
-			<p class="text-3xl font-bold text-gray-900 mt-1">{data.stats.totalAppointmentsToday}</p>
-			<p class="text-xs text-gray-400 mt-1">agendamentos</p>
+			<p class="mt-1 text-3xl font-bold text-gray-900">{data.stats.totalAppointmentsToday}</p>
+			<p class="mt-1 text-xs text-gray-400">agendamentos</p>
 		</div>
-		<div class="col-span-1 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+		<div class="col-span-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<p class="text-sm text-gray-500">Pendentes</p>
-			<p class="text-3xl font-bold text-yellow-600 mt-1">{data.stats.pendingAppointments}</p>
-			<p class="text-xs text-gray-400 mt-1">aguardando</p>
+			<p class="mt-1 text-3xl font-bold text-yellow-600">{data.stats.pendingAppointments}</p>
+			<p class="mt-1 text-xs text-gray-400">aguardando</p>
 		</div>
-		<div class="col-span-1 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+		<div class="col-span-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<p class="text-sm text-gray-500">Confirmados</p>
-			<p class="text-3xl font-bold text-blue-600 mt-1">{data.stats.confirmedAppointments}</p>
-			<p class="text-xs text-gray-400 mt-1">agendamentos</p>
+			<p class="mt-1 text-3xl font-bold text-blue-600">{data.stats.confirmedAppointments}</p>
+			<p class="mt-1 text-xs text-gray-400">agendamentos</p>
 		</div>
-		<div class="col-span-1 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+		<div class="col-span-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<p class="text-sm text-gray-500">Clientes</p>
-			<p class="text-3xl font-bold text-gray-900 mt-1">{data.stats.totalUsers}</p>
-			<p class="text-xs text-gray-400 mt-1">cadastrados</p>
+			<p class="mt-1 text-3xl font-bold text-gray-900">{data.stats.totalUsers}</p>
+			<p class="mt-1 text-xs text-gray-400">cadastrados</p>
 		</div>
-		<div class="col-span-1 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+		<div class="col-span-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<p class="text-sm text-gray-500">Cuidadores</p>
-			<p class="text-3xl font-bold text-primary-600 mt-1">{data.stats.activeCaretakers}</p>
-			<p class="text-xs text-gray-400 mt-1">ativos</p>
+			<p class="mt-1 text-3xl font-bold text-primary-600">{data.stats.activeCaretakers}</p>
+			<p class="mt-1 text-xs text-gray-400">ativos</p>
 		</div>
 	</div>
 
@@ -71,7 +72,12 @@
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 		<a
 			href="/admin/appointments"
-			class="flex items-center gap-4 rounded-2xl bg-primary-500 p-5 text-white shadow-sm hover:bg-primary-600 transition-colors"
+			class={clsx(
+				'flex items-center gap-4',
+				'rounded-2xl bg-primary-500 p-5',
+				'text-white shadow-sm',
+				'hover:bg-primary-600 transition-colors',
+			)}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
 				<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -85,7 +91,11 @@
 		</a>
 		<a
 			href="/admin/caretakers"
-			class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 hover:border-primary-200 transition-colors"
+			class={clsx(
+				'flex items-center gap-4',
+				'rounded-2xl border border-gray-100 bg-white p-5 shadow-sm',
+				'hover:border-primary-200 transition-colors',
+			)}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50">
 				<svg class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -99,7 +109,11 @@
 		</a>
 		<a
 			href="/admin/users"
-			class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 hover:border-primary-200 transition-colors"
+			class={clsx(
+				'flex items-center gap-4',
+				'rounded-2xl border border-gray-100 bg-white p-5 shadow-sm',
+				'hover:border-primary-200 transition-colors',
+			)}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50">
 				<svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -114,17 +128,17 @@
 	</div>
 
 	<!-- Recent appointments -->
-	<div class="rounded-2xl bg-white shadow-sm border border-gray-100">
-		<div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+	<div class="rounded-2xl border border-gray-100 bg-white shadow-sm">
+		<div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
 			<h2 class="font-semibold text-gray-900">Agendamentos recentes</h2>
-			<a href="/admin/appointments" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+			<a href="/admin/appointments" class="text-sm font-medium text-primary-600 hover:text-primary-700">
 				Ver todos →
 			</a>
 		</div>
 
 		{#if data.recentAppointments.length === 0}
 			<div class="py-12 text-center text-gray-400">
-				<svg class="mx-auto h-10 w-10 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+				<svg class="mx-auto mb-3 h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 				</svg>
 				<p>Nenhum agendamento ainda</p>
@@ -134,16 +148,16 @@
 				{#each data.recentAppointments as appt}
 					<div class="flex items-center gap-4 px-6 py-4">
 						<div class="min-w-0 flex-1">
-							<p class="text-sm font-medium text-gray-900 truncate">{appt.user_name}</p>
-							<p class="text-xs text-gray-500 truncate">{appt.pet_name} · {appt.service_name}</p>
+							<p class="truncate text-sm font-medium text-gray-900">{appt.user_name}</p>
+							<p class="truncate text-xs text-gray-500">{appt.pet_name} · {appt.service_name}</p>
 						</div>
-						<div class="hidden sm:block text-right">
+						<div class="hidden text-right sm:block">
 							<p class="text-xs text-gray-500">{formatDateTime(appt.scheduled_at)}</p>
 							{#if appt.caretaker_name}
 								<p class="text-xs text-gray-400">{appt.caretaker_name}</p>
 							{/if}
 						</div>
-						<span class="rounded-full px-2.5 py-0.5 text-xs font-medium {statusColors[appt.status]}">
+						<span class={clsx('rounded-full px-2.5 py-0.5 text-xs font-medium', statusColors[appt.status])}>
 							{statusLabels[appt.status]}
 						</span>
 					</div>

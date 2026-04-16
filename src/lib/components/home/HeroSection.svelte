@@ -1,11 +1,20 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { getDefaultWhatsAppUrl } from '$lib/utils/whatsapp.utils';
-	import { siteConfig } from '$lib/config/site.config';
+
+	const stats = [
+		{ value: '2.000+', label: 'Pets atendidos' },
+		{ value: '98%', label: 'Satisfação' },
+		{ value: '5 anos', label: 'De experiência' }
+	];
 </script>
 
 <section
-	class="from-primary-50 to-secondary-50 relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br via-white"
+	class={clsx(
+		'relative flex min-h-screen items-center overflow-hidden',
+		'from-primary-50 to-secondary-50 bg-linear-to-br via-white'
+	)}
 >
 	<!-- Background decoration -->
 	<div class="absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -21,18 +30,26 @@
 			<!-- Content -->
 			<div class="animate-fade-in">
 				<div
-					class="bg-primary-100 text-primary-700 mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold"
+					class={clsx(
+						'mb-4 inline-flex items-center gap-2',
+						'bg-primary-100 rounded-full px-4 py-1.5',
+						'text-primary-700 text-sm font-semibold'
+					)}
 				>
 					<span>🐾</span>
 					<span>Cuidado premium para seu pet</span>
 				</div>
 
 				<h1
-					class="font-display mb-6 text-4xl leading-tight font-extrabold text-gray-900 sm:text-5xl lg:text-6xl"
+					class={clsx(
+						'font-display mb-6',
+						'text-4xl leading-tight font-extrabold text-gray-900',
+						'sm:text-5xl lg:text-6xl'
+					)}
 				>
 					Seu pet merece
 					<span
-						class="from-primary-500 to-secondary-500 bg-gradient-to-r bg-clip-text text-transparent"
+						class="from-primary-500 to-secondary-500 bg-linear-to-r bg-clip-text text-transparent"
 					>
 						o melhor
 					</span>
@@ -73,7 +90,7 @@
 
 				<!-- Stats -->
 				<div class="mt-12 grid grid-cols-3 gap-6 border-t border-gray-200 pt-8">
-					{#each [{ value: '2.000+', label: 'Pets atendidos' }, { value: '98%', label: 'Satisfação' }, { value: '5 anos', label: 'De experiência' }] as stat}
+					{#each stats as stat}
 						<div class="text-center">
 							<div class="font-display text-primary-600 text-2xl font-bold">{stat.value}</div>
 							<div class="mt-1 text-xs text-gray-500">{stat.label}</div>
@@ -87,7 +104,12 @@
 				<div class="relative">
 					<!-- Main image placeholder with gradient -->
 					<div
-						class="from-primary-400 to-secondary-400 flex h-80 w-80 items-center justify-center rounded-3xl bg-gradient-to-br shadow-2xl sm:h-96 sm:w-96"
+						class={clsx(
+							'flex items-center justify-center',
+							'h-80 w-80 sm:h-96 sm:w-96',
+							'from-primary-400 to-secondary-400 rounded-3xl bg-linear-to-br',
+							'shadow-2xl'
+						)}
 					>
 						<div class="text-center text-white">
 							<div class="mb-4 text-8xl">🐕</div>
@@ -97,7 +119,10 @@
 
 					<!-- Floating badges -->
 					<div
-						class="absolute -top-4 -left-4 flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-lg"
+						class={clsx(
+							'absolute -top-4 -left-4 flex items-center gap-2 rounded-2xl',
+							'bg-white px-4 py-3 shadow-lg'
+						)}
 					>
 						<span class="text-2xl">⭐</span>
 						<div>
@@ -107,7 +132,10 @@
 					</div>
 
 					<div
-						class="absolute -right-4 -bottom-4 flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-lg"
+						class={clsx(
+							'absolute -right-4 -bottom-4 flex items-center gap-2',
+							'rounded-2xl bg-white px-4 py-3 shadow-lg'
+						)}
 					>
 						<span class="text-2xl">🏆</span>
 						<div>

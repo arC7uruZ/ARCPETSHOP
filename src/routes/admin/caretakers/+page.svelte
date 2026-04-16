@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
@@ -34,7 +35,7 @@
 				noResults = results.length === 0;
 			}
 			if ('error' in form && form.error) uiStore.error(form.error as string);
-            searching = false;
+			searching = false;
 		}
 
 		if ('success' in form && form.success) {
@@ -104,11 +105,16 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-gray-900">Cuidadores</h1>
-			<p class="text-sm text-gray-500 mt-1">{data.caretakers.length} cuidador(es) cadastrado(s)</p>
+			<p class="mt-1 text-sm text-gray-500">{data.caretakers.length} cuidador(es) cadastrado(s)</p>
 		</div>
 		<button
 			onclick={openModal}
-			class="flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
+			class={clsx(
+				'flex items-center gap-2',
+				'bg-primary-500 rounded-xl px-4 py-2.5',
+				'text-sm font-medium text-white',
+				'hover:bg-primary-600 transition-colors'
+			)}
 		>
 			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 				<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -118,54 +124,97 @@
 	</div>
 
 	{#if data.caretakers.length === 0}
-		<div class="rounded-2xl bg-white border border-gray-100 py-16 text-center text-gray-400 shadow-sm">
-			<svg class="mx-auto h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+		<div
+			class="rounded-2xl border border-gray-100 bg-white py-16 text-center text-gray-400 shadow-sm"
+		>
+			<svg
+				class="mx-auto mb-4 h-12 w-12"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="1.5"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d={[
+						'M17 20h5v-2a3 3 0 00-5.356-1.857',
+						'M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857',
+						'M7 20H2v-2a3 3 0 015.356-1.857',
+						'M7 20v-2c0-.656.126-1.283.356-1.857',
+						'm0 0a5.002 5.002 0 019.288 0',
+						'M15 7a3 3 0 11-6 0 3 3 0 016 0z'
+					].join(' ')}
+				/>
 			</svg>
 			<p class="font-medium">Nenhum cuidador cadastrado</p>
-			<p class="text-sm mt-1">Clique em "Adicionar cuidador" para vincular um usuário.</p>
+			<p class="mt-1 text-sm">Clique em "Adicionar cuidador" para vincular um usuário.</p>
 		</div>
 	{:else}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.caretakers as caretaker}
-				<div class="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm {!caretaker.is_active ? 'opacity-60' : ''}">
-					<div class="flex items-start justify-between mb-3">
+				<div
+					class={clsx(
+						'rounded-2xl border border-gray-100 bg-white p-5 shadow-sm',
+						!caretaker.is_active && 'opacity-60'
+					)}
+				>
+					<div class="mb-3 flex items-start justify-between">
 						<div class="flex items-center gap-3">
-							<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-sm">
+							<div
+								class={clsx(
+									'flex h-10 w-10 items-center justify-center',
+									'bg-primary-100 rounded-full',
+									'text-primary-700 text-sm font-bold'
+								)}
+							>
 								{caretaker.name.charAt(0).toUpperCase()}
 							</div>
 							<div>
 								<p class="font-semibold text-gray-900">{caretaker.name}</p>
-								<span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {caretaker.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+								<span
+									class={clsx(
+										'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+										caretaker.is_active
+											? 'bg-green-100 text-green-700'
+											: 'bg-gray-100 text-gray-500'
+									)}
+								>
 									{caretaker.is_active ? 'Ativo' : 'Inativo'}
 								</span>
 							</div>
 						</div>
 						{#if caretaker.user_id}
-							<span class="text-xs text-blue-500 bg-blue-50 rounded-full px-2 py-0.5 font-medium">Conta vinculada</span>
+							<span class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-500"
+								>Conta vinculada</span
+							>
 						{/if}
 					</div>
 
 					{#if caretaker.bio}
-						<p class="text-sm text-gray-500 mb-3 line-clamp-2">{caretaker.bio}</p>
+						<p class="mb-3 line-clamp-2 text-sm text-gray-500">{caretaker.bio}</p>
 					{/if}
 
 					{#if caretaker.specialties.length > 0}
-						<div class="flex flex-wrap gap-1.5 mb-4">
+						<div class="mb-4 flex flex-wrap gap-1.5">
 							{#each caretaker.specialties as serviceId}
-								<span class="rounded-full bg-primary-50 px-2 py-0.5 text-xs text-primary-700">
+								<span class="bg-primary-50 text-primary-700 rounded-full px-2 py-0.5 text-xs">
 									{getServiceName(serviceId)}
 								</span>
 							{/each}
 						</div>
 					{:else}
-						<p class="text-xs text-gray-400 mb-4 italic">Sem especialidades cadastradas</p>
+						<p class="mb-4 text-xs text-gray-400 italic">Sem especialidades cadastradas</p>
 					{/if}
 
 					<div class="flex items-center gap-2">
 						<a
 							href="/admin/caretakers/{caretaker.id}"
-							class="flex-1 rounded-lg border border-gray-200 py-1.5 text-center text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+							class={clsx(
+								'flex-1 rounded-lg border border-gray-200 py-1.5',
+								'text-center text-xs font-medium text-gray-700',
+								'transition-colors hover:bg-gray-50'
+							)}
 						>
 							Gerenciar
 						</a>
@@ -175,18 +224,41 @@
 							<input type="hidden" name="isActive" value={String(!caretaker.is_active)} />
 							<button
 								type="submit"
-								class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium {caretaker.is_active ? 'text-yellow-700 hover:bg-yellow-50' : 'text-green-700 hover:bg-green-50'} transition-colors"
+								class={clsx(
+									'rounded-lg border border-gray-200 px-3 py-1.5',
+									'text-xs font-medium transition-colors',
+									caretaker.is_active
+										? 'text-yellow-700 hover:bg-yellow-50'
+										: 'text-green-700 hover:bg-green-50'
+								)}
 							>
 								{caretaker.is_active ? 'Desativar' : 'Ativar'}
 							</button>
 						</form>
 
 						<button
+							aria-label="delete-caretaker"
 							onclick={() => (deleteTarget = caretaker)}
-							class="rounded-lg border border-gray-200 p-1.5 text-red-500 hover:bg-red-50 transition-colors"
+							class="rounded-lg border border-gray-200 p-1.5 text-red-500 transition-colors hover:bg-red-50"
 						>
-							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+							<svg
+								class="h-4 w-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d={[
+										'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7',
+										'm5 4v6',
+										'm4-6v6',
+										'm1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3',
+										'M4 7h16'
+									].join(' ')}
+								/>
 							</svg>
 						</button>
 					</div>
@@ -198,14 +270,13 @@
 
 <!-- Modal: adicionar cuidador via busca de usuário -->
 {#if modalOpen}
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-		<div class="w-full max-w-lg rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto">
-
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+		<div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-xl">
 			<!-- Header -->
-			<div class="flex items-center justify-between p-6 border-b border-gray-100">
+			<div class="flex items-center justify-between border-b border-gray-100 p-6">
 				<div>
 					<h2 class="text-lg font-bold text-gray-900">Adicionar cuidador</h2>
-					<p class="text-sm text-gray-500 mt-0.5">
+					<p class="mt-0.5 text-sm text-gray-500">
 						{#if !selectedUser}
 							Busque um usuário cadastrado no site
 						{:else}
@@ -213,8 +284,19 @@
 						{/if}
 					</p>
 				</div>
-				<button type="button" onclick={closeModal} aria-label="close-modal" class="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<button
+					type="button"
+					onclick={closeModal}
+					aria-label="close-modal"
+					class="cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
+				>
+					<svg
+						class="h-5 w-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
@@ -222,7 +304,7 @@
 
 			<!-- Etapa 1: busca de usuário -->
 			{#if !selectedUser}
-				<div class="p-6 space-y-4">
+				<div class="space-y-4 p-6">
 					<form
 						method="POST"
 						action="?/searchUsers"
@@ -243,21 +325,47 @@
 							placeholder="Nome do usuário..."
 							minlength="2"
 							required
-							class="flex-1 rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+							class={clsx(
+								'flex-1 rounded-xl border border-gray-200',
+								'px-3 py-2.5 text-sm',
+								'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+							)}
 						/>
 						<button
 							type="submit"
 							disabled={searching || searchQuery.length < 2}
-							class="flex items-center gap-1.5 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
+							class={clsx(
+								'flex items-center gap-1.5',
+								'bg-primary-500 rounded-xl px-4 py-2.5',
+								'text-sm font-medium text-white',
+								'hover:bg-primary-600 transition-colors disabled:opacity-50'
+							)}
 						>
 							{#if searching}
 								<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
 									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
 								</svg>
 							{:else}
-								<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+								<svg
+									class="h-4 w-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"
+									/>
 								</svg>
 							{/if}
 							Buscar
@@ -275,34 +383,66 @@
 								<button
 									type="button"
 									onclick={() => selectUser(user)}
-									class="w-full flex items-center gap-3 rounded-xl border border-gray-200 p-3 text-left hover:border-primary-400 hover:bg-primary-50 transition-colors"
+									class={clsx(
+										'flex w-full items-center gap-3',
+										'rounded-xl border border-gray-200 p-3 text-left',
+										'hover:border-primary-400 hover:bg-primary-50 transition-colors'
+									)}
 								>
-									<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 font-semibold text-sm">
+									<div
+										class={clsx(
+											'flex h-9 w-9 flex-shrink-0 items-center justify-center',
+											'rounded-full bg-gray-100',
+											'text-sm font-semibold text-gray-600'
+										)}
+									>
 										{user.full_name.charAt(0).toUpperCase()}
 									</div>
 									<div class="min-w-0">
-										<p class="font-medium text-gray-900 truncate">{user.full_name}</p>
+										<p class="truncate font-medium text-gray-900">{user.full_name}</p>
 										{#if user.phone}
 											<p class="text-xs text-gray-400">{user.phone}</p>
 										{/if}
 									</div>
-									<svg class="ml-auto h-4 w-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+									<svg
+										class="ml-auto h-4 w-4 shrink-0 text-gray-400"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										stroke-width="2"
+									>
 										<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 									</svg>
 								</button>
 							{/each}
 						</div>
 					{:else if noResults}
-						<div class="rounded-xl border border-dashed border-gray-200 py-8 text-center text-sm text-gray-400">
-							<svg class="mx-auto h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						<div
+							class="rounded-xl border border-dashed border-gray-200 py-8 text-center text-sm text-gray-400"
+						>
+							<svg
+								class="mx-auto mb-2 h-8 w-8"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d={[
+										'M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0',
+										'10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21',
+										'12a9 9 0 11-18 0 9 9 0 0118 0z'
+									].join(' ')}
+								/>
 							</svg>
 							Nenhum usuário encontrado para "<strong>{searchQuery}</strong>"
 						</div>
 					{/if}
 				</div>
 
-			<!-- Etapa 2: configurar cuidador -->
+				<!-- Etapa 2: configurar cuidador -->
 			{:else}
 				<form
 					method="POST"
@@ -314,13 +454,21 @@
 							promoting = false;
 						};
 					}}
-					class="p-6 space-y-5"
+					class="space-y-5 p-6"
 				>
 					<input type="hidden" name="userId" value={selectedUser.id} />
 
 					<!-- Usuário selecionado -->
-					<div class="flex items-center gap-3 rounded-xl border border-primary-200 bg-primary-50 p-4">
-						<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-500 text-white font-bold text-sm">
+					<div
+						class="border-primary-200 bg-primary-50 flex items-center gap-3 rounded-xl border p-4"
+					>
+						<div
+							class={clsx(
+								'flex h-10 w-10 shrink-0 items-center justify-center',
+								'bg-primary-500 rounded-full',
+								'text-sm font-bold text-white'
+							)}
+						>
 							{selectedUser.full_name.charAt(0).toUpperCase()}
 						</div>
 						<div class="min-w-0 flex-1">
@@ -332,9 +480,15 @@
 						<button
 							type="button"
 							onclick={clearSelection}
-							class="text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
+							class="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-gray-600"
 						>
-							<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<svg
+								class="h-3.5 w-3.5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+							>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 							</svg>
 							Trocar
@@ -343,28 +497,41 @@
 
 					<!-- Bio -->
 					<div>
-						<label class="block text-sm font-medium text-gray-700 mb-1.5">Bio</label>
+						<label for="bio" class="mb-1.5 block text-sm font-medium text-gray-700">Bio</label>
 						<textarea
+                            id="bio"
 							name="bio"
 							rows={3}
 							placeholder="Descrição breve sobre o cuidador..."
-							class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+							class={clsx(
+								'w-full resize-none rounded-xl border border-gray-200',
+								'px-3 py-2.5 text-sm',
+								'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+							)}
 						></textarea>
 					</div>
 
 					<!-- Especialidades -->
 					<div>
-						<p class="block text-sm font-medium text-gray-700 mb-2">Especialidades</p>
+						<p class="mb-2 block text-sm font-medium text-gray-700">Especialidades</p>
 						<div class="grid grid-cols-2 gap-2">
 							{#each data.services as service}
-								<label class="flex cursor-pointer items-center gap-2 rounded-lg border p-2.5 text-sm transition-colors {selectedSpecialties.includes(service.id) ? 'border-primary-400 bg-primary-50' : 'border-gray-200 hover:border-gray-300'}">
+								<label
+									class={clsx(
+										'flex cursor-pointer items-center gap-2',
+										'rounded-lg border p-2.5 text-sm transition-colors',
+										selectedSpecialties.includes(service.id)
+											? 'border-primary-400 bg-primary-50'
+											: 'border-gray-200 hover:border-gray-300'
+									)}
+								>
 									<input
 										type="checkbox"
 										name="specialties"
 										value={service.id}
 										checked={selectedSpecialties.includes(service.id)}
 										onchange={() => toggleSpecialty(service.id)}
-										class="rounded text-primary-500 focus:ring-primary-500"
+										class="text-primary-500 focus:ring-primary-500 rounded"
 									/>
 									<span class="truncate">{service.name}</span>
 								</label>
@@ -377,14 +544,22 @@
 						<button
 							type="button"
 							onclick={closeModal}
-							class="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+							class={clsx(
+								'flex-1 rounded-xl border border-gray-200 py-2.5',
+								'text-sm font-medium text-gray-700',
+								'transition-colors hover:bg-gray-50'
+							)}
 						>
 							Cancelar
 						</button>
 						<button
 							type="submit"
 							disabled={promoting}
-							class="flex-1 rounded-xl bg-primary-500 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-60 transition-colors"
+							class={clsx(
+								'bg-primary-500 flex-1 rounded-xl py-2.5',
+								'text-sm font-medium text-white',
+								'hover:bg-primary-600 transition-colors disabled:opacity-60'
+							)}
 						>
 							{promoting ? 'Promovendo...' : 'Promover a cuidador'}
 						</button>
@@ -397,31 +572,39 @@
 
 <!-- Confirmação de exclusão -->
 {#if deleteTarget}
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-			<h2 class="text-lg font-bold text-gray-900 mb-2">Remover cuidador?</h2>
-			<p class="text-sm text-gray-500 mb-1">
+			<h2 class="mb-2 text-lg font-bold text-gray-900">Remover cuidador?</h2>
+			<p class="mb-1 text-sm text-gray-500">
 				<strong>{deleteTarget.name}</strong> será removido dos cuidadores.
 			</p>
 			{#if deleteTarget.user_id}
-				<p class="text-sm text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mb-5">
+				<p class="mb-5 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-600">
 					A conta deste usuário voltará ao papel de <strong>cliente</strong>.
 				</p>
 			{:else}
-				<p class="text-sm text-gray-400 mb-5">Esta ação não pode ser desfeita.</p>
+				<p class="mb-5 text-sm text-gray-400">Esta ação não pode ser desfeita.</p>
 			{/if}
 			<form method="POST" action="?/delete" use:enhance class="flex gap-3">
 				<input type="hidden" name="id" value={deleteTarget.id} />
 				<button
 					type="button"
 					onclick={() => (deleteTarget = null)}
-					class="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+					class={clsx(
+						'flex-1 rounded-xl border border-gray-200 py-2.5',
+						'text-sm font-medium text-gray-700',
+						'transition-colors hover:bg-gray-50'
+					)}
 				>
 					Cancelar
 				</button>
 				<button
 					type="submit"
-					class="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600 transition-colors"
+					class={clsx(
+						'flex-1 rounded-xl bg-red-500 py-2.5',
+						'text-sm font-medium text-white',
+						'transition-colors hover:bg-red-600'
+					)}
 				>
 					Remover
 				</button>

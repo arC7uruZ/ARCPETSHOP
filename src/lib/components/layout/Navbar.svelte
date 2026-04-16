@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import { page } from '$app/state';
 	import { authStore } from '$lib/stores/auth.store.svelte';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
@@ -27,9 +28,11 @@
 </script>
 
 <header
-	class="fixed top-0 right-0 left-0 z-40 transition-all duration-300 {!isHome || scrolled
-		? 'bg-white/95 shadow-sm backdrop-blur-md'
-		: 'bg-transparent'}"
+	class={clsx(
+		'fixed top-0 right-0 left-0 z-40',
+		'transition-all duration-300',
+		!isHome || scrolled ? 'bg-white/95 shadow-sm backdrop-blur-md' : 'bg-transparent',
+	)}
 >
 	<nav class="container-app flex h-16 items-center justify-between">
 		<!-- Logo -->
@@ -43,9 +46,12 @@
 			{#each navLinks as link}
 				<a
 					href={link.href}
-					class="text-sm font-medium transition-colors {page.url.pathname === link.href
-						? 'text-primary-600'
-						: 'hover:text-primary-600 text-gray-700'}"
+					class={clsx(
+						'text-sm font-medium transition-colors',
+						page.url.pathname === link.href
+							? 'text-primary-600'
+							: 'text-gray-700 hover:text-primary-600',
+					)}
 				>
 					{link.label}
 				</a>
@@ -91,10 +97,12 @@
 				{#each navLinks as link}
 					<a
 						href={link.href}
-						class="rounded-lg px-3 py-2 text-sm font-medium transition-colors {page.url.pathname ===
-						link.href
-							? 'bg-primary-50 text-primary-600'
-							: 'text-gray-700 hover:bg-gray-50'}"
+						class={clsx(
+							'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+							page.url.pathname === link.href
+								? 'bg-primary-50 text-primary-600'
+								: 'text-gray-700 hover:bg-gray-50',
+						)}
 						onclick={() => uiStore.closeMobileMenu()}
 					>
 						{link.label}

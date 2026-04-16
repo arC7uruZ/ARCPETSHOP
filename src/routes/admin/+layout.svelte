@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/state';
 
@@ -47,22 +48,27 @@
 <div class="flex min-h-screen bg-gray-50">
 	<!-- Sidebar desktop -->
 	<aside class="hidden w-64 flex-col bg-gray-900 lg:flex">
-		<div class="flex h-16 items-center gap-2 px-6 border-b border-gray-800">
+		<div class="flex h-16 items-center gap-2 border-b border-gray-800 px-6">
 			<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-500">
 				<svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
 				</svg>
 			</div>
-			<span class="font-semibold text-white text-sm">Painel Admin</span>
+			<span class="text-sm font-semibold text-white">Painel Admin</span>
 		</div>
 
-		<nav class="flex-1 px-4 py-6 space-y-1">
+		<nav class="flex-1 space-y-1 px-4 py-6">
 			{#each navItems as item}
 				<a
 					href={item.href}
-					class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors {isActive(item.href)
-						? 'bg-primary-600 text-white'
-						: 'text-gray-400 hover:bg-gray-800 hover:text-white'}"
+					class={clsx(
+						'flex items-center gap-3',
+						'rounded-lg px-3 py-2.5 text-sm font-medium',
+						'transition-colors',
+						isActive(item.href)
+							? 'bg-primary-600 text-white'
+							: 'text-gray-400 hover:bg-gray-800 hover:text-white',
+					)}
 				>
 					<svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 						{@html item.icon}
@@ -73,18 +79,18 @@
 		</nav>
 
 		<div class="border-t border-gray-800 p-4">
-			<div class="flex items-center gap-3 mb-3">
-				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500 text-white text-sm font-bold">
+			<div class="mb-3 flex items-center gap-3">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500 text-sm font-bold text-white">
 					{data.adminName.charAt(0).toUpperCase()}
 				</div>
 				<div class="min-w-0">
-					<p class="text-sm font-medium text-white truncate">{data.adminName}</p>
+					<p class="truncate text-sm font-medium text-white">{data.adminName}</p>
 					<p class="text-xs text-gray-400 capitalize">{data.userRole === 'root_admin' ? 'Super Admin' : 'Administrador'}</p>
 				</div>
 			</div>
 			<a
 				href="/dashboard"
-				class="flex items-center gap-2 text-xs text-gray-400 hover:text-white transition-colors"
+				class="flex items-center gap-2 text-xs text-gray-400 transition-colors hover:text-white"
 			>
 				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -103,23 +109,28 @@
 			onclick={() => (sidebarOpen = false)}
 			onkeydown={(e) => e.key === 'Escape' && (sidebarOpen = false)}
 		></div>
-		<aside class="fixed inset-y-0 left-0 z-50 w-64 flex-col bg-gray-900 flex lg:hidden">
-			<div class="flex h-16 items-center justify-between px-6 border-b border-gray-800">
-				<span class="font-semibold text-white text-sm">Painel Admin</span>
+		<aside class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-gray-900 lg:hidden">
+			<div class="flex h-16 items-center justify-between border-b border-gray-800 px-6">
+				<span class="text-sm font-semibold text-white">Painel Admin</span>
 				<button onclick={() => (sidebarOpen = false)} class="text-gray-400 hover:text-white">
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
 			</div>
-			<nav class="flex-1 px-4 py-6 space-y-1">
+			<nav class="flex-1 space-y-1 px-4 py-6">
 				{#each navItems as item}
 					<a
 						href={item.href}
 						onclick={() => (sidebarOpen = false)}
-						class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors {isActive(item.href)
-							? 'bg-primary-600 text-white'
-							: 'text-gray-400 hover:bg-gray-800 hover:text-white'}"
+						class={clsx(
+							'flex items-center gap-3',
+							'rounded-lg px-3 py-2.5 text-sm font-medium',
+							'transition-colors',
+							isActive(item.href)
+								? 'bg-primary-600 text-white'
+								: 'text-gray-400 hover:bg-gray-800 hover:text-white',
+						)}
 					>
 						<svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 							{@html item.icon}
@@ -132,9 +143,9 @@
 	{/if}
 
 	<!-- Main content -->
-	<div class="flex flex-1 flex-col min-w-0">
+	<div class="flex min-w-0 flex-1 flex-col">
 		<!-- Top bar mobile -->
-		<header class="flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 lg:px-6 lg:hidden">
+		<header class="flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 lg:hidden lg:px-6">
 			<button
 				onclick={() => (sidebarOpen = true)}
 				class="text-gray-500 hover:text-gray-700"

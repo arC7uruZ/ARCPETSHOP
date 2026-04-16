@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData } from './$types';
 	import { formatCurrency, formatDuration } from '$lib/utils';
 	import { SERVICES_CONFIG } from '$lib/config/services.config';
@@ -18,7 +19,7 @@
 </svelte:head>
 
 <!-- Page header -->
-<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-32 pb-20">
+<div class="from-primary-500 to-primary-600 bg-linear-to-r pt-32 pb-20">
 	<div class="container-app text-center text-white">
 		<h1 class="font-display text-4xl font-bold sm:text-5xl">Nossos Serviços</h1>
 		<p class="text-primary-100 mx-auto mt-4 max-w-2xl text-lg">
@@ -34,7 +35,9 @@
 			<Card shadow="lg" padding="none" class="overflow-hidden">
 				<!-- Header -->
 				<div
-					class="from-primary-100 to-secondary-100 flex h-48 flex-col items-center justify-center bg-gradient-to-br"
+					class={clsx(
+						'flex h-48 flex-col items-center justify-center',
+					)}
 				>
 					<span class="text-7xl">{config?.emoji ?? '🐾'}</span>
 					<span class="font-display mt-3 text-xl font-bold text-gray-700">{service.name}</span>

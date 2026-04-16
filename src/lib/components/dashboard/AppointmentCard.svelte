@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { AppointmentFull } from '$lib/types';
 	import {
 		formatDateTime,
@@ -24,12 +25,18 @@
 </script>
 
 <div
-	class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+	class={clsx(
+		'rounded-2xl border border-gray-200 bg-white p-5',
+		'shadow-sm transition-shadow hover:shadow-md',
+	)}
 >
 	<div class="flex items-start justify-between gap-4">
 		<div class="flex items-start gap-3">
 			<div
-				class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+				class={clsx(
+					'flex h-12 w-12 shrink-0 items-center justify-center',
+					'rounded-xl bg-primary-100 text-2xl',
+				)}
 			>
 				{config?.emoji ?? '🐾'}
 			</div>

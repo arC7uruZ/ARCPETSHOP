@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import {
 		getAvailableTimeSlots,
@@ -50,7 +51,12 @@
 			max={maxDate}
 			value={bookingStore.selectedDate}
 			oninput={(e) => bookingStore.setDate((e.target as HTMLInputElement).value)}
-			class="focus:ring-primary-500 block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:outline-none"
+			class={clsx(
+				'block w-full',
+				'rounded-xl border border-gray-300',
+				'px-4 py-2.5 text-sm',
+				'focus:border-transparent focus:ring-2 focus:ring-primary-500 focus:outline-none',
+			)}
 		/>
 	</div>
 
@@ -67,10 +73,14 @@
 					{#each availableSlots() as slot}
 						<button
 							type="button"
-							class="rounded-lg border-2 py-2 text-center text-sm font-medium transition-all {bookingStore.selectedTime ===
-							slot
-								? 'border-primary-500 bg-primary-500 text-white'
-								: 'hover:border-primary-300 border-gray-200 text-gray-700'}"
+							class={clsx(
+								'rounded-lg border-2 py-2',
+								'text-center text-sm font-medium',
+								'transition-all',
+								bookingStore.selectedTime === slot
+									? 'border-primary-500 bg-primary-500 text-white'
+									: 'border-gray-200 text-gray-700 hover:border-primary-300',
+							)}
 							onclick={() => bookingStore.setTime(slot)}
 						>
 							{slot}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
+
 	interface Props {
 		open?: boolean;
 		title?: string;
@@ -37,13 +39,19 @@
 		></button>
 
 		<!-- Panel -->
-		<div class="animate-slide-up relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+		<div class={clsx(
+			'animate-slide-up relative z-10',
+			'w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl',
+		)}>
 			{#if title}
 				<div class="mb-4 flex items-center justify-between">
 					<h2 id="modal-title" class="text-lg font-bold text-gray-900">{title}</h2>
 					<button
 						onclick={handleClose}
-						class="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+						class={clsx(
+						'rounded-lg p-1 text-gray-400',
+						'transition-colors hover:bg-gray-100 hover:text-gray-600',
+					)}
 						aria-label="Fechar"
 					>
 						<svg

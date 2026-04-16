@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Pet } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import { formatSpecies } from '$lib/utils';
@@ -34,10 +35,14 @@
 			{#each pets as pet}
 				<button
 					type="button"
-					class="group flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all {bookingStore
-						.selectedPet?.id === pet.id
-						? 'border-primary-500 bg-primary-50'
-						: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'}"
+					class={clsx(
+						'group flex items-center gap-4',
+						'rounded-xl border-2 p-4 text-left',
+						'transition-all',
+						bookingStore.selectedPet?.id === pet.id
+							? 'border-primary-500 bg-primary-50'
+							: 'hover:border-primary-300 border-gray-200 hover:bg-gray-50'
+					)}
 					onclick={() => bookingStore.setPet(pet)}
 				>
 					<div
@@ -54,7 +59,10 @@
 					</div>
 					{#if bookingStore.selectedPet?.id === pet.id}
 						<div
-							class="bg-primary-500 ml-auto flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
+							class={clsx(
+								'bg-primary-500 ml-auto flex h-5 w-5 items-center justify-center rounded-full',
+								'text-xs text-white'
+							)}
 						>
 							✓
 						</div>

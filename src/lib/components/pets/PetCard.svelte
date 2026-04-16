@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Pet } from '$lib/types';
 	import { formatSpecies, formatPetSize } from '$lib/utils';
-	import Button from '$lib/components/ui/Button.svelte';
 
 	interface Props {
 		pet: Pet;
@@ -23,7 +23,10 @@
 <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
 	<div class="flex items-start gap-4">
 		<div
-			class="bg-primary-100 flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-3xl"
+			class={clsx(
+			'flex h-14 w-14 shrink-0 items-center justify-center',
+			'rounded-full bg-primary-100 text-3xl',
+		)}
 		>
 			{pet.avatar_url ? '' : (speciesEmoji[pet.species] ?? '🐾')}
 		</div>
@@ -35,7 +38,10 @@
 					{#if onedit}
 						<button
 							onclick={() => onedit(pet)}
-							class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+							class={clsx(
+							'rounded-lg p-1.5 text-gray-400',
+							'transition-colors hover:bg-gray-100 hover:text-gray-600',
+						)}
 							aria-label="Editar pet"
 						>
 							✏️
@@ -44,7 +50,10 @@
 					{#if ondelete}
 						<button
 							onclick={() => ondelete(pet)}
-							class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+							class={clsx(
+							'rounded-lg p-1.5 text-gray-400',
+							'transition-colors hover:bg-red-50 hover:text-red-500',
+						)}
 							aria-label="Remover pet"
 						>
 							🗑️

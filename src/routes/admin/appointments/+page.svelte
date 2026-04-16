@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { formatDateTime } from '$lib/utils/date.utils';
@@ -71,18 +72,30 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-gray-900">Agendamentos</h1>
-			<p class="text-sm text-gray-500 mt-1">{data.appointments.length} resultado(s)</p>
+			<p class="mt-1 text-sm text-gray-500">{data.appointments.length} resultado(s)</p>
 		</div>
 	</div>
 
 	<!-- Filters -->
-	<form method="GET" class="flex flex-wrap gap-3 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-		<div class="flex-1 min-w-36">
-			<label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+	<form
+		method="GET"
+		class={clsx(
+			'flex flex-wrap gap-3',
+			'rounded-2xl bg-white p-4 shadow-sm',
+			'border border-gray-100'
+		)}
+	>
+		<div class="min-w-36 flex-1">
+			<label for="status-filter" class="mb-1 block text-xs font-medium text-gray-500">Status</label>
 			<select
+				id="status-filter"
 				name="status"
 				value={data.filters.status ?? ''}
-				class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+				class={clsx(
+					'w-full rounded-lg border border-gray-200',
+					'px-3 py-2 text-sm',
+					'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+				)}
 			>
 				<option value="">Todos</option>
 				{#each statusOptions as opt}
@@ -90,21 +103,31 @@
 				{/each}
 			</select>
 		</div>
-		<div class="flex-1 min-w-36">
-			<label class="block text-xs font-medium text-gray-500 mb-1">Data</label>
+		<div class="min-w-36 flex-1">
+			<label for="date" class="mb-1 block text-xs font-medium text-gray-500">Data</label>
 			<input
+				id="date"
 				type="date"
 				name="date"
 				value={data.filters.date ?? ''}
-				class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+				class={clsx(
+					'w-full rounded-lg border border-gray-200',
+					'px-3 py-2 text-sm',
+					'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+				)}
 			/>
 		</div>
-		<div class="flex-1 min-w-36">
-			<label class="block text-xs font-medium text-gray-500 mb-1">Cuidador</label>
+		<div class="min-w-36 flex-1">
+			<label for="caretaker" class="mb-1 block text-xs font-medium text-gray-500">Cuidador</label>
 			<select
+				id="caretaker"
 				name="caretaker"
 				value={data.filters.caretakerId ?? ''}
-				class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+				class={clsx(
+					'w-full rounded-lg border border-gray-200',
+					'px-3 py-2 text-sm',
+					'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+				)}
 			>
 				<option value="">Todos</option>
 				{#each data.caretakers as c}
@@ -115,13 +138,21 @@
 		<div class="flex items-end gap-2">
 			<button
 				type="submit"
-				class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
+				class={clsx(
+					'bg-primary-500 rounded-lg px-4 py-2',
+					'text-sm font-medium text-white',
+					'hover:bg-primary-600 transition-colors'
+				)}
 			>
 				Filtrar
 			</button>
 			<a
 				href="/admin/appointments"
-				class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+				class={clsx(
+					'rounded-lg border border-gray-200 px-4 py-2',
+					'text-sm font-medium text-gray-600',
+					'transition-colors hover:bg-gray-50'
+				)}
 			>
 				Limpar
 			</a>
@@ -129,50 +160,65 @@
 	</form>
 
 	<!-- Table -->
-	<div class="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+	<div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 		{#if data.appointments.length === 0}
 			<div class="py-16 text-center text-gray-400">
-				<svg class="mx-auto h-10 w-10 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+				<svg
+					class="mx-auto mb-3 h-10 w-10"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					stroke-width="1.5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+					/>
 				</svg>
 				<p>Nenhum agendamento encontrado</p>
 			</div>
 		{:else}
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
-					<thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+					<thead class="bg-gray-50 text-xs tracking-wide text-gray-500 uppercase">
 						<tr>
 							<th class="px-6 py-3 text-left">Cliente / Pet</th>
 							<th class="px-6 py-3 text-left">Serviço</th>
-							<th class="px-6 py-3 text-left hidden md:table-cell">Cuidador</th>
-							<th class="px-6 py-3 text-left hidden lg:table-cell">Data/Hora</th>
+							<th class="hidden px-6 py-3 text-left md:table-cell">Cuidador</th>
+							<th class="hidden px-6 py-3 text-left lg:table-cell">Data/Hora</th>
 							<th class="px-6 py-3 text-left">Status</th>
 							<th class="px-6 py-3 text-right">Ação</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-50">
 						{#each data.appointments as appt}
-							<tr class="hover:bg-gray-50/50 transition-colors">
+							<tr class="transition-colors hover:bg-gray-50/50">
 								<td class="px-6 py-4">
 									<p class="font-medium text-gray-900">{appt.user_name}</p>
 									<p class="text-xs text-gray-400">{appt.pet_name} ({appt.pet_species})</p>
 								</td>
 								<td class="px-6 py-4 text-gray-700">{appt.service_name}</td>
-								<td class="px-6 py-4 text-gray-500 hidden md:table-cell">
+								<td class="hidden px-6 py-4 text-gray-500 md:table-cell">
 									{appt.caretaker_name ?? '—'}
 								</td>
-								<td class="px-6 py-4 text-gray-500 hidden lg:table-cell">
+								<td class="hidden px-6 py-4 text-gray-500 lg:table-cell">
 									{formatDateTime(appt.scheduled_at)}
 								</td>
 								<td class="px-6 py-4">
-									<span class="rounded-full px-2.5 py-0.5 text-xs font-medium {statusColors[appt.status]}">
+									<span
+										class={clsx(
+											'rounded-full px-2.5 py-0.5 text-xs font-medium',
+											statusColors[appt.status]
+										)}
+									>
 										{statusLabels[appt.status]}
 									</span>
 								</td>
 								<td class="px-6 py-4 text-right">
 									<button
 										onclick={() => openModal(appt)}
-										class="text-xs font-medium text-primary-600 hover:text-primary-700"
+										class="text-primary-600 hover:text-primary-700 text-xs font-medium"
 									>
 										Gerenciar
 									</button>
@@ -188,27 +234,52 @@
 
 <!-- Modal de gerenciamento -->
 {#if modalOpen && selectedAppointment}
-	<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-			<div class="flex items-center justify-between mb-4">
+			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-lg font-bold text-gray-900">Gerenciar Agendamento</h2>
-				<button onclick={() => (modalOpen = false)} class="text-gray-400 hover:text-gray-600">
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<button
+					aria-label="close-modal"
+					onclick={() => (modalOpen = false)}
+					class="text-gray-400 hover:text-gray-600"
+				>
+					<svg
+						class="h-5 w-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
 			</div>
 
-			<div class="mb-5 rounded-xl bg-gray-50 p-4 space-y-1.5">
-				<p class="text-sm"><span class="font-medium">Cliente:</span> {selectedAppointment.user_name}</p>
+			<div class="mb-5 space-y-1.5 rounded-xl bg-gray-50 p-4">
+				<p class="text-sm">
+					<span class="font-medium">Cliente:</span>
+					{selectedAppointment.user_name}
+				</p>
 				<p class="text-sm"><span class="font-medium">Pet:</span> {selectedAppointment.pet_name}</p>
-				<p class="text-sm"><span class="font-medium">Serviço:</span> {selectedAppointment.service_name}</p>
-				<p class="text-sm"><span class="font-medium">Data/Hora:</span> {formatDateTime(selectedAppointment.scheduled_at)}</p>
+				<p class="text-sm">
+					<span class="font-medium">Serviço:</span>
+					{selectedAppointment.service_name}
+				</p>
+				<p class="text-sm">
+					<span class="font-medium">Data/Hora:</span>
+					{formatDateTime(selectedAppointment.scheduled_at)}
+				</p>
 				{#if selectedAppointment.caretaker_name}
-					<p class="text-sm"><span class="font-medium">Cuidador:</span> {selectedAppointment.caretaker_name}</p>
+					<p class="text-sm">
+						<span class="font-medium">Cuidador:</span>
+						{selectedAppointment.caretaker_name}
+					</p>
 				{/if}
 				{#if selectedAppointment.notes}
-					<p class="text-sm"><span class="font-medium">Observações:</span> {selectedAppointment.notes}</p>
+					<p class="text-sm">
+						<span class="font-medium">Observações:</span>
+						{selectedAppointment.notes}
+					</p>
 				{/if}
 			</div>
 
@@ -227,11 +298,16 @@
 				<input type="hidden" name="appointmentId" value={selectedAppointment.id} />
 
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+					<label for="status" class="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
 					<select
+                        id="status"
 						name="status"
 						bind:value={selectedStatus}
-						class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+						class={clsx(
+							'w-full rounded-xl border border-gray-200',
+							'px-3 py-2.5 text-sm',
+							'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+						)}
 					>
 						{#each statusOptions as opt}
 							<option value={opt.value}>{opt.label}</option>
@@ -240,13 +316,18 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1.5">Notas internas</label>
+					<label for="notes" class="mb-1.5 block text-sm font-medium text-gray-700">Notas internas</label>
 					<textarea
+                        id="notes"
 						name="internalNotes"
 						bind:value={internalNotes}
 						rows={3}
 						placeholder="Observações visíveis apenas para administradores..."
-						class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+						class={clsx(
+							'w-full resize-none rounded-xl border border-gray-200',
+							'px-3 py-2.5 text-sm',
+							'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+						)}
 					></textarea>
 				</div>
 
@@ -254,14 +335,22 @@
 					<button
 						type="button"
 						onclick={() => (modalOpen = false)}
-						class="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+						class={clsx(
+							'flex-1 rounded-xl border border-gray-200 py-2.5',
+							'text-sm font-medium text-gray-700',
+							'transition-colors hover:bg-gray-50'
+						)}
 					>
 						Cancelar
 					</button>
 					<button
 						type="submit"
 						disabled={updating}
-						class="flex-1 rounded-xl bg-primary-500 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-60 transition-colors"
+						class={clsx(
+							'bg-primary-500 flex-1 rounded-xl py-2.5',
+							'text-sm font-medium text-white',
+							'hover:bg-primary-600 transition-colors disabled:opacity-60'
+						)}
 					>
 						{updating ? 'Salvando...' : 'Salvar'}
 					</button>

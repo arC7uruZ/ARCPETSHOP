@@ -45,7 +45,7 @@
 	];
 </script>
 
-<section class="section from-primary-50 to-secondary-50 bg-gradient-to-br">
+<section class="section from-primary-50 to-secondary-50 bg-linear-to-br">
 	<div class="container-app">
 		<div class="text-center">
 			<h2 class="section-title">O que dizem nossos clientes</h2>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { clsx } from 'clsx';
 	import type { Service, Pet, Caretaker } from '$lib/types';
 	import { bookingStore } from '$lib/stores/booking.store.svelte';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
@@ -46,12 +47,17 @@
 				{#each steps as _, i}
 					<div class="flex flex-1 items-center">
 						<div
-							class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors {bookingStore.step >
-							i + 1
-								? 'bg-primary-500 text-white'
-								: bookingStore.step === i + 1
-									? 'bg-primary-500 ring-primary-100 text-white ring-4'
-									: 'bg-gray-200 text-gray-500'}"
+							class={clsx(
+								'flex items-center justify-center',
+								'h-8 w-8',
+								'rounded-full text-sm font-bold',
+								'transition-colors',
+								bookingStore.step > i + 1
+									? 'bg-primary-500 text-white'
+									: bookingStore.step === i + 1
+										? 'bg-primary-500 ring-primary-100 text-white ring-4'
+										: 'bg-gray-200 text-gray-500'
+							)}
 						>
 							{#if bookingStore.step > i + 1}
 								✓
@@ -61,9 +67,10 @@
 						</div>
 						{#if i < steps.length - 1}
 							<div
-								class="mx-2 h-1 flex-1 rounded-full transition-colors {bookingStore.step > i + 1
-									? 'bg-primary-500'
-									: 'bg-gray-200'}"
+								class={clsx(
+									'mx-2 h-1 flex-1 rounded-full transition-colors',
+									bookingStore.step > i + 1 ? 'bg-primary-500' : 'bg-gray-200'
+								)}
 							></div>
 						{/if}
 					</div>
@@ -92,7 +99,11 @@
 					action="?/create"
 					use:enhance={() => {
 						loading = true;
-						return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+						return async ({
+							update
+						}: {
+							update: (opts?: { reset?: boolean }) => Promise<void>;
+						}) => {
 							await update({ reset: false });
 							loading = false;
 						};
@@ -100,7 +111,11 @@
 				>
 					<input type="hidden" name="serviceId" value={bookingStore.selectedService?.id ?? ''} />
 					<input type="hidden" name="petId" value={bookingStore.selectedPet?.id ?? ''} />
-					<input type="hidden" name="caretakerId" value={bookingStore.selectedCaretaker?.id ?? ''} />
+					<input
+						type="hidden"
+						name="caretakerId"
+						value={bookingStore.selectedCaretaker?.id ?? ''}
+					/>
 					<input
 						type="hidden"
 						name="scheduledAt"

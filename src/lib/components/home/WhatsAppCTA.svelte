@@ -1,12 +1,16 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { getDefaultWhatsAppUrl } from '$lib/utils/whatsapp.utils';
 	import { siteConfig } from '$lib/config/site.config';
 </script>
 
-<section class="section bg-gradient-to-r from-green-500 to-green-600">
+<section class="section bg-linear-to-r from-green-500 to-green-600">
 	<div class="container-app">
-		<div class="flex flex-col items-center gap-8 text-center text-white lg:flex-row lg:text-left">
+		<div class={clsx(
+			'flex flex-col items-center gap-8 text-center text-white',
+			'lg:flex-row lg:text-left',
+		)}>
 			<div class="lg:flex-1">
 				<div class="mb-3 text-4xl">💬</div>
 				<h2 class="font-display text-3xl font-bold sm:text-4xl">Fale conosco pelo WhatsApp!</h2>

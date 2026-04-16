@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { clsx } from 'clsx';
 	import type { Toast } from '$lib/types';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 
@@ -24,9 +25,11 @@
 </script>
 
 <div
-	class="animate-slide-up flex items-start gap-3 rounded-xl border p-4 shadow-lg {colors[
-		toast.type
-	]}"
+	class={clsx(
+		'animate-slide-up flex items-start gap-3',
+		'rounded-xl border p-4 shadow-lg',
+		colors[toast.type],
+	)}
 	role="alert"
 >
 	<span class="text-lg leading-none">{icons[toast.type]}</span>

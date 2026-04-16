@@ -22,7 +22,7 @@
 	let deleteModal = $state(false);
 	let petToDelete = $state<Pet | null>(null);
 	let profileLoading = $state(false);
-    let deletePetLoading = $state(false);
+	let deletePetLoading = $state(false);
 
 	$effect(() => {
 		if (form?.success && form.action === 'profile') uiStore.success('Perfil atualizado!');
@@ -56,7 +56,7 @@
 	<title>Meu Perfil — ArcPetShop</title>
 </svelte:head>
 
-<div class="from-primary-500 to-primary-600 bg-gradient-to-r pt-28 pb-20">
+<div class="from-primary-500 to-primary-600 bg-linear-to-r pt-28 pb-20">
 	<div class="container-app text-white">
 		<h1 class="font-display text-3xl font-bold">Meu Perfil</h1>
 		<p class="text-primary-100 mt-1">Gerencie suas informações e pets.</p>
@@ -183,17 +183,21 @@
 
 	{#snippet footer()}
 		<Button variant="ghost" size="md" onclick={() => (deleteModal = false)}>Cancelar</Button>
-		<form method="POST" action="?/deletePet"
-				use:enhance={() => {
-					deletePetLoading = true;
-					return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
-						await update();
-						deletePetLoading = false;
-					};
-				}}
-        >
+		<form
+			method="POST"
+			action="?/deletePet"
+			use:enhance={() => {
+				deletePetLoading = true;
+				return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+					await update();
+					deletePetLoading = false;
+				};
+			}}
+		>
 			<input type="hidden" name="petId" value={petToDelete?.id ?? ''} />
-			<Button type="submit" variant="danger" size="md" loading={deletePetLoading}>Remover pet</Button>
+			<Button type="submit" variant="danger" size="md" loading={deletePetLoading}
+				>Remover pet</Button
+			>
 		</form>
 	{/snippet}
 </Modal>
