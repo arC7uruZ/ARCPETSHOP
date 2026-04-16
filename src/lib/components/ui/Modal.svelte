@@ -41,11 +41,12 @@
 
 		<!-- Panel -->
 		<div class={clsx(
-			'animate-slide-up relative z-10',
-			'w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl',
+			'animate-slide-up relative z-10 flex flex-col',
+			'w-full max-w-lg rounded-2xl bg-white shadow-2xl',
+			'max-h-[calc(100dvh-2rem)]',
 		)}>
 			{#if title}
-				<div class="mb-4 flex items-center justify-between">
+				<div class="flex shrink-0 items-center justify-between border-b border-gray-100 px-6 py-4">
 					<h2 id="modal-title" class="text-lg font-bold text-gray-900">{title}</h2>
 					<button
 						onclick={handleClose}
@@ -60,10 +61,10 @@
 				</div>
 			{/if}
 
-			<div>{@render children?.()}</div>
+			<div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">{@render children?.()}</div>
 
 			{#if footer}
-				<div class="mt-6 flex justify-end gap-3">
+				<div class="flex shrink-0 justify-end gap-3 border-t border-gray-100 px-6 py-4">
 					{@render footer()}
 				</div>
 			{/if}

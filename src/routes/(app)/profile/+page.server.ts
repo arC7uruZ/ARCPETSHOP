@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
-import { fetchProfile, updateProfile } from '$lib/server/profiles.server';
-import { fetchPets, createPet, updatePet, deletePet } from '$lib/server/pets.server';
+import { fetchProfile, updateProfile, uploadAvatar } from '$lib/server/profiles.server';
+import { fetchPets, createPet, updatePet, deletePet, uploadPetAvatar } from '$lib/server/pets.server';
 import { profileSchema, petSchema } from '$lib/utils/validation.utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -48,6 +48,33 @@ export const actions: Actions = {
 		return { success: true, action: 'profile' };
 	},
 
+	uploadAvatar: async ({ request, locals }) => {
+		const { user } = locals;
+		if (!user) redirect(303, '/login');
+
+		const formData = await request.formData();
+		const file = formData.get('avatar') as File | null;
+
+		if (!file || file.size === 0) return fail(400, { error: 'Nenhum arquivo selecionado.', action: 'avatar' });
+		if (!file.type.startsWith('image/')) return fail(400, { error: 'Apenas imagens são permitidas.', action: 'avatar' });
+		if (file.size > 5 * 1024 * 1024) return fail(400, { error: 'A imagem deve ter no máximo 5 MB.', action: 'avatar' });
+
+		try {
+			const avatarUrl = await uploadAvatar(locals.supabase, user.id, file);
+
+			const { error: dbErr } = await locals.supabase
+				.from('profiles')
+				.update({ avatar_url: avatarUrl })
+				.eq('id', user.id);
+
+			if (dbErr) return fail(500, { error: dbErr.message, action: 'avatar' });
+		} catch (e: unknown) {
+			const msg = e instanceof Error ? e.message : 'Erro ao enviar foto';
+			return fail(500, { error: msg, action: 'avatar' });
+		}
+		return { success: true, action: 'avatar' };
+	},
+
 	createPet: async ({ request, locals }) => {
 		const { user } = locals;
 		if (!user) redirect(303, '/login');
@@ -73,7 +100,13 @@ export const actions: Actions = {
 		}
 
 		try {
-			await createPet(locals.supabase, { ...data, owner_id: user.id } as never);
+			const pet = await createPet(locals.supabase, { ...data, owner_id: user.id } as never);
+
+			const avatarFile = formData.get('avatar') as File | null;
+			if (avatarFile && avatarFile.size > 0 && avatarFile.type.startsWith('image/')) {
+				const avatarUrl = await uploadPetAvatar(locals.supabase, pet.id, user.id, avatarFile);
+				await locals.supabase.from('pets').update({ avatar_url: avatarUrl }).eq('id', pet.id);
+			}
 		} catch (e: unknown) {
 			const msg = e instanceof Error ? e.message : 'Erro ao criar pet';
 			return fail(500, { error: msg, action: 'pet' });
@@ -101,7 +134,15 @@ export const actions: Actions = {
 		};
 
 		try {
-			await updatePet(locals.supabase, petId, data as never);
+			const avatarFile = formData.get('avatar') as File | null;
+			let updates: typeof data & { avatar_url?: string } = data;
+
+			if (avatarFile && avatarFile.size > 0 && avatarFile.type.startsWith('image/')) {
+				const avatarUrl = await uploadPetAvatar(locals.supabase, petId, user.id, avatarFile);
+				updates = { ...data, avatar_url: avatarUrl };
+			}
+
+			await updatePet(locals.supabase, petId, updates as never);
 		} catch (e: unknown) {
 			const msg = e instanceof Error ? e.message : 'Erro ao atualizar pet';
 			return fail(500, { error: msg, action: 'updatePet' });

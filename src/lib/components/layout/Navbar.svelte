@@ -65,8 +65,21 @@
 			{#if authStore.isAuthenticated}
 				<a
 					href="/dashboard"
-					class="hover:text-primary-600 text-sm font-medium text-gray-700 transition-colors"
+					class="hover:text-primary-600 flex items-center gap-2 text-sm font-medium text-gray-700 transition-colors"
 				>
+					{#if authStore.profile?.avatar_url}
+						<img
+							src={authStore.profile.avatar_url}
+							alt="Foto de perfil"
+							class="h-7 w-7 rounded-full object-cover ring-2 ring-white shadow-sm"
+						/>
+					{:else}
+						<span
+							class="bg-primary-100 text-primary-700 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold"
+						>
+							{authStore.profile?.full_name?.[0]?.toUpperCase() ?? '?'}
+						</span>
+					{/if}
 					Minha Conta
 				</a>
 				<Button variant="outline" size="sm" href="/booking">Agendar</Button>
@@ -112,10 +125,23 @@
 					{#if authStore.isAuthenticated}
 						<a
 							href="/dashboard"
-							class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+							class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
 							onclick={() => uiStore.closeMobileMenu()}
 						>
-							Perfil
+							{#if authStore.profile?.avatar_url}
+								<img
+									src={authStore.profile.avatar_url}
+									alt="Foto de perfil"
+									class="h-8 w-8 rounded-full object-cover"
+								/>
+							{:else}
+								<span
+									class="bg-primary-100 text-primary-700 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
+								>
+									{authStore.profile?.full_name?.[0]?.toUpperCase() ?? '?'}
+								</span>
+							{/if}
+							Minha Conta
 						</a>
 					{:else}
 						<Button variant="outline" size="sm" fullWidth href="/login">Entrar</Button>

@@ -5,6 +5,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Select from '$lib/components/ui/Select.svelte';
 	import Textarea from '$lib/components/ui/Textarea.svelte';
+	import AvatarUpload from '$lib/components/ui/AvatarUpload.svelte';
 
 	interface Props {
 		pet?: Pet | null;
@@ -33,6 +34,14 @@
 	let notes = $state(pet?.notes ?? '');
 	let loading = $state(false);
 
+	const speciesEmoji: Record<string, string> = {
+		dog: '🐕',
+		cat: '🐈',
+		bird: '🐦',
+		rabbit: '🐇',
+		other: '🐾'
+	};
+
 	const speciesOptions = [
 		{ value: 'dog', label: '🐕 Cachorro' },
 		{ value: 'cat', label: '🐈 Gato' },
@@ -52,6 +61,7 @@
 <form
 	method="POST"
 	action={formAction}
+	enctype="multipart/form-data"
 	use:enhance={() => {
 		loading = true;
 		return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
@@ -68,6 +78,18 @@
 	{#if form?.error}
 		<div class="rounded-xl bg-red-50 p-3 text-sm text-red-600">{form.error}</div>
 	{/if}
+
+	<!-- Pet avatar -->
+	<div class="flex justify-center rounded-xl bg-gray-50 py-4">
+		<AvatarUpload
+			currentUrl={pet?.avatar_url}
+			name="avatar"
+			size="md"
+			shape="rounded"
+			placeholder={speciesEmoji[species] ?? '🐾'}
+			facing="environment"
+		/>
+	</div>
 
 	<div class="grid gap-4 sm:grid-cols-2">
 		<Input

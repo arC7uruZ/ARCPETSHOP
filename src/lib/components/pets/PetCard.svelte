@@ -25,10 +25,14 @@
 		<div
 			class={clsx(
 			'flex h-14 w-14 shrink-0 items-center justify-center',
-			'rounded-full bg-primary-100 text-3xl',
+			'overflow-hidden rounded-full bg-primary-100 text-3xl',
 		)}
 		>
-			{pet.avatar_url ? '' : (speciesEmoji[pet.species] ?? '🐾')}
+			{#if pet.avatar_url}
+				<img src={pet.avatar_url} alt={pet.name} class="h-full w-full object-cover" />
+			{:else}
+				{speciesEmoji[pet.species] ?? '🐾'}
+			{/if}
 		</div>
 
 		<div class="flex-1">

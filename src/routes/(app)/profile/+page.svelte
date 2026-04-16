@@ -9,6 +9,7 @@
 	import PetCard from '$lib/components/pets/PetCard.svelte';
 	import PetForm from '$lib/components/pets/PetForm.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import AvatarUpload from '$lib/components/ui/AvatarUpload.svelte';
 
 	interface Props {
 		data: PageData;
@@ -23,8 +24,14 @@
 	let petToDelete = $state<Pet | null>(null);
 	let profileLoading = $state(false);
 	let deletePetLoading = $state(false);
+	let avatarLoading = $state(false);
+	let hasNewAvatar = $state(false);
 
 	$effect(() => {
+		if (form?.success && form.action === 'avatar') {
+			uiStore.success('Foto de perfil atualizada!');
+			hasNewAvatar = false;
+		}
 		if (form?.success && form.action === 'profile') uiStore.success('Perfil atualizado!');
 		if (form?.success && form.action === 'createPet') {
 			uiStore.success('Pet adicionado com sucesso!');
@@ -68,6 +75,39 @@
 		<!-- Profile form -->
 		<div class="rounded-2xl bg-white p-6 shadow-md">
 			<h2 class="mb-6 font-bold text-gray-900">Informações pessoais</h2>
+
+			<!-- Avatar upload -->
+			<form
+				method="POST"
+				action="?/uploadAvatar"
+				enctype="multipart/form-data"
+				use:enhance={() => {
+					avatarLoading = true;
+					return async ({ update }: { update: (opts?: { reset?: boolean }) => Promise<void> }) => {
+						await update({ reset: false });
+						avatarLoading = false;
+					};
+				}}
+				class="mb-6 flex flex-col items-center gap-4 rounded-xl bg-gray-50 p-5"
+			>
+				{#if form?.error && form.action === 'avatar'}
+					<div class="w-full rounded-xl bg-red-50 p-3 text-sm text-red-600">{form.error}</div>
+				{/if}
+				<AvatarUpload
+					currentUrl={data.profile?.avatar_url}
+					name="avatar"
+					size="lg"
+					shape="circle"
+					placeholder={data.profile?.full_name?.[0]?.toUpperCase() ?? '👤'}
+					facing="user"
+					bind:hasFile={hasNewAvatar}
+				/>
+				{#if hasNewAvatar}
+					<Button type="submit" variant="primary" size="sm" loading={avatarLoading}>
+						Salvar foto
+					</Button>
+				{/if}
+			</form>
 
 			<form
 				method="POST"
