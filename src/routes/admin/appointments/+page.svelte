@@ -14,6 +14,8 @@
 
 	let { data, form }: Props = $props();
 
+	const canWrite = $derived(data.canWrite);
+
 	const statusColors: Record<string, string> = {
 		pending: 'bg-yellow-100 text-yellow-800',
 		confirmed: 'bg-blue-100 text-blue-800',
@@ -72,7 +74,9 @@
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
 		<div>
-			<h1 class="text-2xl font-bold text-gray-900">Agendamentos</h1>
+			<h1 class="text-2xl font-bold text-gray-900">
+				{data.isOwnOnly ? "Meus Agendamentos" : "Agendamentos"}
+			</h1>
 			<p class="mt-1 text-sm text-gray-500">{data.appointments.length} resultado(s)</p>
 		</div>
 	</div>
@@ -118,24 +122,26 @@
 				)}
 			/>
 		</div>
-		<div class="min-w-36 flex-1">
-			<label for="caretaker" class="mb-1 block text-xs font-medium text-gray-500">Cuidador</label>
-			<select
-				id="caretaker"
-				name="caretaker"
-				value={data.filters.caretakerId ?? ''}
-				class={clsx(
-					'w-full rounded-lg border border-gray-200',
-					'px-3 py-2 text-sm',
-					'focus:ring-primary-500 focus:ring-2 focus:outline-none'
-				)}
-			>
-				<option value="">Todos</option>
-				{#each data.caretakers as c}
-					<option value={c.id}>{c.name}</option>
-				{/each}
-			</select>
-		</div>
+		{#if !data.isOwnOnly}
+			<div class="min-w-36 flex-1">
+				<label for="caretaker" class="mb-1 block text-xs font-medium text-gray-500">Cuidador</label>
+				<select
+					id="caretaker"
+					name="caretaker"
+					value={data.filters.caretakerId ?? ''}
+					class={clsx(
+						'w-full rounded-lg border border-gray-200',
+						'px-3 py-2 text-sm',
+						'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+					)}
+				>
+					<option value="">Todos</option>
+					{#each data.caretakers as c}
+						<option value={c.id}>{c.name}</option>
+					{/each}
+				</select>
+			</div>
+		{/if}
 		<div class="flex items-end gap-2">
 			<button
 				type="submit"
@@ -205,12 +211,21 @@
 									</span>
 								</td>
 								<td class="px-6 py-4 text-right">
-									<button
-										onclick={() => openModal(appt)}
-										class="text-primary-600 hover:text-primary-700 text-xs font-medium"
-									>
-										Gerenciar
-									</button>
+									{#if canWrite}
+										<button
+											onclick={() => openModal(appt)}
+											class="text-primary-600 hover:text-primary-700 text-xs font-medium"
+										>
+											Gerenciar
+										</button>
+									{:else}
+										<button
+											onclick={() => openModal(appt)}
+											class="text-xs font-medium text-gray-400 hover:text-gray-600"
+										>
+											Ver detalhes
+										</button>
+									{/if}
 								</td>
 							</tr>
 						{/each}
@@ -264,79 +279,103 @@
 				{/if}
 			</div>
 
-			<form
-				method="POST"
-				action="?/updateStatus"
-				use:enhance={() => {
-					updating = true;
-					return async ({ update }) => {
-						await update({ reset: false });
-						updating = false;
-					};
-				}}
-				class="space-y-4"
-			>
-				<input type="hidden" name="appointmentId" value={selectedAppointment.id} />
+			{#if canWrite}
+				<form
+					method="POST"
+					action="?/updateStatus"
+					use:enhance={() => {
+						updating = true;
+						return async ({ update }) => {
+							await update({ reset: false });
+							updating = false;
+						};
+					}}
+					class="space-y-4"
+				>
+					<input type="hidden" name="appointmentId" value={selectedAppointment.id} />
 
-				<div>
-					<label for="status" class="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
-					<select
-                        id="status"
-						name="status"
-						bind:value={selectedStatus}
-						class={clsx(
-							'w-full rounded-xl border border-gray-200',
-							'px-3 py-2.5 text-sm',
-							'focus:ring-primary-500 focus:ring-2 focus:outline-none'
-						)}
-					>
-						{#each statusOptions as opt}
-							<option value={opt.value}>{opt.label}</option>
-						{/each}
-					</select>
-				</div>
+					<div>
+						<label for="status" class="mb-1.5 block text-sm font-medium text-gray-700">Status</label>
+						<select
+							id="status"
+							name="status"
+							bind:value={selectedStatus}
+							class={clsx(
+								'w-full rounded-xl border border-gray-200',
+								'px-3 py-2.5 text-sm',
+								'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+							)}
+						>
+							{#each statusOptions as opt}
+								<option value={opt.value}>{opt.label}</option>
+							{/each}
+						</select>
+					</div>
 
-				<div>
-					<label for="notes" class="mb-1.5 block text-sm font-medium text-gray-700">Notas internas</label>
-					<textarea
-                        id="notes"
-						name="internalNotes"
-						bind:value={internalNotes}
-						rows={3}
-						placeholder="Observações visíveis apenas para administradores..."
-						class={clsx(
-							'w-full resize-none rounded-xl border border-gray-200',
-							'px-3 py-2.5 text-sm',
-							'focus:ring-primary-500 focus:ring-2 focus:outline-none'
-						)}
-					></textarea>
-				</div>
+					<div>
+						<label for="notes" class="mb-1.5 block text-sm font-medium text-gray-700">Notas internas</label>
+						<textarea
+							id="notes"
+							name="internalNotes"
+							bind:value={internalNotes}
+							rows={3}
+							placeholder="Observações visíveis apenas para administradores..."
+							class={clsx(
+								'w-full resize-none rounded-xl border border-gray-200',
+								'px-3 py-2.5 text-sm',
+								'focus:ring-primary-500 focus:ring-2 focus:outline-none'
+							)}
+						></textarea>
+					</div>
 
-				<div class="flex gap-3 pt-2">
-					<button
-						type="button"
-						onclick={() => (modalOpen = false)}
-						class={clsx(
-							'flex-1 rounded-xl border border-gray-200 py-2.5',
-							'text-sm font-medium text-gray-700',
-							'transition-colors hover:bg-gray-50'
-						)}
-					>
-						Cancelar
-					</button>
-					<button
-						type="submit"
-						disabled={updating}
-						class={clsx(
-							'bg-primary-500 flex-1 rounded-xl py-2.5',
-							'text-sm font-medium text-white',
-							'hover:bg-primary-600 transition-colors disabled:opacity-60'
-						)}
-					>
-						{updating ? 'Salvando...' : 'Salvar'}
-					</button>
+					<div class="flex gap-3 pt-2">
+						<button
+							type="button"
+							onclick={() => (modalOpen = false)}
+							class={clsx(
+								'flex-1 rounded-xl border border-gray-200 py-2.5',
+								'text-sm font-medium text-gray-700',
+								'transition-colors hover:bg-gray-50'
+							)}
+						>
+							Cancelar
+						</button>
+						<button
+							type="submit"
+							disabled={updating}
+							class={clsx(
+								'bg-primary-500 flex-1 rounded-xl py-2.5',
+								'text-sm font-medium text-white',
+								'hover:bg-primary-600 transition-colors disabled:opacity-60'
+							)}
+						>
+							{updating ? 'Salvando...' : 'Salvar'}
+						</button>
+					</div>
+				</form>
+			{:else}
+				<!-- Modo leitura para caretakers -->
+				<div class="space-y-2 rounded-xl bg-gray-50 p-4">
+					<p class="text-sm">
+						<span class="font-medium">Status:</span>
+						<span class={clsx('ml-1 rounded-full px-2 py-0.5 text-xs font-medium', statusColors[selectedAppointment.status])}>
+							{statusLabels[selectedAppointment.status]}
+						</span>
+					</p>
+					{#if selectedAppointment.notes}
+						<p class="text-sm">
+							<span class="font-medium">Observações:</span>
+							{selectedAppointment.notes}
+						</p>
+					{/if}
 				</div>
-			</form>
+				<button
+					onclick={() => (modalOpen = false)}
+					class="mt-4 w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+				>
+					Fechar
+				</button>
+			{/if}
 		</div>
 	</div>
 {/if}

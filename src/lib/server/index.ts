@@ -3,3 +3,4 @@ export * from './pets.server';
 export * from './profiles.server';
 export * from './services.server';
 export * from './twilio.server';
+export * from './permissions.server';

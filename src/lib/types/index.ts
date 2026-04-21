@@ -3,6 +3,35 @@ export type { Database } from './database.types';
 // ─── Roles ───────────────────────────────────────────────────────────────────
 export type UserRole = 'customer' | 'caretaker' | 'admin' | 'root_admin';
 
+// ─── RBAC ─────────────────────────────────────────────────────────────────────
+export type PermissionName =
+	| 'dashboard:read'
+	| 'appointments:read'
+	| 'appointments:read:all'
+	| 'appointments:write'
+	| 'caretakers:read'
+	| 'caretakers:write'
+	| 'users:read'
+	| 'users:write'
+	| 'services:read'
+	| 'services:write'
+	| 'stats:read';
+
+export interface Permission {
+	id: string;
+	name: PermissionName;
+	description: string | null;
+	created_at: string;
+}
+
+export interface Role {
+	id: string;
+	name: string;
+	description: string | null;
+	is_system: boolean;
+	created_at: string;
+}
+
 // ─── Profile ────────────────────────────────────────────────────────────────
 export interface Profile {
 	id: string;

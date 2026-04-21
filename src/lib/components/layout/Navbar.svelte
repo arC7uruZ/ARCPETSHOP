@@ -1,40 +1,42 @@
 <script lang="ts">
-	import { clsx } from 'clsx';
-	import { page } from '$app/state';
-	import { authStore } from '$lib/stores/auth.store.svelte';
-	import { uiStore } from '$lib/stores/ui.store.svelte';
-	import { siteConfig } from '$lib/config/site.config';
-	import Button from '$lib/components/ui/Button.svelte';
-	import { X, Menu } from 'lucide-svelte';
+	import { clsx } from "clsx";
+	import { page } from "$app/state";
+	import { authStore } from "$lib/stores/auth.store.svelte";
+	import { uiStore } from "$lib/stores/ui.store.svelte";
+	import { siteConfig } from "$lib/config/site.config";
+	import Button from "$lib/components/ui/Button.svelte";
+	import { X, Menu } from "lucide-svelte";
 
 	const navLinks = [
-		{ href: '/', label: 'Início' },
-		{ href: '/services', label: 'Serviços' },
-		{ href: '/store', label: 'Loja' },
-		{ href: '/about', label: 'Quem Somos' }
+		{ href: "/", label: "Início" },
+		{ href: "/services", label: "Serviços" },
+		{ href: "/store", label: "Loja" },
+		{ href: "/about", label: "Quem Somos" }
 	];
 
 	let scrolled = $state(false);
 
 	// Na home a navbar começa transparente e fica sólida ao rolar.
 	// Em qualquer outra página fica sempre sólida (o header das páginas tem cor própria).
-	const isHome = $derived(page.url.pathname === '/');
+	const isHome = $derived(page.url.pathname === "/");
 
 	$effect(() => {
 		const handler = () => {
 			scrolled = window.scrollY > 20;
 		};
-		window.addEventListener('scroll', handler, { passive: true });
-		return () => window.removeEventListener('scroll', handler);
+		window.addEventListener("scroll", handler, { passive: true });
+		return () => window.removeEventListener("scroll", handler);
 	});
 </script>
 
 <header
-	class={clsx(
-		'fixed top-0 right-0 left-0 z-40',
-		'transition-all duration-300',
-		!isHome || scrolled ? 'bg-white/95 shadow-sm backdrop-blur-md' : 'bg-transparent'
-	)}
+	class={[
+		"fixed top-0 right-0 left-0 z-40",
+		"transition-all duration-300",
+		!isHome || scrolled
+			? "bg-white/95 shadow-sm backdrop-blur-md"
+			: "bg-transparent"
+	]}
 >
 	<nav class="container-app flex h-16 items-center justify-between">
 		<!-- Logo -->
@@ -49,10 +51,10 @@
 				<a
 					href={link.href}
 					class={clsx(
-						'text-sm font-medium transition-colors',
+						"text-sm font-medium transition-colors",
 						page.url.pathname === link.href
-							? 'text-primary-600'
-							: 'hover:text-primary-600 text-gray-700'
+							? "text-primary-600"
+							: "hover:text-primary-600 text-gray-700"
 					)}
 				>
 					{link.label}
@@ -65,23 +67,34 @@
 			{#if authStore.isAuthenticated}
 				<a
 					href="/dashboard"
-					class="hover:text-primary-600 flex items-center gap-2 text-sm font-medium text-gray-700 transition-colors"
+					class={[
+						"hover:text-primary-600 flex items-center gap-2 text-sm font-medium text-gray-700",
+						"transition-colors"
+					]}
 				>
 					{#if authStore.profile?.avatar_url}
 						<img
 							src={authStore.profile.avatar_url}
 							alt="Foto de perfil"
-							class="h-7 w-7 rounded-full object-cover ring-2 ring-white shadow-sm"
+							class="h-7 w-7 rounded-full object-cover shadow-sm ring-2 ring-white"
 						/>
 					{:else}
 						<span
-							class="bg-primary-100 text-primary-700 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold"
+							class={[
+								"bg-primary-100 text-primary-700 flex h-7 w-7 items-center justify-center",
+								"rounded-full text-xs font-bold"
+							]}
 						>
-							{authStore.profile?.full_name?.[0]?.toUpperCase() ?? '?'}
+							{authStore.profile?.full_name?.[0]?.toUpperCase() ?? "?"}
 						</span>
 					{/if}
 					Minha Conta
 				</a>
+				{#if authStore.isAdmin}
+					<Button variant="primary" size="sm" href="/admin" class="bg-blue-500">
+						Admin
+					</Button>
+				{/if}
 				<Button variant="outline" size="sm" href="/booking">Agendar</Button>
 			{:else}
 				<Button variant="ghost" size="sm" href="/login">Entrar</Button>
@@ -110,12 +123,12 @@
 				{#each navLinks as link}
 					<a
 						href={link.href}
-						class={clsx(
-							'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+						class={[
+							"rounded-lg px-3 py-2 text-sm font-medium transition-colors",
 							page.url.pathname === link.href
-								? 'bg-primary-50 text-primary-600'
-								: 'text-gray-700 hover:bg-gray-50'
-						)}
+								? "bg-primary-50 text-primary-600"
+								: "text-gray-700 hover:bg-gray-50"
+						]}
 						onclick={() => uiStore.closeMobileMenu()}
 					>
 						{link.label}
@@ -125,7 +138,10 @@
 					{#if authStore.isAuthenticated}
 						<a
 							href="/dashboard"
-							class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+							class={[
+								"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700",
+								"hover:bg-gray-50"
+							]}
 							onclick={() => uiStore.closeMobileMenu()}
 						>
 							{#if authStore.profile?.avatar_url}
@@ -136,16 +152,31 @@
 								/>
 							{:else}
 								<span
-									class="bg-primary-100 text-primary-700 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
+									class={[
+										"text-primary-700 bg-primary-100 flex h-8 w-8 items-center justify-center",
+										"rounded-full text-sm font-bold"
+									]}
 								>
-									{authStore.profile?.full_name?.[0]?.toUpperCase() ?? '?'}
+									{authStore.profile?.full_name?.[0]?.toUpperCase() ?? "?"}
 								</span>
 							{/if}
 							Minha Conta
 						</a>
+						{#if authStore.isAdmin}
+							<Button
+								variant="primary"
+								size="sm"
+								href="/admin"
+								class="bg-blue-500">Admin</Button
+							>
+						{/if}
 					{:else}
-						<Button variant="outline" size="sm" fullWidth href="/login">Entrar</Button>
-						<Button variant="primary" size="sm" fullWidth href="/register">Cadastrar</Button>
+						<Button variant="outline" size="sm" fullWidth href="/login">
+							Entrar
+						</Button>
+						<Button variant="primary" size="sm" fullWidth href="/register">
+							Cadastrar
+						</Button>
 					{/if}
 				</div>
 			</div>

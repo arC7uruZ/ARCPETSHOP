@@ -1,5 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
+import { getUserPermissions } from '$lib/server/permissions.server';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user } = locals;
@@ -13,12 +14,20 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
 	const role = profile?.role ?? 'customer';
 
-	if (role !== 'admin' && role !== 'root_admin') {
+	// admins e caretakers têm acesso; customers não
+	const allowedRoles = ['admin', 'root_admin', 'caretaker'];
+	if (!allowedRoles.includes(role)) {
 		redirect(303, '/dashboard');
 	}
 
+	// Caretakers e roles não-admin precisam de permissões explícitas
+	// Admins e root_admin têm bypass no hasPermission — carregamos mesmo assim
+	// para exibir na UI de gerenciamento de roles
+	const permissions = await getUserPermissions(locals.supabase, user.id);
+
 	return {
-		userRole: role as 'admin' | 'root_admin',
-		adminName: profile?.full_name ?? ''
+		userRole: role as 'admin' | 'root_admin' | 'caretaker',
+		adminName: profile?.full_name ?? '',
+		permissions
 	};
 };

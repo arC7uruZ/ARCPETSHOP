@@ -283,6 +283,76 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			permissions: {
+				Row: {
+					id: string;
+					name: string;
+					description: string | null;
+					created_at: string;
+				};
+				Insert: {
+					id?: string;
+					name: string;
+					description?: string | null;
+					created_at?: string;
+				};
+				Update: {
+					id?: string;
+					name?: string;
+					description?: string | null;
+				};
+				Relationships: [];
+			};
+			roles: {
+				Row: {
+					id: string;
+					name: string;
+					description: string | null;
+					is_system: boolean;
+					created_at: string;
+				};
+				Insert: {
+					id?: string;
+					name: string;
+					description?: string | null;
+					is_system?: boolean;
+					created_at?: string;
+				};
+				Update: {
+					id?: string;
+					name?: string;
+					description?: string | null;
+					is_system?: boolean;
+				};
+				Relationships: [];
+			};
+			role_permissions: {
+				Row: { role_id: string; permission_id: string };
+				Insert: { role_id: string; permission_id: string };
+				Update: { role_id?: string; permission_id?: string };
+				Relationships: [];
+			};
+			user_roles: {
+				Row: {
+					user_id: string;
+					role_id: string;
+					assigned_at: string;
+					assigned_by: string | null;
+				};
+				Insert: {
+					user_id: string;
+					role_id: string;
+					assigned_at?: string;
+					assigned_by?: string | null;
+				};
+				Update: {
+					user_id?: string;
+					role_id?: string;
+					assigned_at?: string;
+					assigned_by?: string | null;
+				};
+				Relationships: [];
+			};
 		};
 		Views: {
 			appointments_full: {
@@ -328,6 +398,23 @@ export type Database = {
 				| 'no_show';
 			user_role: 'customer' | 'caretaker' | 'admin' | 'root_admin';
 		};
-		Functions: Record<string, never>;
+		Functions: {
+			get_user_permissions: {
+				Args: { p_user_id: string };
+				Returns: { name: string }[];
+			};
+			user_has_permission: {
+				Args: { p_user_id: string; p_permission: string };
+				Returns: boolean;
+			};
+			is_admin: {
+				Args: Record<string, never>;
+				Returns: boolean;
+			};
+			is_root_admin: {
+				Args: Record<string, never>;
+				Returns: boolean;
+			};
+		};
 	};
 };

@@ -1,12 +1,13 @@
 <script lang="ts">
-	import Navbar from '$lib/components/layout/Navbar.svelte';
-	import Footer from '$lib/components/layout/Footer.svelte';
-	import { authStore } from '$lib/stores/auth.store.svelte';
-	import type { LayoutData } from './$types';
+	import Navbar from "$lib/components/layout/Navbar.svelte";
+	import Footer from "$lib/components/layout/Footer.svelte";
+	import { authStore } from "$lib/stores/auth.store.svelte";
+	import type { LayoutData } from "./$types";
+	import type { Snippet } from "svelte";
 
 	interface Props {
 		data: LayoutData;
-		children: import('svelte').Snippet;
+		children: Snippet;
 	}
 
 	let { data, children }: Props = $props();
