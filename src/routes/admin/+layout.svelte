@@ -11,7 +11,8 @@
 		Menu,
 		ArrowLeft,
 		CircleUserRound,
-		KeyRound
+		KeyRound,
+		Package
 	} from "lucide-svelte";
 	import { hasPermission } from "$lib/utils/permissions";
 
@@ -45,6 +46,11 @@
 			href: "/admin/users",
 			label: "Usuários",
 			icon: CircleUserRound
+		},
+		(data.userRole === 'admin' || data.userRole === 'root_admin') && {
+			href: "/admin/products",
+			label: "Produtos",
+			icon: Package
 		},
 		isRootAdmin && {
 			href: "/admin/roles",

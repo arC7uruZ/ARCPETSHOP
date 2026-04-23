@@ -353,6 +353,222 @@ export type Database = {
 				};
 				Relationships: [];
 			};
+			product_categories: {
+				Row: {
+					id: string;
+					slug: string;
+					name: string;
+					description: string | null;
+					display_order: number;
+					is_active: boolean;
+					created_at: string;
+				};
+				Insert: {
+					id?: string;
+					slug: string;
+					name: string;
+					description?: string | null;
+					display_order?: number;
+					is_active?: boolean;
+					created_at?: string;
+				};
+				Update: {
+					slug?: string;
+					name?: string;
+					description?: string | null;
+					display_order?: number;
+					is_active?: boolean;
+				};
+				Relationships: [];
+			};
+			products: {
+				Row: {
+					id: string;
+					category_id: string | null;
+					slug: string;
+					sku: string | null;
+					name: string;
+					brand: string;
+					description: string;
+					short_description: string | null;
+					price: number;
+					original_price: number | null;
+					stock_quantity: number;
+					image_url: string | null;
+					images: string[];
+					tag: string | null;
+					is_active: boolean;
+					display_order: number;
+					rating: number;
+					review_count: number;
+					created_at: string;
+					updated_at: string;
+				};
+				Insert: {
+					id?: string;
+					category_id?: string | null;
+					slug: string;
+					sku?: string | null;
+					name: string;
+					brand: string;
+					description: string;
+					short_description?: string | null;
+					price: number;
+					original_price?: number | null;
+					stock_quantity?: number;
+					image_url?: string | null;
+					images?: string[];
+					tag?: string | null;
+					is_active?: boolean;
+					display_order?: number;
+					rating?: number;
+					review_count?: number;
+					created_at?: string;
+					updated_at?: string;
+				};
+				Update: {
+					category_id?: string | null;
+					slug?: string;
+					sku?: string | null;
+					name?: string;
+					brand?: string;
+					description?: string;
+					short_description?: string | null;
+					price?: number;
+					original_price?: number | null;
+					stock_quantity?: number;
+					image_url?: string | null;
+					images?: string[];
+					tag?: string | null;
+					is_active?: boolean;
+					display_order?: number;
+					rating?: number;
+					review_count?: number;
+					updated_at?: string;
+				};
+				Relationships: [];
+			};
+			orders: {
+				Row: {
+					id: string;
+					user_id: string;
+					status: 'pending_payment' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+					subtotal: number;
+					shipping: number;
+					total: number;
+					shipping_name: string | null;
+					shipping_address: string | null;
+					shipping_city: string | null;
+					shipping_state: string | null;
+					shipping_zip: string | null;
+					mp_payment_id: string | null;
+					mp_status: string | null;
+					notes: string | null;
+					created_at: string;
+					updated_at: string;
+				};
+				Insert: {
+					id?: string;
+					user_id: string;
+					status?: 'pending_payment' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+					subtotal: number;
+					shipping?: number;
+					total: number;
+					shipping_name?: string | null;
+					shipping_address?: string | null;
+					shipping_city?: string | null;
+					shipping_state?: string | null;
+					shipping_zip?: string | null;
+					mp_payment_id?: string | null;
+					mp_status?: string | null;
+					notes?: string | null;
+					created_at?: string;
+					updated_at?: string;
+				};
+				Update: {
+					status?: 'pending_payment' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+					mp_payment_id?: string | null;
+					mp_status?: string | null;
+					notes?: string | null;
+					updated_at?: string;
+				};
+				Relationships: [];
+			};
+			order_items: {
+				Row: {
+					id: string;
+					order_id: string;
+					product_id: string | null;
+					product_name: string;
+					product_brand: string;
+					unit_price: number;
+					quantity: number;
+					subtotal: number;
+					created_at: string;
+				};
+				Insert: {
+					id?: string;
+					order_id: string;
+					product_id?: string | null;
+					product_name: string;
+					product_brand: string;
+					unit_price: number;
+					quantity: number;
+					subtotal: number;
+					created_at?: string;
+				};
+				Update: {
+					quantity?: number;
+					subtotal?: number;
+				};
+				Relationships: [];
+			};
+			payments: {
+				Row: {
+					id: string;
+					order_id: string;
+					mp_payment_id: string;
+					mp_status: string;
+					mp_status_detail: string | null;
+					mp_payment_method: string | null;
+					mp_payment_type: string | null;
+					pix_qr_code: string | null;
+					pix_qr_code_base64: string | null;
+					pix_expiration_date: string | null;
+					boleto_url: string | null;
+					boleto_barcode: string | null;
+					raw_response: Record<string, unknown> | null;
+					created_at: string;
+					updated_at: string;
+				};
+				Insert: {
+					id?: string;
+					order_id: string;
+					mp_payment_id: string;
+					mp_status: string;
+					mp_status_detail?: string | null;
+					mp_payment_method?: string | null;
+					mp_payment_type?: string | null;
+					pix_qr_code?: string | null;
+					pix_qr_code_base64?: string | null;
+					pix_expiration_date?: string | null;
+					boleto_url?: string | null;
+					boleto_barcode?: string | null;
+					raw_response?: Record<string, unknown> | null;
+					created_at?: string;
+					updated_at?: string;
+				};
+				Update: {
+					mp_status?: string;
+					mp_status_detail?: string | null;
+					pix_qr_code?: string | null;
+					pix_qr_code_base64?: string | null;
+					boleto_url?: string | null;
+					boleto_barcode?: string | null;
+					updated_at?: string;
+				};
+				Relationships: [];
+			};
 		};
 		Views: {
 			appointments_full: {

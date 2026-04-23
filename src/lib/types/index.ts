@@ -279,6 +279,159 @@ export interface AdminStats {
 	activeCaretakers: number;
 }
 
+// ─── Store / Products ─────────────────────────────────────────────────────────
+export interface ProductCategory {
+	id: string;
+	slug: string;
+	name: string;
+	description: string | null;
+	display_order: number;
+	is_active: boolean;
+	created_at: string;
+}
+
+export interface Product {
+	id: string;
+	category_id: string | null;
+	slug: string;
+	sku: string | null;
+	name: string;
+	brand: string;
+	description: string;
+	short_description: string | null;
+	price: number;
+	original_price: number | null;
+	stock_quantity: number;
+	image_url: string | null;
+	images: string[];
+	tag: string | null;
+	is_active: boolean;
+	display_order: number;
+	rating: number;
+	review_count: number;
+	created_at: string;
+	updated_at: string;
+	category?: ProductCategory;
+}
+
+export interface ProductInsert {
+	category_id?: string | null;
+	slug: string;
+	sku?: string | null;
+	name: string;
+	brand: string;
+	description: string;
+	short_description?: string | null;
+	price: number;
+	original_price?: number | null;
+	stock_quantity?: number;
+	image_url?: string | null;
+	images?: string[];
+	tag?: string | null;
+	is_active?: boolean;
+	display_order?: number;
+}
+
+export interface ProductUpdate {
+	category_id?: string | null;
+	slug?: string;
+	name?: string;
+	brand?: string;
+	description?: string;
+	short_description?: string | null;
+	price?: number;
+	original_price?: number | null;
+	stock_quantity?: number;
+	image_url?: string | null;
+	images?: string[];
+	tag?: string | null;
+	is_active?: boolean;
+	display_order?: number;
+}
+
+// ─── Cart ─────────────────────────────────────────────────────────────────────
+export interface CartItem {
+	productId: string;
+	name: string;
+	brand: string;
+	price: number;
+	imageUrl: string | null;
+	quantity: number;
+}
+
+// ─── Orders ───────────────────────────────────────────────────────────────────
+export type OrderStatus =
+	| 'pending_payment'
+	| 'paid'
+	| 'processing'
+	| 'shipped'
+	| 'delivered'
+	| 'cancelled'
+	| 'refunded';
+
+export interface Order {
+	id: string;
+	user_id: string;
+	status: OrderStatus;
+	subtotal: number;
+	shipping: number;
+	total: number;
+	shipping_name: string | null;
+	shipping_address: string | null;
+	shipping_city: string | null;
+	shipping_state: string | null;
+	shipping_zip: string | null;
+	mp_payment_id: string | null;
+	mp_status: string | null;
+	notes: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface OrderItem {
+	id: string;
+	order_id: string;
+	product_id: string | null;
+	product_name: string;
+	product_brand: string;
+	unit_price: number;
+	quantity: number;
+	subtotal: number;
+	created_at: string;
+}
+
+export interface OrderWithItems extends Order {
+	items: OrderItem[];
+	payment?: PaymentRecord | null;
+}
+
+export interface ValidatedCartItem {
+	productId: string;
+	productName: string;
+	productBrand: string;
+	unitPrice: number;
+	quantity: number;
+	subtotal: number;
+}
+
+// ─── Payments ─────────────────────────────────────────────────────────────────
+export interface PaymentRecord {
+	id: string;
+	order_id: string;
+	mp_payment_id: string;
+	mp_status: string;
+	mp_status_detail: string | null;
+	mp_payment_method: string | null;
+	mp_payment_type: string | null;
+	pix_qr_code: string | null;
+	pix_qr_code_base64: string | null;
+	pix_expiration_date: string | null;
+	boleto_url: string | null;
+	boleto_barcode: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
 // ─── UI ──────────────────────────────────────────────────────────────────────
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
