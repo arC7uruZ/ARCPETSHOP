@@ -66,7 +66,7 @@
 		<div class="hidden items-center gap-3 md:flex">
 			{#if authStore.isAuthenticated}
 				<a
-					href="/dashboard"
+					href="/profile"
 					class={[
 						"hover:text-primary-600 flex items-center gap-2 text-sm font-medium text-gray-700",
 						"transition-colors"
@@ -137,7 +137,7 @@
 				<div class="mt-2 flex flex-col gap-2 border-t border-gray-100 pt-2">
 					{#if authStore.isAuthenticated}
 						<a
-							href="/dashboard"
+							href="/profile"
 							class={[
 								"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700",
 								"hover:bg-gray-50"

@@ -5,7 +5,7 @@ import { loginSchema } from '$lib/utils/validation.utils';
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const { user } = locals;
 	if (user) {
-		const redirectTo = url.searchParams.get('redirectTo') ?? '/dashboard';
+		const redirectTo = url.searchParams.get('redirectTo') ?? '/profile';
 		redirect(303, redirectTo);
 	}
 	return {};
@@ -33,7 +33,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const redirectTo = url.searchParams.get('redirectTo') ?? '/dashboard';
+		const redirectTo = url.searchParams.get('redirectTo') ?? '/profile';
 		redirect(303, redirectTo);
 	}
 };

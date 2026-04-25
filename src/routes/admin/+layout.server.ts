@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	// admins e caretakers têm acesso; customers não
 	const allowedRoles = ['admin', 'root_admin', 'caretaker'];
 	if (!allowedRoles.includes(role)) {
-		redirect(303, '/dashboard');
+		redirect(303, '/profile');
 	}
 
 	// Caretakers e roles não-admin precisam de permissões explícitas

@@ -122,7 +122,7 @@
 				</div>
 			</div>
 			<a
-				href="/dashboard"
+				href="/profile"
 				class="flex items-center gap-2 text-xs text-gray-400 transition-colors hover:text-white"
 			>
 				<ArrowLeft class="h-4 w-4" />

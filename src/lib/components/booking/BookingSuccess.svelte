@@ -13,7 +13,7 @@
 	</p>
 
 	<div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
-		<Button variant="primary" size="lg" href="/dashboard">Ver meus agendamentos</Button>
+		<Button variant="primary" size="lg" href="/profile">Ver meus agendamentos</Button>
 		<Button variant="outline" size="lg" href="/">Voltar ao início</Button>
 	</div>
 </div>

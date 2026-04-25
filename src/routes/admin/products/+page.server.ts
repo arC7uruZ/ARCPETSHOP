@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.single();
 
 	if (!profile.data || !['admin', 'root_admin'].includes(profile.data.role)) {
-		throw redirect(303, '/dashboard');
+		throw redirect(303, '/profile');
 	}
 
 	const [products, categories] = await Promise.all([

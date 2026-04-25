@@ -2,18 +2,22 @@ import type { PageServerLoad, Actions } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
 import { fetchProfile, updateProfile, uploadAvatar } from '$lib/server/profiles.server';
 import { fetchPets, createPet, updatePet, deletePet, uploadPetAvatar } from '$lib/server/pets.server';
+import { fetchUserOrders } from '$lib/server/orders.server';
+import { fetchUserAppointments, cancelAppointment } from '$lib/server/appointments.server';
 import { profileSchema, petSchema } from '$lib/utils/validation.utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
 	if (!user) redirect(303, '/login');
 
-	const [profile, pets] = await Promise.all([
+	const [profile, pets, orders, appointments] = await Promise.all([
 		fetchProfile(locals.supabase, user.id),
-		fetchPets(locals.supabase, user.id)
+		fetchPets(locals.supabase, user.id),
+		fetchUserOrders(locals.supabase, user.id),
+		fetchUserAppointments(locals.supabase, user.id)
 	]);
 
-	return { profile, pets };
+	return { profile, pets, orders, appointments };
 };
 
 export const actions: Actions = {
@@ -165,5 +169,23 @@ export const actions: Actions = {
 			return fail(500, { error: msg, action: 'deletePet' });
 		}
 		return { success: true, action: 'deletePet' };
+	},
+
+	cancelAppointment: async ({ request, locals }) => {
+		const { user } = locals;
+		if (!user) redirect(303, '/login');
+
+		const formData = await request.formData();
+		const appointmentId = String(formData.get('appointmentId') ?? '');
+		const reason = String(formData.get('reason') ?? '');
+
+		if (!appointmentId) return fail(400, { error: 'ID do agendamento inválido.' });
+
+		try {
+			await cancelAppointment(locals.supabase, appointmentId, user.id, reason);
+		} catch {
+			return fail(500, { error: 'Não foi possível cancelar o agendamento.' });
+		}
+		return { success: true, action: 'cancelAppointment' };
 	}
 };
