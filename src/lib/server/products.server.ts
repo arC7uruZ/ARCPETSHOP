@@ -2,12 +2,15 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '$lib/types/database.types';
 import type { Product, ProductCategory, ProductInsert, ProductUpdate } from '$lib/types';
 import { error } from '@sveltejs/kit';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'products.server' });
 
 export function generateSlug(name: string): string {
 	return name
 		.toLowerCase()
 		.normalize('NFD')
-		.replace(/[̀-ͯ]/g, '')  // remove acentos
+		.replace(/[̀-ͯ]/g, '')
 		.replace(/[^a-z0-9\s-]/g, '')
 		.trim()
 		.replace(/\s+/g, '-')
@@ -106,7 +109,12 @@ export async function createProduct(
 		.select()
 		.single();
 
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao criar produto');
+	if (err || !data) {
+		log.error({ err, slug: product.slug }, 'Failed to create product');
+		throw error(500, err?.message ?? 'Erro ao criar produto');
+	}
+
+	log.info({ productId: (data as unknown as Product).id, slug: product.slug, name: product.name }, 'Product created');
 	return data as unknown as Product;
 }
 
@@ -122,7 +130,12 @@ export async function updateProduct(
 		.select()
 		.single();
 
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao atualizar produto');
+	if (err || !data) {
+		log.error({ err, productId: id }, 'Failed to update product');
+		throw error(500, err?.message ?? 'Erro ao atualizar produto');
+	}
+
+	log.info({ productId: id }, 'Product updated');
 	return data as unknown as Product;
 }
 
@@ -136,5 +149,10 @@ export async function toggleProductStatus(
 		.update({ is_active: isActive })
 		.eq('id', id);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, productId: id, isActive }, 'Failed to toggle product status');
+		throw error(500, err.message);
+	}
+
+	log.info({ productId: id, isActive }, 'Product status toggled');
 }

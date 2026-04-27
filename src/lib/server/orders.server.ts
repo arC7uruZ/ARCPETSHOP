@@ -8,6 +8,9 @@ import type {
 	PaymentRecord
 } from '$lib/types';
 import { error } from '@sveltejs/kit';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'orders.server' });
 
 interface CreateOrderParams {
 	userId: string;
@@ -45,7 +48,10 @@ export async function createOrder(
 		.select()
 		.single();
 
-	if (orderErr || !order) throw error(500, orderErr?.message ?? 'Erro ao criar pedido');
+	if (orderErr || !order) {
+		log.error({ err: orderErr, userId: params.userId }, 'Failed to insert order');
+		throw error(500, orderErr?.message ?? 'Erro ao criar pedido');
+	}
 
 	const orderItems = params.items.map((item) => ({
 		order_id: order.id,
@@ -59,29 +65,39 @@ export async function createOrder(
 
 	const { error: itemsErr } = await supabase.from('order_items').insert(orderItems);
 
-	if (itemsErr) throw error(500, itemsErr.message);
+	if (itemsErr) {
+		log.error({ err: itemsErr, orderId: order.id }, 'Failed to insert order items');
+		throw error(500, itemsErr.message);
+	}
+
+	log.debug({ orderId: order.id, itemCount: orderItems.length }, 'Order and items persisted');
 
 	return order as unknown as Order;
 }
 
-export async function updateOrderPayment(
+export async function updateOrderMpOrder(
 	supabase: SupabaseClient<Database>,
 	orderId: string,
-	mpPaymentId: string,
-	mpStatus: string
+	mpOrderId: string,
+	mpOrderStatus: string
 ): Promise<void> {
-	const orderStatus: OrderStatus = mpStatus === 'approved' ? 'paid' : 'pending_payment';
+	const orderStatus: OrderStatus = mpOrderStatus === 'processed' ? 'paid' : 'pending_payment';
 
 	const { error: err } = await supabase
 		.from('orders')
 		.update({
-			mp_payment_id: mpPaymentId,
-			mp_status: mpStatus,
+			mp_order_id: mpOrderId,
+			mp_status: mpOrderStatus,
 			status: orderStatus
 		})
 		.eq('id', orderId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, orderId, mpOrderId }, 'Failed to update order with MP order id');
+		throw error(500, err.message);
+	}
+
+	log.debug({ orderId, mpOrderId, mpOrderStatus, orderStatus }, 'Order updated with MP order id');
 }
 
 export async function updateOrderStatusByPaymentId(
@@ -89,12 +105,30 @@ export async function updateOrderStatusByPaymentId(
 	mpPaymentId: string,
 	mpStatus: string
 ): Promise<void> {
-	const orderStatus: OrderStatus = mpStatus === 'approved' ? 'paid' : 'pending_payment';
+	// Orders API uses 'processed'; classic Payments API uses 'approved'
+	const orderStatus: OrderStatus = (mpStatus === 'approved' || mpStatus === 'processed') ? 'paid' : 'pending_payment';
 
-	await supabase
+	const { data: payment } = await supabase
+		.from('payments')
+		.select('order_id')
+		.eq('mp_payment_id', mpPaymentId)
+		.maybeSingle();
+
+	if (!payment?.order_id) {
+		log.warn({ mpPaymentId }, 'No order found for payment id, skipping status update');
+		return;
+	}
+
+	const { error: err } = await supabase
 		.from('orders')
 		.update({ mp_status: mpStatus, status: orderStatus })
-		.eq('mp_payment_id', mpPaymentId);
+		.eq('id', payment.order_id);
+
+	if (err) {
+		log.error({ err, orderId: payment.order_id, mpPaymentId }, 'Failed to update order status');
+	} else {
+		log.info({ orderId: payment.order_id, mpPaymentId, mpStatus, orderStatus }, 'Order status updated via payment');
+	}
 }
 
 export async function storePayment(
@@ -129,7 +163,15 @@ export async function storePayment(
 		raw_response: data.rawResponse ?? null
 	});
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, orderId: data.orderId, mpPaymentId: data.mpPaymentId }, 'Failed to store payment record');
+		throw error(500, err.message);
+	}
+
+	log.debug(
+		{ orderId: data.orderId, mpPaymentId: data.mpPaymentId, mpStatus: data.mpStatus },
+		'Payment record stored'
+	);
 }
 
 export async function fetchUserOrders(

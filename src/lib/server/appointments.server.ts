@@ -3,6 +3,9 @@ import type { Database } from '$lib/types/database.types';
 import type { Appointment, AppointmentFull, AppointmentInsert } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import { sendBookingConfirmation } from './twilio.server';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'appointments.server' });
 
 export async function fetchUserAppointments(
 	supabase: SupabaseClient<Database>,
@@ -48,12 +51,19 @@ export async function createAppointment(
 		.select()
 		.single();
 
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao criar agendamento');
+	if (err || !data) {
+		log.error({ err, userId: appointment.user_id, serviceId: appointment.service_id }, 'Failed to create appointment');
+		throw error(500, err?.message ?? 'Erro ao criar agendamento');
+	}
 
 	const created = data as Appointment;
+	log.info(
+		{ appointmentId: created.id, userId: appointment.user_id, serviceId: appointment.service_id, scheduledAt: appointment.scheduled_at },
+		'Appointment created'
+	);
 
-	// Send WhatsApp notification if user has a phone and opted in
 	if (userPhone) {
+		log.debug({ appointmentId: created.id, phone: userPhone }, 'Sending WhatsApp notification');
 		const sid = await sendBookingConfirmation({
 			toPhone: userPhone,
 			userName,
@@ -67,6 +77,9 @@ export async function createAppointment(
 				.from('appointments')
 				.update({ whatsapp_notified: true, notification_sid: sid })
 				.eq('id', created.id);
+			log.info({ appointmentId: created.id, sid }, 'WhatsApp notification sent and recorded');
+		} else {
+			log.warn({ appointmentId: created.id }, 'WhatsApp notification failed or skipped');
 		}
 	}
 
@@ -90,5 +103,10 @@ export async function cancelAppointment(
 		.eq('user_id', userId)
 		.in('status', ['pending', 'confirmed']);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, appointmentId, userId }, 'Failed to cancel appointment');
+		throw error(500, err.message);
+	}
+
+	log.info({ appointmentId, userId, reason }, 'Appointment cancelled');
 }

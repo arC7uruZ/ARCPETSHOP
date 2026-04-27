@@ -3,13 +3,17 @@ import { fail, redirect } from '@sveltejs/kit';
 import { fetchAllAppointments, updateAppointmentStatus } from '$lib/server/admin.server';
 import { fetchCaretakers } from '$lib/server/caretakers.server';
 import { hasPermission, getUserPermissions } from '$lib/server/permissions.server';
+import logger from '$lib/server/logger';
 import type { AppointmentStatus, UserRole } from '$lib/types';
+
+const log = logger.child({ module: 'admin.appointments' });
 
 export const load: PageServerLoad = async ({ locals, url, parent }) => {
 	const { userRole, permissions } = await parent();
 	const role = userRole as UserRole;
 
 	if (!hasPermission(role, permissions, 'appointments:read')) {
+		log.warn({ userId: locals.user?.id, role }, 'Access denied to admin appointments');
 		redirect(303, '/admin');
 	}
 
@@ -17,7 +21,6 @@ export const load: PageServerLoad = async ({ locals, url, parent }) => {
 	const caretakerId = url.searchParams.get('caretaker') ?? undefined;
 	const date = url.searchParams.get('date') ?? undefined;
 
-	// Caretakers só veem os próprios agendamentos
 	let caretakerFilter = caretakerId;
 	let isOwnOnly = false;
 
@@ -39,7 +42,6 @@ export const load: PageServerLoad = async ({ locals, url, parent }) => {
 			caretakerId: caretakerFilter,
 			date
 		}),
-		// Caretakers não precisam ver o filtro de seleção de cuidador
 		isOwnOnly ? Promise.resolve([]) : fetchCaretakers(locals.supabase)
 	]);
 
@@ -71,6 +73,7 @@ export const actions: Actions = {
 		const permissions = await getUserPermissions(locals.supabase, user.id);
 
 		if (!hasPermission(role, permissions, 'appointments:write')) {
+			log.warn({ userId: user.id, role }, 'Unauthorized attempt to update appointment status');
 			return fail(403, { error: 'Sem permissão para alterar agendamentos.' });
 		}
 
@@ -94,6 +97,7 @@ export const actions: Actions = {
 
 		try {
 			await updateAppointmentStatus(locals.supabase, appointmentId, status, internalNotes);
+			log.info({ actorId: user.id, appointmentId, status }, 'Admin updated appointment status');
 			return { success: true };
 		} catch {
 			return fail(500, { error: 'Erro ao atualizar agendamento.' });

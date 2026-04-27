@@ -461,7 +461,7 @@ export type Database = {
 					shipping_city: string | null;
 					shipping_state: string | null;
 					shipping_zip: string | null;
-					mp_payment_id: string | null;
+					mp_order_id: string | null;
 					mp_status: string | null;
 					notes: string | null;
 					created_at: string;
@@ -479,7 +479,7 @@ export type Database = {
 					shipping_city?: string | null;
 					shipping_state?: string | null;
 					shipping_zip?: string | null;
-					mp_payment_id?: string | null;
+					mp_order_id?: string | null;
 					mp_status?: string | null;
 					notes?: string | null;
 					created_at?: string;
@@ -487,7 +487,7 @@ export type Database = {
 				};
 				Update: {
 					status?: 'pending_payment' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
-					mp_payment_id?: string | null;
+					mp_order_id?: string | null;
 					mp_status?: string | null;
 					notes?: string | null;
 					updated_at?: string;

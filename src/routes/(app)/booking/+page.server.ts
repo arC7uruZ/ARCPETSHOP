@@ -6,6 +6,9 @@ import { createAppointment } from '$lib/server/appointments.server';
 import { fetchProfile } from '$lib/server/profiles.server';
 import { fetchActiveCaretakers } from '$lib/server/caretakers.server';
 import { bookingSchema } from '$lib/utils/validation.utils';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'app.booking' });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
@@ -33,6 +36,7 @@ export const actions: Actions = {
 
 		const dt = new Date(scheduledAtRaw);
 		if (isNaN(dt.getTime())) {
+			log.warn({ userId: user.id, scheduledAtRaw }, 'Booking attempt with invalid date');
 			return fail(400, { error: 'Data/hora inválida.' });
 		}
 
@@ -48,7 +52,10 @@ export const actions: Actions = {
 		}
 
 		const service = await fetchServiceById(locals.supabase, serviceId).catch(() => null);
-		if (!service) return fail(400, { error: 'Serviço não encontrado.' });
+		if (!service) {
+			log.warn({ userId: user.id, serviceId }, 'Booking attempted with unknown service');
+			return fail(400, { error: 'Serviço não encontrado.' });
+		}
 
 		const profile = await fetchProfile(locals.supabase, user.id);
 
@@ -69,6 +76,7 @@ export const actions: Actions = {
 			service.name
 		);
 
+		log.info({ userId: user.id, appointmentId: appointment.id, serviceId, petId }, 'Appointment booked');
 		return { appointmentId: appointment.id };
 	}
 };

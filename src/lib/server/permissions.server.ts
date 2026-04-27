@@ -1,8 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '$lib/types/database.types';
+import logger from '$lib/server/logger';
 export { hasPermission, canManageUser } from '$lib/utils/permissions';
 
-// ─── Carrega permissões explícitas do banco (para caretakers / roles customizadas)
+const log = logger.child({ module: 'permissions.server' });
+
 export async function getUserPermissions(
 	supabase: SupabaseClient<Database>,
 	userId: string
@@ -12,14 +14,13 @@ export async function getUserPermissions(
 	});
 
 	if (error) {
-		console.error('getUserPermissions error:', error.message);
+		log.error({ err: error, userId }, 'Failed to fetch user permissions');
 		return [];
 	}
 
 	return (data ?? []).map((row: { name: string }) => row.name);
 }
 
-// ─── Roles e permissões para o painel admin ───────────────────────────────────
 export interface RoleWithPermissions {
 	id: string;
 	name: string;
@@ -75,7 +76,12 @@ export async function assignPermissionToRole(
 		.from('role_permissions')
 		.insert({ role_id: roleId, permission_id: permissionId });
 
-	if (error) throw new Error(error.message);
+	if (error) {
+		log.error({ err: error, roleId, permissionId }, 'Failed to assign permission to role');
+		throw new Error(error.message);
+	}
+
+	log.info({ roleId, permissionId }, 'Permission assigned to role');
 }
 
 export async function removePermissionFromRole(
@@ -89,10 +95,14 @@ export async function removePermissionFromRole(
 		.eq('role_id', roleId)
 		.eq('permission_id', permissionId);
 
-	if (error) throw new Error(error.message);
+	if (error) {
+		log.error({ err: error, roleId, permissionId }, 'Failed to remove permission from role');
+		throw new Error(error.message);
+	}
+
+	log.info({ roleId, permissionId }, 'Permission removed from role');
 }
 
-// ─── User roles ───────────────────────────────────────────────────────────────
 export async function assignRoleToUser(
 	supabase: SupabaseClient<Database>,
 	userId: string,
@@ -103,7 +113,12 @@ export async function assignRoleToUser(
 		.from('user_roles')
 		.insert({ user_id: userId, role_id: roleId, assigned_by: assignedBy });
 
-	if (error) throw new Error(error.message);
+	if (error) {
+		log.error({ err: error, userId, roleId, assignedBy }, 'Failed to assign role to user');
+		throw new Error(error.message);
+	}
+
+	log.info({ userId, roleId, assignedBy }, 'Role assigned to user');
 }
 
 export async function removeRoleFromUser(
@@ -117,5 +132,10 @@ export async function removeRoleFromUser(
 		.eq('user_id', userId)
 		.eq('role_id', roleId);
 
-	if (error) throw new Error(error.message);
+	if (error) {
+		log.error({ err: error, userId, roleId }, 'Failed to remove role from user');
+		throw new Error(error.message);
+	}
+
+	log.info({ userId, roleId }, 'Role removed from user');
 }

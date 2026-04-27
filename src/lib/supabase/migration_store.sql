@@ -85,15 +85,16 @@ create table public.orders (
   shipping_city    text,
   shipping_state   text,
   shipping_zip     text,
-  mp_payment_id    text,
+  mp_order_id      text,
   mp_status        text,
   notes            text,
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now()
 );
 
-create index orders_user_id_idx on public.orders(user_id);
-create index orders_status_idx  on public.orders(status);
+create index orders_user_id_idx  on public.orders(user_id);
+create index orders_status_idx   on public.orders(status);
+create index orders_mp_order_idx on public.orders(mp_order_id);
 
 alter table public.orders enable row level security;
 create policy "orders: users can view own"

@@ -5,6 +5,9 @@ import { fetchPets, createPet, updatePet, deletePet, uploadPetAvatar } from '$li
 import { fetchUserOrders } from '$lib/server/orders.server';
 import { fetchUserAppointments, cancelAppointment } from '$lib/server/appointments.server';
 import { profileSchema, petSchema } from '$lib/utils/validation.utils';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'app.profile' });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
@@ -47,6 +50,7 @@ export const actions: Actions = {
 			await updateProfile(locals.supabase, user.id, data);
 		} catch (e: unknown) {
 			const msg = e instanceof Error ? e.message : 'Erro ao salvar perfil';
+			log.error({ err: e, userId: user.id }, 'Profile update action failed');
 			return fail(500, { error: msg, action: 'profile' });
 		}
 		return { success: true, action: 'profile' };
@@ -71,7 +75,10 @@ export const actions: Actions = {
 				.update({ avatar_url: avatarUrl })
 				.eq('id', user.id);
 
-			if (dbErr) return fail(500, { error: dbErr.message, action: 'avatar' });
+			if (dbErr) {
+				log.error({ err: dbErr, userId: user.id }, 'Failed to save avatar URL to profile');
+				return fail(500, { error: dbErr.message, action: 'avatar' });
+			}
 		} catch (e: unknown) {
 			const msg = e instanceof Error ? e.message : 'Erro ao enviar foto';
 			return fail(500, { error: msg, action: 'avatar' });
@@ -183,6 +190,7 @@ export const actions: Actions = {
 
 		try {
 			await cancelAppointment(locals.supabase, appointmentId, user.id, reason);
+			log.info({ userId: user.id, appointmentId, reason }, 'User cancelled appointment');
 		} catch {
 			return fail(500, { error: 'Não foi possível cancelar o agendamento.' });
 		}

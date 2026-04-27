@@ -1,6 +1,9 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { getUserPermissions } from '$lib/server/permissions.server';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'admin.layout' });
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user } = locals;
@@ -14,16 +17,15 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
 	const role = profile?.role ?? 'customer';
 
-	// admins e caretakers têm acesso; customers não
 	const allowedRoles = ['admin', 'root_admin', 'caretaker'];
 	if (!allowedRoles.includes(role)) {
+		log.warn({ userId: user.id, role }, 'Unauthorized admin access attempt');
 		redirect(303, '/profile');
 	}
 
-	// Caretakers e roles não-admin precisam de permissões explícitas
-	// Admins e root_admin têm bypass no hasPermission — carregamos mesmo assim
-	// para exibir na UI de gerenciamento de roles
 	const permissions = await getUserPermissions(locals.supabase, user.id);
+
+	log.debug({ userId: user.id, role, permissionCount: permissions.length }, 'Admin layout loaded');
 
 	return {
 		userRole: role as 'admin' | 'root_admin' | 'caretaker',

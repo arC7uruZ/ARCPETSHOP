@@ -2,6 +2,9 @@ import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { registerSchema } from '$lib/utils/validation.utils';
 import { PUBLIC_SITE_URL } from '$env/static/public';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'auth.register' });
 
 export const actions: Actions = {
 	register: async ({ request, locals }) => {
@@ -19,6 +22,7 @@ export const actions: Actions = {
 			const errors = Object.fromEntries(
 				Object.entries(result.error.flatten().fieldErrors).map(([k, v]) => [k, v?.[0] ?? ''])
 			);
+			log.warn({ email: data.email }, 'Registration attempt with invalid input');
 			return fail(400, { errors });
 		}
 
@@ -35,13 +39,16 @@ export const actions: Actions = {
 		});
 
 		if (error) {
+			const isAlreadyRegistered = error.message.includes('already registered');
+			log.warn({ email: data.email, errMessage: error.message }, 'Registration failed');
 			return fail(400, {
-				error: error.message.includes('already registered')
+				error: isAlreadyRegistered
 					? 'Este e-mail já está cadastrado. Tente fazer login.'
 					: 'Erro ao criar conta. Tente novamente.'
 			});
 		}
 
+		log.info({ email: data.email }, 'New user registered');
 		redirect(303, '/register?success=1');
 	}
 };

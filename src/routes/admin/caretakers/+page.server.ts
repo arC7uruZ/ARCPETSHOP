@@ -8,6 +8,9 @@ import {
 	demoteCaretaker
 } from '$lib/server/caretakers.server';
 import { fetchServices } from '$lib/server/services.server';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'admin.caretakers' });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const [caretakers, services] = await Promise.all([
@@ -44,7 +47,8 @@ export const actions: Actions = {
 		if (!userId) return fail(400, { action: 'promote', error: 'Usuário não selecionado.' });
 
 		try {
-			await promoteUserToCaretaker(locals.supabase, userId, { bio, specialties });
+			const caretaker = await promoteUserToCaretaker(locals.supabase, userId, { bio, specialties });
+			log.info({ actorId: locals.user?.id, userId, caretakerId: caretaker.id }, 'User promoted to caretaker');
 			return { success: true, action: 'promote' };
 		} catch (e: unknown) {
 			const msg = e instanceof Error ? e.message : 'Erro ao promover usuário.';
@@ -64,6 +68,7 @@ export const actions: Actions = {
 
 		try {
 			await updateCaretaker(locals.supabase, id, { is_active: isActive });
+			log.info({ actorId: locals.user?.id, caretakerId: id, isActive }, 'Caretaker active status toggled');
 			return { success: true, action: 'toggle' };
 		} catch {
 			return fail(500, { error: 'Erro ao atualizar cuidador.' });
@@ -78,6 +83,7 @@ export const actions: Actions = {
 
 		try {
 			await demoteCaretaker(locals.supabase, id);
+			log.info({ actorId: locals.user?.id, caretakerId: id }, 'Caretaker demoted and deleted by admin');
 			return { success: true, action: 'delete' };
 		} catch {
 			return fail(500, { error: 'Erro ao excluir cuidador.' });

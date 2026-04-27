@@ -2,6 +2,9 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '$lib/types/database.types';
 import type { AdminStats, AppointmentFull, AppointmentStatus, Profile, UserRole } from '$lib/types';
 import { error } from '@sveltejs/kit';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'admin.server' });
 
 export async function fetchAdminStats(
 	supabase: SupabaseClient<Database>
@@ -112,7 +115,12 @@ export async function updateAppointmentStatus(
 		.update(updateData)
 		.eq('id', appointmentId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, appointmentId, status }, 'Failed to update appointment status');
+		throw error(500, err.message);
+	}
+
+	log.info({ appointmentId, status }, 'Appointment status updated');
 }
 
 export async function fetchAllUsers(
@@ -137,5 +145,10 @@ export async function updateUserRole(
 		.update({ role })
 		.eq('id', userId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, userId, role }, 'Failed to update user role');
+		throw error(500, err.message);
+	}
+
+	log.info({ userId, role }, 'User role updated');
 }

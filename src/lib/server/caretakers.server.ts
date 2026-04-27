@@ -11,6 +11,9 @@ import type {
 	UserSearchResult
 } from '$lib/types';
 import { error } from '@sveltejs/kit';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'caretakers.server' });
 
 export async function fetchCaretakers(
 	supabase: SupabaseClient<Database>
@@ -93,7 +96,12 @@ export async function createCaretaker(
 		.select()
 		.single();
 
-	if (err || !created) throw error(500, err?.message ?? 'Erro ao criar cuidador');
+	if (err || !created) {
+		log.error({ err, name: data.name }, 'Failed to create caretaker');
+		throw error(500, err?.message ?? 'Erro ao criar cuidador');
+	}
+
+	log.info({ caretakerId: (created as Caretaker).id, name: data.name }, 'Caretaker created');
 	return created as Caretaker;
 }
 
@@ -137,7 +145,10 @@ export async function promoteUserToCaretaker(
 		.select()
 		.single();
 
-	if (insertErr || !created) throw error(500, insertErr?.message ?? 'Erro ao criar cuidador');
+	if (insertErr || !created) {
+		log.error({ err: insertErr, userId }, 'Failed to insert caretaker record during promotion');
+		throw error(500, insertErr?.message ?? 'Erro ao criar cuidador');
+	}
 
 	const newCaretaker = created as Caretaker;
 
@@ -147,10 +158,12 @@ export async function promoteUserToCaretaker(
 		.eq('id', userId);
 
 	if (roleErr) {
+		log.error({ err: roleErr, userId, caretakerId: newCaretaker.id }, 'Failed to update role during promotion, rolling back caretaker record');
 		await supabase.from('caretakers').delete().eq('id', newCaretaker.id);
 		throw error(500, roleErr.message);
 	}
 
+	log.info({ userId, caretakerId: newCaretaker.id }, 'User promoted to caretaker');
 	return newCaretaker;
 }
 
@@ -171,6 +184,7 @@ export async function demoteCaretaker(
 			.from('profiles')
 			.update({ role: 'customer' })
 			.eq('id', caretaker.user_id);
+		log.info({ caretakerId: id, userId: caretaker.user_id }, 'Caretaker demoted to customer');
 	}
 }
 
@@ -184,7 +198,12 @@ export async function updateCaretaker(
 		.update(data)
 		.eq('id', id);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, caretakerId: id }, 'Failed to update caretaker');
+		throw error(500, err.message);
+	}
+
+	log.info({ caretakerId: id }, 'Caretaker updated');
 }
 
 export async function deleteCaretaker(
@@ -192,7 +211,12 @@ export async function deleteCaretaker(
 	id: string
 ): Promise<void> {
 	const { error: err } = await supabase.from('caretakers').delete().eq('id', id);
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, caretakerId: id }, 'Failed to delete caretaker');
+		throw error(500, err.message);
+	}
+
+	log.info({ caretakerId: id }, 'Caretaker deleted');
 }
 
 export async function addCaretakerSchedule(
@@ -205,7 +229,12 @@ export async function addCaretakerSchedule(
 		.select()
 		.single();
 
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao adicionar horário');
+	if (err || !data) {
+		log.error({ err, caretakerId: schedule.caretaker_id }, 'Failed to add caretaker schedule');
+		throw error(500, err?.message ?? 'Erro ao adicionar horário');
+	}
+
+	log.info({ scheduleId: (data as CaretakerSchedule).id, caretakerId: schedule.caretaker_id, dayOfWeek: schedule.day_of_week }, 'Caretaker schedule added');
 	return data as CaretakerSchedule;
 }
 
@@ -218,7 +247,12 @@ export async function removeCaretakerSchedule(
 		.delete()
 		.eq('id', scheduleId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, scheduleId }, 'Failed to remove caretaker schedule');
+		throw error(500, err.message);
+	}
+
+	log.info({ scheduleId }, 'Caretaker schedule removed');
 }
 
 export async function toggleScheduleActive(
@@ -231,7 +265,12 @@ export async function toggleScheduleActive(
 		.update({ is_active: isActive })
 		.eq('id', scheduleId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, scheduleId, isActive }, 'Failed to toggle schedule active state');
+		throw error(500, err.message);
+	}
+
+	log.info({ scheduleId, isActive }, 'Caretaker schedule toggled');
 }
 
 export async function blockCaretakerSlot(
@@ -254,7 +293,12 @@ export async function blockCaretakerSlot(
 		.select()
 		.single();
 
-	if (err || !data) throw error(500, err?.message ?? 'Erro ao bloquear horário');
+	if (err || !data) {
+		log.error({ err, caretakerId, blockedDate }, 'Failed to block caretaker slot');
+		throw error(500, err?.message ?? 'Erro ao bloquear horário');
+	}
+
+	log.info({ blockId: (data as CaretakerBlockedSlot).id, caretakerId, blockedDate }, 'Caretaker slot blocked');
 	return data as CaretakerBlockedSlot;
 }
 
@@ -267,23 +311,22 @@ export async function removeBlockedSlot(
 		.delete()
 		.eq('id', blockId);
 
-	if (err) throw error(500, err.message);
+	if (err) {
+		log.error({ err, blockId }, 'Failed to remove blocked slot');
+		throw error(500, err.message);
+	}
+
+	log.info({ blockId }, 'Blocked slot removed');
 }
 
-// ── Disponibilidade ────────────────────────────────────────────────────────
-
-/**
- * Retorna os slots de tempo disponíveis para um cuidador em uma data específica.
- * Considera a agenda semanal, bloqueios manuais e agendamentos já criados.
- */
 export async function getCaretakerAvailability(
 	supabase: SupabaseClient<Database>,
 	caretakerId: string,
-	date: string, // YYYY-MM-DD
+	date: string,
 	durationMin: number
 ): Promise<string[]> {
 	const dateObj = new Date(`${date}T00:00:00`);
-	const dayOfWeek = dateObj.getDay(); // 0=Domingo, 6=Sábado
+	const dayOfWeek = dateObj.getDay();
 
 	const [schedulesResult, blockedResult, appointmentsResult] = await Promise.all([
 		supabase
@@ -312,7 +355,6 @@ export async function getCaretakerAvailability(
 
 	if (schedules.length === 0) return [];
 
-	// Verificar se o dia inteiro está bloqueado
 	const fullDayBlock = blocked.find((b) => !b.start_time && !b.end_time);
 	if (fullDayBlock) return [];
 
@@ -326,7 +368,6 @@ export async function getCaretakerAvailability(
 			const slotEnd = m + durationMin;
 			const slotStr = minutesToTime(m);
 
-			// Verificar bloqueios parciais
 			const isBlocked = blocked.some((b) => {
 				if (!b.start_time || !b.end_time) return false;
 				const bStart = timeToMinutes(b.start_time);
@@ -335,7 +376,6 @@ export async function getCaretakerAvailability(
 			});
 			if (isBlocked) continue;
 
-			// Verificar agendamentos existentes
 			const isBooked = appointments.some((appt) => {
 				const apptDate = new Date(appt.scheduled_at as string);
 				const apptStart = apptDate.getHours() * 60 + apptDate.getMinutes();

@@ -8,6 +8,9 @@ import {
 	toggleProductStatus,
 	generateSlug
 } from '$lib/server/products.server';
+import logger from '$lib/server/logger';
+
+const log = logger.child({ module: 'admin.products' });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.safeGetSession();
@@ -64,6 +67,7 @@ export const actions: Actions = {
 			is_active: form.get('is_active') === 'true'
 		});
 
+		log.info({ actorId: user.id, name, slug }, 'Product created by admin');
 		return { success: true };
 	},
 
@@ -95,6 +99,7 @@ export const actions: Actions = {
 			is_active: form.get('is_active') === 'true'
 		});
 
+		log.info({ actorId: user.id, productId: id }, 'Product updated by admin');
 		return { success: true };
 	},
 
@@ -109,6 +114,7 @@ export const actions: Actions = {
 		if (!id) return fail(400, { error: 'ID inválido.' });
 
 		await toggleProductStatus(locals.supabase, id, isActive);
+		log.info({ actorId: user.id, productId: id, isActive }, 'Product status toggled by admin');
 		return { success: true };
 	}
 };

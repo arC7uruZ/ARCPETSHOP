@@ -381,7 +381,7 @@ export interface Order {
 	shipping_city: string | null;
 	shipping_state: string | null;
 	shipping_zip: string | null;
-	mp_payment_id: string | null;
+	mp_order_id: string | null;
 	mp_status: string | null;
 	notes: string | null;
 	created_at: string;

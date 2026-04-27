@@ -45,6 +45,7 @@
 				};
 			case 'pending':
 			case 'in_process':
+			case 'action_required':
 				return {
 					icon: Clock,
 					color: 'text-amber-500',
@@ -143,7 +144,7 @@
 		{/each}
 
 		<!-- Pix QR Code -->
-		{#if mpStatus === 'pending' && payment?.mp_payment_method === 'pix'}
+		{#if (mpStatus === 'pending' || mpStatus === 'action_required') && payment?.mp_payment_method === 'pix'}
 			<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm text-center">
 				<div class="flex items-center justify-center gap-2 mb-4">
 					<QrCode class="h-5 w-5 text-gray-600" />
@@ -181,7 +182,7 @@
 		{/if}
 
 		<!-- Boleto -->
-		{#if mpStatus === 'pending' && payment?.boleto_url}
+		{#if (mpStatus === 'pending' || mpStatus === 'action_required') && payment?.boleto_url}
 			<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
 				<div class="flex items-center gap-2 mb-4">
 					<Receipt class="h-5 w-5 text-gray-600" />
