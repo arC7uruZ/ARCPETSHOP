@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { clsx } from 'clsx';
 	import type { PageData } from './$types';
+	import type { SupabaseClient } from '@supabase/supabase-js';
 	import { siteConfig } from '$lib/config/site.config';
 	import {
 		CheckCircle2,
@@ -14,8 +16,9 @@
 	} from 'lucide-svelte';
 	import { uiStore } from '$lib/stores/ui.store.svelte';
 
+	// data.supabase vem do +layout.ts (dados de layout são mesclados com os da página)
 	interface Props {
-		data: PageData;
+		data: PageData & { supabase: SupabaseClient };
 	}
 
 	let { data }: Props = $props();
@@ -23,7 +26,45 @@
 	const order = $derived(data.order);
 	const payment = $derived(order.payment);
 
-	const mpStatus = $derived(payment?.mp_status ?? order.mp_status ?? '');
+	let realtimeStatus = $state<string | null>(null);
+
+	const mpStatus = $derived(realtimeStatus ?? payment?.mp_status ?? order.mp_status ?? '');
+
+	onMount(() => {
+		const initialStatus = payment?.mp_status ?? order.mp_status ?? '';
+		const isPendingPix =
+			(initialStatus === 'pending' || initialStatus === 'action_required') &&
+			payment?.mp_payment_method === 'pix';
+
+		if (!isPendingPix) return;
+
+		const channel = data.supabase
+			.channel(`payment-${order.id}`)
+			.on(
+				'postgres_changes',
+				{
+					event: 'UPDATE',
+					schema: 'public',
+					table: 'payments',
+					filter: `order_id=eq.${order.id}`
+				},
+				(payload: { new: Record<string, unknown> }) => {
+					const newStatus = payload.new.mp_status as string | undefined;
+					if (newStatus && newStatus !== mpStatus) {
+						realtimeStatus = newStatus;
+						if (newStatus === 'approved' || newStatus === 'processed') {
+							uiStore.success('Pagamento recebido! Seu pedido está confirmado.');
+						}
+					}
+				}
+			)
+			.subscribe();
+
+		return () => {
+			data.supabase.removeChannel(channel);
+		};
+	});
+
 
 	const statusInfo = $derived((): {
 		icon: typeof CheckCircle2;
@@ -144,41 +185,53 @@
 		{/each}
 
 		<!-- Pix QR Code -->
-		{#if (mpStatus === 'pending' || mpStatus === 'action_required') && payment?.mp_payment_method === 'pix'}
-			<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm text-center">
-				<div class="flex items-center justify-center gap-2 mb-4">
-					<QrCode class="h-5 w-5 text-gray-600" />
-					<h3 class="font-semibold text-gray-900">Pague com Pix</h3>
+		{#if payment?.mp_payment_method === 'pix'}
+			{#if mpStatus === 'approved' || mpStatus === 'processed'}
+				<div class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm text-center">
+					<CheckCircle2 class="mx-auto mb-3 h-12 w-12 text-green-500" />
+					<h3 class="text-lg font-bold text-green-800">Pagamento Pix recebido!</h3>
+					<p class="mt-1 text-sm text-green-700">Seu pedido foi confirmado e está sendo preparado.</p>
 				</div>
-
-				{#if payment.pix_qr_code_base64}
-					<img
-						src="data:image/png;base64,{payment.pix_qr_code_base64}"
-						alt="QR Code Pix"
-						class="mx-auto mb-4 h-48 w-48 rounded-xl"
-					/>
-				{/if}
-
-				{#if payment.pix_qr_code}
-					<div class="rounded-xl bg-gray-50 p-3 text-left">
-						<p class="mb-2 text-xs font-medium text-gray-500">Pix Copia e Cola:</p>
-						<p class="break-all font-mono text-xs text-gray-700 select-all">
-							{payment.pix_qr_code}
-						</p>
+			{:else if mpStatus === 'pending' || mpStatus === 'action_required'}
+				<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm text-center">
+					<div class="flex items-center justify-center gap-2 mb-4">
+						<QrCode class="h-5 w-5 text-gray-600" />
+						<h3 class="font-semibold text-gray-900">Pague com Pix</h3>
+						<span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+							<span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+							Aguardando
+						</span>
 					</div>
-					<button
-						onclick={copyPixCode}
-						class="mt-3 flex items-center gap-2 mx-auto rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-					>
-						<Copy class="h-4 w-4" />
-						Copiar código Pix
-					</button>
-				{/if}
 
-				<p class="mt-4 text-xs text-gray-400">
-					O pagamento Pix é confirmado em segundos após a transferência.
-				</p>
-			</div>
+					{#if payment.pix_qr_code_base64}
+						<img
+							src="data:image/png;base64,{payment.pix_qr_code_base64}"
+							alt="QR Code Pix"
+							class="mx-auto mb-4 h-48 w-48 rounded-xl"
+						/>
+					{/if}
+
+					{#if payment.pix_qr_code}
+						<div class="rounded-xl bg-gray-50 p-3 text-left">
+							<p class="mb-2 text-xs font-medium text-gray-500">Pix Copia e Cola:</p>
+							<p class="break-all font-mono text-xs text-gray-700 select-all">
+								{payment.pix_qr_code}
+							</p>
+						</div>
+						<button
+							onclick={copyPixCode}
+							class="mt-3 flex items-center gap-2 mx-auto rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+						>
+							<Copy class="h-4 w-4" />
+							Copiar código Pix
+						</button>
+					{/if}
+
+					<p class="mt-4 text-xs text-gray-400">
+						A página atualiza automaticamente após o pagamento ser confirmado.
+					</p>
+				</div>
+			{/if}
 		{/if}
 
 		<!-- Boleto -->
