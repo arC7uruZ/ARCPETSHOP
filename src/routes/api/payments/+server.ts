@@ -1,5 +1,25 @@
 import { json } from '@sveltejs/kit';
 import { MercadoPagoConfig, Order } from 'mercadopago';
+
+const BR_STATE_UF: Record<string, string> = {
+    'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amapa': 'AP',
+    'amazonas': 'AM', 'bahia': 'BA', 'ceará': 'CE', 'ceara': 'CE',
+    'distrito federal': 'DF', 'espírito santo': 'ES', 'espirito santo': 'ES',
+    'goiás': 'GO', 'goias': 'GO', 'maranhão': 'MA', 'maranhao': 'MA',
+    'mato grosso do sul': 'MS', 'mato grosso': 'MT', 'minas gerais': 'MG',
+    'pará': 'PA', 'para': 'PA', 'paraíba': 'PB', 'paraiba': 'PB',
+    'paraná': 'PR', 'parana': 'PR', 'pernambuco': 'PE', 'piauí': 'PI', 'piaui': 'PI',
+    'rio de janeiro': 'RJ', 'rio grande do norte': 'RN', 'rio grande do sul': 'RS',
+    'rondônia': 'RO', 'rondonia': 'RO', 'roraima': 'RR', 'santa catarina': 'SC',
+    'são paulo': 'SP', 'sao paulo': 'SP', 'sergipe': 'SE', 'tocantins': 'TO'
+};
+
+function normalizeState(state: string): string {
+    if (!state) return '';
+    const trimmed = state.trim();
+    if (trimmed.length <= 2) return trimmed.toUpperCase();
+    return BR_STATE_UF[trimmed.toLowerCase()] ?? trimmed.slice(0, 2).toUpperCase();
+}
 import {
     MERCADOPAGO_ACCESS_TOKEN,
     MERCADOPAGO_IDEMPOTENCY_KEY_PREFIX
@@ -99,8 +119,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
     const orderClient = new Order(client);
 
+    const roundAmount = (n: number) => parseFloat(n.toFixed(2));
+    const totalRounded = roundAmount(total);
+
     const payer = (formData.payer ?? {}) as Record<string, unknown>;
     const payerIdentification = payer.identification as { type?: string; number?: string } | undefined;
+    const payerAddress = (payer.address ?? {}) as {
+        zip_code?: string;
+        street_name?: string;
+        street_number?: string;
+        neighborhood?: string;
+        city?: string;
+        federal_unit?: string;
+    };
     const paymentMethodId = formData.payment_method_id as string | undefined;
     const token = formData.token as string | undefined;
     const installments = (formData.installments as number | undefined) ?? 1;
@@ -117,6 +148,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               ? 'ticket'
               : 'credit_card');
 
+    // Split full name for payer fields required by boleto/ticket
+    const nameParts = (shippingInfo.name ?? '').trim().split(/\s+/);
+    const payerFirstName = nameParts[0] || 'N';
+    const payerLastName = nameParts.slice(1).join(' ') || 'A';
+
     log.debug(
         { orderId: order.id, paymentMethodId, paymentTypeId, installments },
         'Calling MP Orders API'
@@ -131,27 +167,40 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 description: `ArcPetShop - Pedido ${order.id.slice(0, 8).toUpperCase()}`,
                 payer: {
                     email: (payer.email as string | undefined) ?? user.email ?? '',
-                    first_name: "APRO",
+                    first_name: payerFirstName,
+                    last_name: payerLastName,
                     ...(payerIdentification
                         ? { identification: { type: payerIdentification.type, number: payerIdentification.number } }
+                        : {}),
+                    ...(paymentTypeId === 'ticket'
+                        ? {
+                              address: {
+                                  zip_code: payerAddress.zip_code ?? '',
+                                  street_name: payerAddress.street_name ?? '',
+                                  street_number: (payerAddress.street_number || '0').slice(0, 10),
+                                  neighborhood: payerAddress.neighborhood ?? '',
+                                  city: payerAddress.city ?? '',
+                                  state: normalizeState(payerAddress.federal_unit ?? '')
+                              }
+                          }
                         : {})
                 },
                 items: [
                     ...validatedItems.map((item) => ({
                         title: item.productName,
-                        unit_price: String(item.unitPrice),
+                        unit_price: String(roundAmount(item.unitPrice)),
                         quantity: item.quantity,
                         external_code: item.productId.replace(/-/g, '').slice(0, 30)
                     })),
                     ...(shippingCost > 0
-                        ? [{ title: 'Frete', unit_price: String(shippingCost), quantity: 1, external_code: 'shipping' }]
+                        ? [{ title: 'Frete', unit_price: String(roundAmount(shippingCost)), quantity: 1, external_code: 'shipping' }]
                         : [])
                 ],
-                total_amount: String(total),
+                total_amount: String(totalRounded),
                 transactions: {
                     payments: [
                         {
-                            amount: String(total),
+                            amount: String(totalRounded),
                             payment_method: {
                                 id: paymentMethodId,
                                 type: paymentTypeId,

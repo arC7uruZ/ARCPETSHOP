@@ -135,3 +135,9 @@
 	background: var(--color-primary-500) !important;
 	height: 3px !important;
 }
+
+/* @tailwindcss/forms adds a background-image chevron to all <select> elements.
+   MP Bricks renders its own chevron, so we suppress the duplicate here. */
+#mp-payment-brick select {
+	background-image: none;
+}

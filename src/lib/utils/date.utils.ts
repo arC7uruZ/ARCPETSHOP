@@ -1,20 +1,29 @@
 export const DAY_NAMES = [
-	'Domingo',
-	'Segunda-feira',
-	'Terça-feira',
-	'Quarta-feira',
-	'Quinta-feira',
-	'Sexta-feira',
-	'Sábado'
+	"Domingo",
+	"Segunda-feira",
+	"Terça-feira",
+	"Quarta-feira",
+	"Quinta-feira",
+	"Sexta-feira",
+	"Sábado"
 ];
+
+const isValidDate = (date: Date): boolean => {
+	return !isNaN(date.getTime());
+};
 
 /**
  * Formats a date string or Date object as a Brazilian locale string.
  * e.g. "15 de março de 2025"
  */
 export const formatDate = (date: string | Date): string => {
-	const d = typeof date === 'string' ? new Date(date) : date;
-	return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+	const d = typeof date === "string" ? new Date(date) : date;
+	if (!isValidDate(d)) return "-";
+	return d.toLocaleDateString("pt-BR", {
+		day: "numeric",
+		month: "long",
+		year: "numeric"
+	});
 };
 
 /**
@@ -22,8 +31,9 @@ export const formatDate = (date: string | Date): string => {
  * e.g. "15/03/2025"
  */
 export const formatDateShort = (date: string | Date): string => {
-	const d = typeof date === 'string' ? new Date(date) : date;
-	return d.toLocaleDateString('pt-BR');
+	const d = typeof date === "string" ? new Date(date) : date;
+	if (!isValidDate(d)) return "-";
+	return d.toLocaleDateString("pt-BR");
 };
 
 /**
@@ -31,8 +41,9 @@ export const formatDateShort = (date: string | Date): string => {
  * e.g. "14:30"
  */
 export const formatTime = (date: string | Date): string => {
-	const d = typeof date === 'string' ? new Date(date) : date;
-	return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+	const d = typeof date === "string" ? new Date(date) : date;
+	if (!isValidDate(d)) return "-";
+	return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 };
 
 /**
@@ -73,7 +84,7 @@ export const getAvailableTimeSlots = (date: Date): string[] => {
 		if (isToday && m <= nowMinutes + 60) continue; // need at least 1h advance notice
 		const h = Math.floor(m / 60);
 		const min = m % 60;
-		slots.push(`${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+		slots.push(`${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`);
 	}
 
 	return slots;
@@ -83,7 +94,7 @@ export const getAvailableTimeSlots = (date: Date): string[] => {
  * Checks if a date is in the past.
  */
 export const isPastDate = (date: Date | string): boolean => {
-	const d = typeof date === 'string' ? new Date(date) : date;
+	const d = typeof date === "string" ? new Date(date) : date;
 	return d < new Date();
 };
 
@@ -93,7 +104,7 @@ export const isPastDate = (date: Date | string): boolean => {
 export const getMinBookingDate = (): string => {
 	const tomorrow = new Date();
 	tomorrow.setDate(tomorrow.getDate() + 1);
-	return tomorrow.toISOString().split('T')[0];
+	return tomorrow.toISOString().split("T")[0];
 };
 
 /**
@@ -102,12 +113,16 @@ export const getMinBookingDate = (): string => {
 export const getMaxBookingDate = (): string => {
 	const max = new Date();
 	max.setDate(max.getDate() + 30);
-	return max.toISOString().split('T')[0];
+	return max.toISOString().split("T")[0];
 };
 
 /**
  * Combines a date string (YYYY-MM-DD) and time string (HH:MM) into an ISO string.
  */
 export const combineDateAndTime = (date: string, time: string): string => {
+	if (
+		!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(date) ||
+		!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)
+	) return "-";
 	return new Date(`${date}T${time}:00`).toISOString();
 };

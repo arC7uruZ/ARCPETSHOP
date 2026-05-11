@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { clsx } from 'clsx';
-	import type { PageData } from './$types';
-	import type { SupabaseClient } from '@supabase/supabase-js';
-	import { siteConfig } from '$lib/config/site.config';
+	import { onMount } from "svelte";
+	import { clsx } from "clsx";
+	import type { PageData } from "./$types";
+	import type { SupabaseClient } from "@supabase/supabase-js";
+	import { siteConfig } from "$lib/config/site.config";
 	import {
 		CheckCircle2,
 		Clock,
@@ -13,8 +13,9 @@
 		Receipt,
 		ChevronLeft,
 		Copy
-	} from 'lucide-svelte';
-	import { uiStore } from '$lib/stores/ui.store.svelte';
+	} from "lucide-svelte";
+	import JsBarcode from "jsbarcode";
+	import { uiStore } from "$lib/stores/ui.store.svelte";
 
 	// data.supabase vem do +layout.ts (dados de layout são mesclados com os da página)
 	interface Props {
@@ -28,32 +29,36 @@
 
 	let realtimeStatus = $state<string | null>(null);
 
-	const mpStatus = $derived(realtimeStatus ?? payment?.mp_status ?? order.mp_status ?? '');
+	const mpStatus = $derived(
+		realtimeStatus ?? payment?.mp_status ?? order.mp_status ?? ""
+	);
 
 	onMount(() => {
-		const initialStatus = payment?.mp_status ?? order.mp_status ?? '';
+		const initialStatus = payment?.mp_status ?? order.mp_status ?? "";
 		const isPendingPix =
-			(initialStatus === 'pending' || initialStatus === 'action_required') &&
-			payment?.mp_payment_method === 'pix';
+			(initialStatus === "pending" || initialStatus === "action_required") &&
+			payment?.mp_payment_method === "pix";
 
 		if (!isPendingPix) return;
 
 		const channel = data.supabase
 			.channel(`payment-${order.id}`)
 			.on(
-				'postgres_changes',
+				"postgres_changes",
 				{
-					event: 'UPDATE',
-					schema: 'public',
-					table: 'payments',
+					event: "UPDATE",
+					schema: "public",
+					table: "payments",
 					filter: `order_id=eq.${order.id}`
 				},
 				(payload: { new: Record<string, unknown> }) => {
 					const newStatus = payload.new.mp_status as string | undefined;
 					if (newStatus && newStatus !== mpStatus) {
 						realtimeStatus = newStatus;
-						if (newStatus === 'approved' || newStatus === 'processed') {
-							uiStore.success('Pagamento recebido! Seu pedido está confirmado.');
+						if (newStatus === "approved" || newStatus === "processed") {
+							uiStore.success(
+								"Pagamento recebido! Seu pedido está confirmado."
+							);
 						}
 					}
 				}
@@ -65,71 +70,72 @@
 		};
 	});
 
-
-	const statusInfo = $derived((): {
-		icon: typeof CheckCircle2;
-		color: string;
-		bg: string;
-		border: string;
-		title: string;
-		desc: string;
-	} => {
-		switch (mpStatus) {
-			case 'approved':
-				return {
-					icon: CheckCircle2,
-					color: 'text-green-500',
-					bg: 'bg-green-50',
-					border: 'border-green-100',
-					title: 'Pagamento aprovado!',
-					desc: 'Seu pedido foi confirmado e está sendo preparado.'
-				};
-			case 'pending':
-			case 'in_process':
-			case 'action_required':
-				return {
-					icon: Clock,
-					color: 'text-amber-500',
-					bg: 'bg-amber-50',
-					border: 'border-amber-100',
-					title: 'Aguardando pagamento',
-					desc:
-						payment?.mp_payment_method === 'pix'
-							? 'Use o QR Code ou o código Pix abaixo para realizar o pagamento.'
-							: 'Seu pagamento está sendo processado.'
-				};
-			case 'rejected':
-				return {
-					icon: XCircle,
-					color: 'text-red-500',
-					bg: 'bg-red-50',
-					border: 'border-red-100',
-					title: 'Pagamento recusado',
-					desc: 'Não foi possível processar o pagamento. Tente novamente com outro método.'
-				};
-			default:
-				return {
-					icon: Package,
-					color: 'text-gray-400',
-					bg: 'bg-gray-50',
-					border: 'border-gray-100',
-					title: 'Pedido recebido',
-					desc: 'Seu pedido foi registrado.'
-				};
+	const statusInfo = $derived(
+		(): {
+			icon: typeof CheckCircle2;
+			color: string;
+			bg: string;
+			border: string;
+			title: string;
+			desc: string;
+		} => {
+			switch (mpStatus) {
+				case "approved":
+					return {
+						icon: CheckCircle2,
+						color: "text-green-500",
+						bg: "bg-green-50",
+						border: "border-green-100",
+						title: "Pagamento aprovado!",
+						desc: "Seu pedido foi confirmado e está sendo preparado."
+					};
+				case "pending":
+				case "in_process":
+				case "action_required":
+					return {
+						icon: Clock,
+						color: "text-amber-500",
+						bg: "bg-amber-50",
+						border: "border-amber-100",
+						title: "Aguardando pagamento",
+						desc:
+							payment?.mp_payment_method === "pix"
+								? "Use o QR Code ou o código Pix abaixo para realizar o pagamento."
+								: "Seu pagamento está sendo processado."
+					};
+				case "rejected":
+					return {
+						icon: XCircle,
+						color: "text-red-500",
+						bg: "bg-red-50",
+						border: "border-red-100",
+						title: "Pagamento recusado",
+						desc: "Não foi possível processar o pagamento. Tente novamente com outro método."
+					};
+				default:
+					return {
+						icon: Package,
+						color: "text-gray-400",
+						bg: "bg-gray-50",
+						border: "border-gray-100",
+						title: "Pedido recebido",
+						desc: "Seu pedido foi registrado."
+					};
+			}
 		}
-	});
+	);
 
 	function formatPrice(v: number) {
-		return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+		return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 	}
 
 	function formatDate(d: string) {
-		return new Date(d).toLocaleString('pt-BR', {
-			day: '2-digit',
-			month: '2-digit',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
+		return new Date(d).toLocaleString("pt-BR", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+			hour: "2-digit",
+			minute: "2-digit"
 		});
 	}
 
@@ -137,11 +143,40 @@
 		if (!payment?.pix_qr_code) return;
 		try {
 			await navigator.clipboard.writeText(payment.pix_qr_code);
-			uiStore.success('Código Pix copiado!');
+			uiStore.success("Código Pix copiado!");
 		} catch {
-			uiStore.error('Não foi possível copiar o código.');
+			uiStore.error("Não foi possível copiar o código.");
 		}
 	}
+
+	async function copyBoletoCode() {
+		if (!payment?.boleto_barcode) return;
+		try {
+			await navigator.clipboard.writeText(payment.boleto_barcode);
+			uiStore.success("Código de barras copiado!");
+		} catch {
+			uiStore.error("Não foi possível copiar o código.");
+		}
+	}
+
+	let boletoSvg = $state<SVGSVGElement | null>(null);
+
+	$effect(() => {
+		if (boletoSvg && payment?.boleto_barcode) {
+			try {
+				JsBarcode(boletoSvg, payment.boleto_barcode, {
+					format: "ITF",
+					displayValue: false,
+					margin: 10,
+					width: 2,
+					height: 80
+				});
+			} catch {
+				// barcode content inválido — oculta o SVG
+				boletoSvg.style.display = "none";
+			}
+		}
+	});
 
 	const shortId = $derived(order.id.slice(0, 8).toUpperCase());
 </script>
@@ -153,7 +188,7 @@
 <div class="from-primary-500 to-secondary-500 bg-linear-to-br pt-32 pb-10">
 	<div class="container-app text-center text-white">
 		<h1 class="font-display text-3xl font-bold">Pedido #{shortId}</h1>
-		<p class="mt-2 text-white/80 text-sm">{formatDate(order.created_at)}</p>
+		<p class="mt-2 text-sm text-white/80">{formatDate(order.created_at)}</p>
 	</div>
 </div>
 
@@ -161,7 +196,7 @@
 	<div class="container-app max-w-2xl">
 		<a
 			href="/store"
-			class="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+			class="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800"
 		>
 			<ChevronLeft class="h-4 w-4" />
 			Voltar à loja
@@ -171,13 +206,13 @@
 		{#each [statusInfo()] as si}
 			<div
 				class={clsx(
-					'mb-6 rounded-2xl border p-6 text-center',
+					"mb-6 rounded-2xl border p-6 text-center",
 					si.bg,
 					si.border
 				)}
 			>
-				<div class="flex justify-center mb-3">
-					<si.icon class={clsx('h-12 w-12', si.color)} />
+				<div class="mb-3 flex justify-center">
+					<si.icon class={clsx("h-12 w-12", si.color)} />
 				</div>
 				<h2 class="text-xl font-bold text-gray-900">{si.title}</h2>
 				<p class="mt-1 text-sm text-gray-600">{si.desc}</p>
@@ -185,20 +220,31 @@
 		{/each}
 
 		<!-- Pix QR Code -->
-		{#if payment?.mp_payment_method === 'pix'}
-			{#if mpStatus === 'approved' || mpStatus === 'processed'}
-				<div class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm text-center">
+		{#if payment?.mp_payment_method === "pix"}
+			{#if mpStatus === "approved" || mpStatus === "processed"}
+				<div
+					class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-6 text-center shadow-sm"
+				>
 					<CheckCircle2 class="mx-auto mb-3 h-12 w-12 text-green-500" />
-					<h3 class="text-lg font-bold text-green-800">Pagamento Pix recebido!</h3>
-					<p class="mt-1 text-sm text-green-700">Seu pedido foi confirmado e está sendo preparado.</p>
+					<h3 class="text-lg font-bold text-green-800">
+						Pagamento Pix recebido!
+					</h3>
+					<p class="mt-1 text-sm text-green-700">
+						Seu pedido foi confirmado e está sendo preparado.
+					</p>
 				</div>
-			{:else if mpStatus === 'pending' || mpStatus === 'action_required'}
-				<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm text-center">
-					<div class="flex items-center justify-center gap-2 mb-4">
+			{:else if mpStatus === "pending" || mpStatus === "action_required"}
+				<div
+					class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm"
+				>
+					<div class="mb-4 flex items-center justify-center gap-2">
 						<QrCode class="h-5 w-5 text-gray-600" />
 						<h3 class="font-semibold text-gray-900">Pague com Pix</h3>
-						<span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-							<span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+						<span
+							class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700"
+						>
+							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500"
+							></span>
 							Aguardando
 						</span>
 					</div>
@@ -213,14 +259,16 @@
 
 					{#if payment.pix_qr_code}
 						<div class="rounded-xl bg-gray-50 p-3 text-left">
-							<p class="mb-2 text-xs font-medium text-gray-500">Pix Copia e Cola:</p>
-							<p class="break-all font-mono text-xs text-gray-700 select-all">
+							<p class="mb-2 text-xs font-medium text-gray-500">
+								Pix Copia e Cola:
+							</p>
+							<p class="font-mono text-xs break-all text-gray-700 select-all">
 								{payment.pix_qr_code}
 							</p>
 						</div>
 						<button
 							onclick={copyPixCode}
-							class="mt-3 flex items-center gap-2 mx-auto rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+							class="mx-auto mt-3 flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
 						>
 							<Copy class="h-4 w-4" />
 							Copiar código Pix
@@ -235,57 +283,114 @@
 		{/if}
 
 		<!-- Boleto -->
-		{#if (mpStatus === 'pending' || mpStatus === 'action_required') && payment?.boleto_url}
-			<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-				<div class="flex items-center gap-2 mb-4">
-					<Receipt class="h-5 w-5 text-gray-600" />
-					<h3 class="font-semibold text-gray-900">Boleto Bancário</h3>
+		{#if (mpStatus === "pending" || mpStatus === "action_required") && payment?.boleto_url}
+			<div
+				class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+			>
+				<div class="mb-4 flex items-center justify-between">
+					<div class="flex items-center gap-2">
+						<Receipt class="h-5 w-5 text-gray-600" />
+						<h3 class="font-semibold text-gray-900">Boleto Bancário</h3>
+					</div>
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700"
+					>
+						<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500"
+						></span>
+						Aguardando pagamento
+					</span>
 				</div>
+
 				{#if payment.boleto_barcode}
-					<p class="mb-3 break-all font-mono text-sm text-gray-700 bg-gray-50 rounded-xl p-3">
-						{payment.boleto_barcode}
-					</p>
+					<!-- Barcode image -->
+					<div
+						class="mb-4 overflow-x-auto rounded-xl border border-gray-100 bg-white p-3"
+					>
+						<svg bind:this={boletoSvg} class="mx-auto block max-w-full"></svg>
+					</div>
+
+					<!-- Código copiável -->
+					<div class="mb-4 rounded-xl bg-gray-50 p-3">
+						<p class="mb-1.5 text-xs font-medium text-gray-500">
+							Código de barras:
+						</p>
+						<p
+							class="font-mono text-xs leading-relaxed break-all text-gray-700 select-all"
+						>
+							{payment.boleto_barcode}
+						</p>
+					</div>
+
+					<!-- Ações -->
+					<div class="flex flex-col gap-2 sm:flex-row">
+						<button
+							onclick={copyBoletoCode}
+							class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+						>
+							<Copy class="h-4 w-4" />
+							Copiar código
+						</button>
+						<a
+							href={payment.boleto_url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+						>
+							<Receipt class="h-4 w-4" />
+							Abrir boleto
+						</a>
+					</div>
+				{:else}
+					<a
+						href={payment.boleto_url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+					>
+						<Receipt class="h-4 w-4" />
+						Abrir boleto
+					</a>
 				{/if}
-				<a
-					href={payment.boleto_url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="block w-full rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
-				>
-					Visualizar boleto
-				</a>
 			</div>
 		{/if}
 
 		<!-- Order Items -->
-		<div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm mb-6">
+		<div class="mb-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
 			<h3 class="mb-4 font-semibold text-gray-900">Itens do pedido</h3>
 			<ul class="space-y-3">
 				{#each order.items as item (item.id)}
 					<li class="flex justify-between gap-2">
 						<div>
-							<p class="text-sm font-medium text-gray-800">{item.product_name}</p>
-							<p class="text-xs text-gray-400">{item.product_brand} · Qtd: {item.quantity}</p>
+							<p class="text-sm font-medium text-gray-800">
+								{item.product_name}
+							</p>
+							<p class="text-xs text-gray-400">
+								{item.product_brand} · Qtd: {item.quantity}
+							</p>
 						</div>
-						<span class="text-sm font-semibold text-gray-800 shrink-0">
+						<span class="shrink-0 text-sm font-semibold text-gray-800">
 							{formatPrice(item.subtotal)}
 						</span>
 					</li>
 				{/each}
 			</ul>
 
-			<div class="mt-4 border-t border-gray-100 pt-4 space-y-1.5 text-sm">
+			<div class="mt-4 space-y-1.5 border-t border-gray-100 pt-4 text-sm">
 				<div class="flex justify-between text-gray-500">
 					<span>Subtotal</span>
 					<span>{formatPrice(order.subtotal)}</span>
 				</div>
 				<div class="flex justify-between text-gray-500">
 					<span>Frete</span>
-					<span class={order.shipping === 0 ? 'text-green-600 font-medium' : ''}>
-						{order.shipping === 0 ? 'Grátis' : formatPrice(order.shipping)}
+					<span
+						class={order.shipping === 0 ? "font-medium text-green-600" : ""}
+					>
+						{order.shipping === 0 ? "Grátis" : formatPrice(order.shipping)}
 					</span>
 				</div>
-				<div class="flex justify-between border-t border-gray-100 pt-1.5 font-bold text-base text-gray-900">
+				<div
+					class="flex justify-between border-t border-gray-100 pt-1.5 text-base font-bold text-gray-900"
+				>
 					<span>Total</span>
 					<span>{formatPrice(order.total)}</span>
 				</div>
@@ -294,32 +399,36 @@
 
 		<!-- Shipping Address -->
 		{#if order.shipping_address}
-			<div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm mb-6">
+			<div
+				class="mb-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+			>
 				<h3 class="mb-3 font-semibold text-gray-900">Endereço de entrega</h3>
-				<address class="not-italic text-sm text-gray-600 space-y-0.5">
-					{#if order.shipping_name}<p class="font-medium text-gray-800">{order.shipping_name}</p>{/if}
+				<address class="space-y-0.5 text-sm text-gray-600 not-italic">
+					{#if order.shipping_name}<p class="font-medium text-gray-800">
+							{order.shipping_name}
+						</p>{/if}
 					<p>{order.shipping_address}</p>
 					<p>
 						{[order.shipping_city, order.shipping_state, order.shipping_zip]
 							.filter(Boolean)
-							.join(', ')}
+							.join(", ")}
 					</p>
 				</address>
 			</div>
 		{/if}
 
 		<!-- Actions -->
-		{#if mpStatus === 'rejected'}
+		{#if mpStatus === "rejected"}
 			<a
-				href="/store/checkout"
-				class="block w-full rounded-xl bg-primary-500 py-3 text-center text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
+				href="/checkout"
+				class="bg-primary-500 hover:bg-primary-600 block w-full rounded-xl py-3 text-center text-sm font-semibold text-white transition-colors"
 			>
 				Tentar novamente
 			</a>
 		{:else}
 			<a
 				href="/store"
-				class="block w-full rounded-xl border border-gray-200 bg-white py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+				class="block w-full rounded-xl border border-gray-200 bg-white py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
 			>
 				Continuar comprando
 			</a>

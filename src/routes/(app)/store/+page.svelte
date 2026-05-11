@@ -88,11 +88,11 @@
 <!-- Cart FAB -->
 <button
 	onclick={() => (cartOpen = true)}
-	class={clsx(
+	class={[
 		'fixed right-5 bottom-5 z-30 flex h-14 w-14 items-center justify-center rounded-full shadow-lg',
 		'bg-primary-500 hover:bg-primary-600 text-white transition-all duration-200',
 		'sm:right-8 sm:bottom-8'
-	)}
+	]}
 	aria-label="Abrir carrinho"
 >
 	<ShoppingCart class="h-6 w-6" />
@@ -107,7 +107,7 @@
 
 <!-- Hero -->
 <div class="from-primary-500 to-secondary-500 bg-linear-to-br pt-32 pb-16">
-	<div class="container-app text-center text-white">
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center text-white">
 		<div
 			class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm"
 		>
@@ -124,9 +124,9 @@
 
 <!-- Benefícios -->
 <div class="border-b border-gray-100 bg-white">
-	<div class="container-app">
-		<div class="grid grid-cols-1 gap-4 py-6 sm:grid-cols-3">
-			<div class="flex items-center gap-3 text-sm text-gray-600">
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div class="flex flex-col gap-4 sm:gap-20 py-6 sm:flex-row items-center justify-center">
+			<div class="flex items-center w-fit gap-3 text-sm text-gray-600">
 				<div
 					class="bg-primary-100 flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
 				>
@@ -134,7 +134,7 @@
 				</div>
 				<div><span class="font-semibold text-gray-900">Frete grátis</span> acima de R$ 150</div>
 			</div>
-			<div class="flex items-center gap-3 text-sm text-gray-600">
+			<div class="flex items-center w-fit gap-3 text-sm text-gray-600">
 				<div
 					class="bg-primary-100 flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
 				>
@@ -144,7 +144,7 @@
 					<span class="font-semibold text-gray-900">Produtos originais</span> com nota fiscal
 				</div>
 			</div>
-			<div class="flex items-center gap-3 text-sm text-gray-600">
+			<div class="flex items-center w-fit gap-3 text-sm text-gray-600">
 				<div
 					class="bg-primary-100 flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
 				>

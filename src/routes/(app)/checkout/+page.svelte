@@ -80,6 +80,14 @@
 						identification: {
 							type: "CPF",
 							number: data.profile?.cpf?.replace(/\D/g, "") ?? ""
+						},
+						address: {
+							zipCode: data.profile?.address_zip?.replace(/\D/g, "") ?? "",
+							federalUnit: data.profile?.address_state ?? "",
+							city: data.profile?.address_city ?? "",
+							neighborhood: "",
+							streetName: data.profile?.address_street ?? "",
+							streetNumber: ""
 						}
 					}
 				},

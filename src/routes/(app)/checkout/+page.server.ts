@@ -5,7 +5,7 @@ import { PUBLIC_MERCADOPAGO_PUBLIC_KEY } from '$env/static/public';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.safeGetSession();
-	if (!user) throw redirect(303, '/login?next=/store/checkout');
+	if (!user) throw redirect(303, '/login?next=/checkout');
 
 	const profile = await fetchProfile(locals.supabase, user.id);
 

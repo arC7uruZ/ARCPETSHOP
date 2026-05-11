@@ -19,7 +19,7 @@
 
 	function goToCheckout() {
 		onClose();
-		goto('/store/checkout');
+		goto('/checkout');
 	}
 </script>
 
