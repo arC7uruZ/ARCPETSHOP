@@ -5,10 +5,11 @@ import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
-export default ts.config(
+export default defineConfig([
 	includeIgnoreFile(gitignorePath),
 	js.configs.recommended,
 	...ts.configs.recommended,
@@ -39,4 +40,4 @@ export default ts.config(
 			'no-console': ['warn', { allow: ['warn', 'error'] }]
 		}
 	}
-);
+]);
