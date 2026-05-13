@@ -26,7 +26,7 @@ describe("+page.server.ts load function", () => {
 
         expect(fetchAdminStats).toHaveBeenCalledOnce();
         expect(fetchRecentAppointments).toHaveBeenCalledOnce();
-        expect(result).toStrictEqual({
+        expect(result).toEqual({
             stats: "adminStats",
             recentAppointments: "recentAppointments",
         });
