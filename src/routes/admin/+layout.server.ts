@@ -2,6 +2,7 @@ import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { getUserPermissions } from '$lib/server/permissions.server';
 import logger from '$lib/server/logger';
+import { fetchProfile } from '$lib/server';
 
 const log = logger.child({ module: 'admin.layout' });
 
@@ -9,11 +10,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user } = locals;
 	if (!user) redirect(303, '/login?redirectTo=/admin');
 
-	const { data: profile } = await locals.supabase
-		.from('profiles')
-		.select('role, full_name')
-		.eq('id', user.id)
-		.single();
+    const profile = await fetchProfile(locals.supabase, user.id);
 
 	const role = profile?.role ?? 'customer';
 

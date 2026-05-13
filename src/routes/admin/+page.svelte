@@ -2,7 +2,7 @@
 	import { clsx } from 'clsx';
 	import type { PageData } from './$types';
 	import { formatDateTime } from '$lib/utils/date.utils';
-	import { Calendar, Users, Users2 } from 'lucide-svelte';
+	import { Calendar, Users, UsersRound } from 'lucide-svelte';
 
 	interface Props {
 		data: PageData;
@@ -73,12 +73,12 @@
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 		<a
 			href="/admin/appointments"
-			class={clsx(
+			class={[
 				'flex items-center gap-4',
 				'rounded-2xl bg-primary-500 p-5',
 				'text-white shadow-sm',
 				'hover:bg-primary-600 transition-colors',
-			)}
+			]}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
 				<Calendar class="h-6 w-6" />
@@ -90,11 +90,11 @@
 		</a>
 		<a
 			href="/admin/caretakers"
-			class={clsx(
+			class={[
 				'flex items-center gap-4',
 				'rounded-2xl border border-gray-100 bg-white p-5 shadow-sm',
 				'hover:border-primary-200 transition-colors',
-			)}
+			]}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50">
 				<Users class="h-6 w-6 text-primary-600" />
@@ -106,14 +106,14 @@
 		</a>
 		<a
 			href="/admin/users"
-			class={clsx(
+			class={[
 				'flex items-center gap-4',
 				'rounded-2xl border border-gray-100 bg-white p-5 shadow-sm',
 				'hover:border-primary-200 transition-colors',
-			)}
+			]}
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50">
-				<Users2 class="h-6 w-6 text-purple-600" />
+				<UsersRound class="h-6 w-6 text-purple-600" />
 			</div>
 			<div>
 				<p class="font-semibold text-gray-900">Usuários</p>
